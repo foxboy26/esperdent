@@ -17,71 +17,77 @@ public interface EsperdentParserConstants {
   /** RegularExpression Id. */
   int STREAM = 9;
   /** RegularExpression Id. */
-  int INSERT = 10;
+  int SOURCE = 10;
   /** RegularExpression Id. */
-  int INTO = 11;
+  int INSERT = 11;
   /** RegularExpression Id. */
-  int SELECT = 12;
+  int INTO = 12;
   /** RegularExpression Id. */
-  int FROM = 13;
+  int SELECT = 13;
   /** RegularExpression Id. */
-  int WHERE = 14;
+  int FROM = 14;
   /** RegularExpression Id. */
-  int AS = 15;
+  int WHERE = 15;
   /** RegularExpression Id. */
-  int WINDOW = 16;
+  int AS = 16;
   /** RegularExpression Id. */
-  int AND = 17;
+  int WINDOW = 17;
   /** RegularExpression Id. */
-  int OR = 18;
+  int AND = 18;
   /** RegularExpression Id. */
-  int NOT = 19;
+  int OR = 19;
   /** RegularExpression Id. */
-  int COMMA = 20;
+  int NOT = 20;
   /** RegularExpression Id. */
-  int WIN_LENGTH = 21;
+  int COMMA = 21;
   /** RegularExpression Id. */
-  int WIN_TIME = 22;
+  int WIN_LENGTH = 22;
   /** RegularExpression Id. */
-  int WIN_TIME_BATCH = 23;
+  int WIN_TIME = 23;
   /** RegularExpression Id. */
-  int ROWS = 24;
+  int WIN_TIME_BATCH = 24;
   /** RegularExpression Id. */
-  int RANGE = 25;
+  int ROWS = 25;
   /** RegularExpression Id. */
-  int INT = 26;
+  int RANGE = 26;
   /** RegularExpression Id. */
-  int FLOAT = 27;
+  int SLIDE = 27;
   /** RegularExpression Id. */
-  int TIMESTAMP = 28;
+  int UNBOUNDED = 28;
   /** RegularExpression Id. */
-  int SECONDS = 29;
+  int INT = 29;
   /** RegularExpression Id. */
-  int MINUTES = 30;
+  int FLOAT = 30;
   /** RegularExpression Id. */
-  int HOURS = 31;
+  int TIMESTAMP = 31;
   /** RegularExpression Id. */
-  int DAYS = 32;
+  int SECONDS = 32;
   /** RegularExpression Id. */
-  int STRING = 33;
+  int MINUTES = 33;
   /** RegularExpression Id. */
-  int IDENTIFIER = 34;
+  int HOURS = 34;
   /** RegularExpression Id. */
-  int LETTER = 35;
+  int DAYS = 35;
   /** RegularExpression Id. */
-  int DIGIT = 36;
+  int STRING = 36;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 37;
+  int IDENTIFIER = 37;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 38;
+  int LETTER = 38;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 39;
+  int DIGIT = 39;
   /** RegularExpression Id. */
-  int EXPONENT = 40;
+  int INTEGER_LITERAL = 40;
   /** RegularExpression Id. */
-  int EQ = 41;
+  int DECIMAL_LITERAL = 41;
   /** RegularExpression Id. */
-  int GT = 42;
+  int FLOATING_POINT_LITERAL = 42;
+  /** RegularExpression Id. */
+  int EXPONENT = 43;
+  /** RegularExpression Id. */
+  int EQ = 44;
+  /** RegularExpression Id. */
+  int GT = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -98,6 +104,7 @@ public interface EsperdentParserConstants {
     "\"create\"",
     "\"schema\"",
     "\"stream\"",
+    "\"source\"",
     "\"insert\"",
     "\"into\"",
     "\"select\"",
@@ -114,6 +121,8 @@ public interface EsperdentParserConstants {
     "\"win:time_batch\"",
     "\"rows\"",
     "\"range\"",
+    "\"slide\"",
+    "\"unbounded\"",
     "\"int\"",
     "\"float\"",
     "\"timestamp\"",
@@ -134,8 +143,11 @@ public interface EsperdentParserConstants {
     "\"(\"",
     "\")\"",
     "\";\"",
+    "\":\"",
     "\"*\"",
     "\".\"",
+    "\"[\"",
+    "\"]\"",
   };
 
 }

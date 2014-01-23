@@ -53,6 +53,8 @@ TOKEN [IGNORE_CASE]:
 |
   < STREAM: "stream" >
 |
+  < SOURCE: "source" >
+|
   < INSERT  : "insert" >
 |
   < INTO  : "into" >
@@ -84,6 +86,10 @@ TOKEN [IGNORE_CASE]:
   < ROWS : "rows" >
 |
   < RANGE : "range" >
+|
+  < SLIDE : "slide" >
+|
+  < UNBOUNDED : "unbounded" >
 }
 
 /** Type */
@@ -164,7 +170,7 @@ void Esperdent() #void : {}
 /** Create clause */
 void CreateClause() #CreateClause : {}
 {
-  <CREATE> <STREAM> Name() "(" AttributeDefList() ")" ";"
+  <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source() ";"
 }
 
 void AttributeDefList() #AttributeDefList: {}
@@ -184,6 +190,11 @@ void AttributeType() #AttributeType : {}
   <FLOAT>
 |
   <TIMESTAMP>
+}
+
+void Source() #Source : {}
+{
+  <SOURCE> Name() (":" Integer())?
 }
 
 /** End of create clause */
@@ -227,7 +238,7 @@ void Attribute() #Attribute : {}
 /** From clause. */
 void FromClause() #FromClause : {}
 {
-  <FROM> FromList() //(<COMMA> "[" Filter() "]")*
+  <FROM> FromList()
 }
 
 void FromList() #FromList : {}
@@ -237,12 +248,17 @@ void FromList() #FromList : {}
 
 void Stream() #Stream : {}
 {
-  Name() (WindowSpec())?
+  Name() (StreamFilter())? (WindowSpec())?
+}
+
+void StreamFilter() #StreamFilter : {}
+{
+  "[" Cond() "]"
 }
 
 void WindowSpec() #WindowSpec : {}
 {
-  <WINDOW> "(" WindowFrame() ")"
+  <WINDOW> "(" WindowFrame() ")" (SlideClause())?
 }
 
 void WindowFrame() #WindowFrame : {}
@@ -257,6 +273,13 @@ void WindowFrameUnits() #WindowFrameUnits : {}
 
 void WindowFrameStart() #WindowFrameStart : {}
 {
+  <UNBOUNDED>
+|
+  ValueSpec()
+}
+
+void ValueSpec() #ValueSpec : {}
+{
   <INTEGER_LITERAL> (Units())?
 }
 
@@ -269,6 +292,11 @@ void Units() #Units : {}
   <HOURS>
 |
   <DAYS>
+}
+
+void SlideClause() #SlideClause : {}
+{
+  <SLIDE> ValueSpec()
 }
 
 /** Where clause */
@@ -293,20 +321,32 @@ void Cond() #void : {}
 
 void CondPrime() #void : {}
 {
-  LOOKAHEAD(Attribute() <EQ>)
-  (Attribute() <EQ> Attribute()) #CondEq
+  LOOKAHEAD(Expression() <EQ>)
+  (Expression() <EQ> Expression()) #CondEq
 |
-  LOOKAHEAD(Attribute() <EQ>)
-  (Attribute() <GT> Attribute()) #CondGt
+  LOOKAHEAD(Expression() <GT>)
+  (Expression() <GT> Expression()) #CondGt
 }
+
+void Expression() #void : {}
+{
+  <STRING> #String
+|
+  <INTEGER_LITERAL> #Integer
+|
+  <FLOATING_POINT_LITERAL> #Float
+|
+  Attribute()
+}
+
 /** End of where clause */
 
 void Name() #Name : { Token t; }
 {
-  <IDENTIFIER> { jjtThis.name = t.image; }
+  t = <IDENTIFIER> { jjtThis.name = t.image; }
 }
 
 void Integer() #Integer : { Token t; }
 {
-  <INTEGER_LITERAL> { jjtThis.number = Integer.parseInt(t.image); }
+  t = <INTEGER_LITERAL> { jjtThis.number = Integer.parseInt(t.image); }
 }

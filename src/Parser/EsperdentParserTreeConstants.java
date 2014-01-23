@@ -9,26 +9,32 @@ public interface EsperdentParserTreeConstants
   public int JJTATTRIBUTEDEFLIST = 3;
   public int JJTATTRIBUTEDEFINITION = 4;
   public int JJTATTRIBUTETYPE = 5;
-  public int JJTINSERTCLAUSE = 6;
-  public int JJTQUERY = 7;
-  public int JJTSELECTCLAUSE = 8;
-  public int JJTSELECTLIST = 9;
-  public int JJTATTRIBUTE = 10;
-  public int JJTFROMCLAUSE = 11;
-  public int JJTFROMLIST = 12;
-  public int JJTSTREAM = 13;
-  public int JJTWINDOWSPEC = 14;
-  public int JJTWINDOWFRAME = 15;
-  public int JJTWINDOWFRAMEUNITS = 16;
-  public int JJTWINDOWFRAMESTART = 17;
-  public int JJTUNITS = 18;
-  public int JJTWHERECLAUSE = 19;
-  public int JJTCONDAND = 20;
-  public int JJTCONDOR = 21;
-  public int JJTCONDEQ = 22;
-  public int JJTCONDGT = 23;
-  public int JJTNAME = 24;
-  public int JJTINTEGER = 25;
+  public int JJTSOURCE = 6;
+  public int JJTINSERTCLAUSE = 7;
+  public int JJTQUERY = 8;
+  public int JJTSELECTCLAUSE = 9;
+  public int JJTSELECTLIST = 10;
+  public int JJTATTRIBUTE = 11;
+  public int JJTFROMCLAUSE = 12;
+  public int JJTFROMLIST = 13;
+  public int JJTSTREAM = 14;
+  public int JJTSTREAMFILTER = 15;
+  public int JJTWINDOWSPEC = 16;
+  public int JJTWINDOWFRAME = 17;
+  public int JJTWINDOWFRAMEUNITS = 18;
+  public int JJTWINDOWFRAMESTART = 19;
+  public int JJTVALUESPEC = 20;
+  public int JJTUNITS = 21;
+  public int JJTSLIDECLAUSE = 22;
+  public int JJTWHERECLAUSE = 23;
+  public int JJTCONDAND = 24;
+  public int JJTCONDOR = 25;
+  public int JJTCONDEQ = 26;
+  public int JJTCONDGT = 27;
+  public int JJTSTRING = 28;
+  public int JJTINTEGER = 29;
+  public int JJTFLOAT = 30;
+  public int JJTNAME = 31;
 
 
   public String[] jjtNodeName = {
@@ -38,6 +44,7 @@ public interface EsperdentParserTreeConstants
     "AttributeDefList",
     "AttributeDefinition",
     "AttributeType",
+    "Source",
     "InsertClause",
     "Query",
     "SelectClause",
@@ -46,18 +53,23 @@ public interface EsperdentParserTreeConstants
     "FromClause",
     "FromList",
     "Stream",
+    "StreamFilter",
     "WindowSpec",
     "WindowFrame",
     "WindowFrameUnits",
     "WindowFrameStart",
+    "ValueSpec",
     "Units",
+    "SlideClause",
     "WhereClause",
     "CondAnd",
     "CondOr",
     "CondEq",
     "CondGt",
-    "Name",
+    "String",
     "Integer",
+    "Float",
+    "Name",
   };
 }
-/* JavaCC - OriginalChecksum=02d01a0d96f2152984bd96120316d4d5 (do not edit this line) */
+/* JavaCC - OriginalChecksum=c07dfc09f41c4476dfc25fe2eda41f55 (do not edit this line) */

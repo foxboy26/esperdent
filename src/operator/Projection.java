@@ -1,5 +1,7 @@
 package operator;
 
+import java.util.ArrayList;
+
 public class Projection extends BasicOperator {
 
 	public Projection(int id) {
@@ -7,4 +9,5 @@ public class Projection extends BasicOperator {
 	  // TODO Auto-generated constructor stub
   }
 	
+	private ArrayList<String> AttributeList;
 }
