@@ -1,0 +1,352 @@
+options {
+  MULTI = true;
+  KEEP_LINE_COLUMN = false;
+  VISITOR = true;
+}
+
+PARSER_BEGIN(EsperdentParser)
+
+package parser;
+
+/** An Esperdent Grammar. */
+public class EsperdentParser {
+
+  /** Main entry point. */
+  public static void main(String args[]) {
+    System.out.println("Reading from standard input...");
+    EsperdentParser t = new EsperdentParser(System.in);
+    try {
+      ASTStart n = t.Start();
+      n.dump(">");
+      System.out.println("Thank you.");
+    } catch (Exception e) {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+  }
+}
+
+PARSER_END(EsperdentParser)
+
+
+SKIP :
+{
+  " "
+|
+  "\t"
+|
+  "\n"
+|
+  "\r"
+|
+  <"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+|
+  <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
+}
+
+TOKEN [IGNORE_CASE]:
+{
+  < CREATE  : "create" >
+|
+  < SCHEMA  : "schema" >
+|
+  < STREAM: "stream" >
+|
+  < SOURCE: "source" >
+|
+  < INSERT  : "insert" >
+|
+  < INTO  : "into" >
+|
+  < SELECT  : "select" >
+|
+  < FROM : "from" >
+|
+  < WHERE   : "where" >
+|
+  < AS   : "as" >
+|
+  < WINDOW : "window" >
+|
+  < AND  : "and" >
+|
+  < OR   : "or" >
+|
+  < NOT  : "not" >
+|
+  < COMMA     : "," >
+|
+  < WIN_LENGTH  : "win:length" >
+|
+  < WIN_TIME  : "win:time" >
+|
+  < WIN_TIME_BATCH  : "win:time_batch" >
+|
+  < ROWS : "rows" >
+|
+  < RANGE : "range" >
+|
+  < SLIDE : "slide" >
+|
+  < UNBOUNDED : "unbounded" >
+}
+
+/** Type */
+TOKEN [IGNORE_CASE]:
+{
+  < INT : "int" >
+|
+  < FLOAT : "float" >
+|
+  < TIMESTAMP : "timestamp" >
+}
+
+/** Time units */
+TOKEN :
+{
+  < SECONDS : "seconds" | "second" | "sec" >
+|
+  < MINUTES : "minutes" | "minute" | "min" >
+|
+  < HOURS   : "hours" | "hour" | "hr" >
+|
+  < DAYS    : "days" | "day" | "d" >
+}
+
+
+TOKEN :
+{
+  < STRING: "\"" (~["\""] | "\\\"")*  "\"" >
+|
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|
+  < #LETTER: ["_","a"-"z","A"-"Z"] >
+|
+  < #DIGIT: ["0"-"9"] >
+}
+
+TOKEN:
+{
+  < INTEGER_LITERAL: <DECIMAL_LITERAL> (["l","L"])? >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+}
+
+/** Comparison */
+TOKEN :
+{
+  < EQ : "=" >
+|
+  < GT : ">" >
+}
+
+/** Main production */
+ASTStart Start() : {}
+{
+  Esperdent()
+  { return jjtThis; }
+}
+
+void Esperdent() #void : {}
+{
+  CreateClause()
+|
+  InsertClause()
+|
+  Query()
+}
+
+
+/** Create clause */
+void CreateClause() #CreateClause : {}
+{
+  <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source() ";"
+}
+
+void AttributeDefList() #AttributeDefList: {}
+{
+  AttributeDefinition() (<COMMA> AttributeDefinition())*
+}
+
+void AttributeDefinition() #AttributeDefinition : {}
+{
+  Name() AttributeType()
+}
+
+void AttributeType() #AttributeType : {}
+{
+  <INT>
+|
+  <FLOAT>
+|
+  <TIMESTAMP>
+}
+
+void Source() #Source : {}
+{
+  <SOURCE> Name() (":" Integer())?
+}
+
+/** End of create clause */
+
+
+/** Insert clause */
+void InsertClause() #InsertClause : {}
+{
+  <INSERT> <INTO> Name() ";"
+}
+/** End of insert clause */
+
+
+/** Query clause */
+void Query() #Query : {}
+{
+  SelectClause() FromClause() WhereClause() ";"
+}
+
+/** Select clause */
+void SelectClause() #SelectClause : {}
+{
+  <SELECT> SelectList()
+}
+
+void SelectList() #SelectList : {}
+{
+  "*"
+|
+  Attribute() (LOOKAHEAD(2) <COMMA> Attribute())*
+}
+
+void Attribute() #Attribute : {}
+{
+  <IDENTIFIER>
+  ( LOOKAHEAD(2) "." <IDENTIFIER>
+  )?
+}
+/** End of select clause */
+
+/** From clause. */
+void FromClause() #FromClause : {}
+{
+  <FROM> FromList()
+}
+
+void FromList() #FromList : {}
+{
+  Stream() (<COMMA> Stream())*
+}
+
+void Stream() #Stream : {}
+{
+  Name() (StreamFilter())? (WindowSpec())?
+}
+
+void StreamFilter() #StreamFilter : {}
+{
+  "[" Cond() "]"
+}
+
+void WindowSpec() #WindowSpec : {}
+{
+  <WINDOW> "(" WindowFrame() ")" (SlideClause())?
+}
+
+void WindowFrame() #WindowFrame : {}
+{
+  WindowFrameUnits() WindowFrameStart()
+}
+
+void WindowFrameUnits() #WindowFrameUnits : {}
+{
+  <ROWS> | <RANGE>
+}
+
+void WindowFrameStart() #WindowFrameStart : {}
+{
+  <UNBOUNDED>
+|
+  ValueSpec()
+}
+
+void ValueSpec() #ValueSpec : {}
+{
+  <INTEGER_LITERAL> (Units())?
+}
+
+void Units() #Units : {}
+{
+  <SECONDS>
+|
+  <MINUTES>
+|
+  <HOURS>
+|
+  <DAYS>
+}
+
+void SlideClause() #SlideClause : {}
+{
+  <SLIDE> ValueSpec()
+}
+
+/** Where clause */
+void WhereClause() #void : {}
+{
+  (<WHERE> Cond())          #WhereClause
+|
+  {}
+}
+
+void Cond() #void : {}
+{
+  LOOKAHEAD(CondPrime() (<AND> Cond())+)
+  (CondPrime() (LOOKAHEAD(<AND> Cond()) <AND> Cond())+) #CondAnd
+|
+  LOOKAHEAD(CondPrime() (<OR>  Cond())+)
+  (CondPrime() (LOOKAHEAD(<AND> Cond()) <OR>  Cond())+) #CondOr
+|
+  LOOKAHEAD(CondPrime())
+  CondPrime()                                             //#Epsilon
+}
+
+void CondPrime() #void : {}
+{
+  LOOKAHEAD(Expression() <EQ>)
+  (Expression() <EQ> Expression()) #CondEq
+|
+  LOOKAHEAD(Expression() <GT>)
+  (Expression() <GT> Expression()) #CondGt
+}
+
+void Expression() #void : {}
+{
+  <STRING> #String
+|
+  <INTEGER_LITERAL> #Integer
+|
+  <FLOATING_POINT_LITERAL> #Float
+|
+  Attribute()
+}
+
+/** End of where clause */
+
+void Name() #Name : { Token t; }
+{
+  t = <IDENTIFIER> { jjtThis.name = t.image; }
+}
+
+void Integer() #Integer : { Token t; }
+{
+  t = <INTEGER_LITERAL> { jjtThis.number = Integer.parseInt(t.image); }
+}
