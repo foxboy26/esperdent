@@ -1,4 +1,4 @@
-package operator;
+package edu.ucsd.cs.triton.operator;
 
 public class FixedLengthSlidingWindow<T> implements SlidingWindow<T> {
 
@@ -92,6 +92,11 @@ public class FixedLengthSlidingWindow<T> implements SlidingWindow<T> {
 		}
 
 	}
+
+	public int count() {
+	  // TODO Auto-generated method stub
+	  return 0;
+  }
 }
 
 class EvenFilter extends BasicFilter<Integer> {

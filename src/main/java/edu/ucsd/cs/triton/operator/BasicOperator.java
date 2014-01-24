@@ -1,8 +1,6 @@
-package operator;
+package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
-
-import parser.SimpleNode;
 
 public class BasicOperator implements Operator {
 	private ArrayList<Operator> children;
@@ -24,6 +22,7 @@ public class BasicOperator implements Operator {
 	  this.parent = op;
   }
 
+	
 	@Override
   public void addChild(Operator n, int i) {
 	  // TODO Auto-generated method stub

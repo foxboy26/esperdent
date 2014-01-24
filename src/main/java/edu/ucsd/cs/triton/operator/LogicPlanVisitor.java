@@ -1,4 +1,4 @@
-package operator;
+package edu.ucsd.cs.triton.operator;
 
 import parser.ASTAttribute;
 import parser.ASTAttributeDefList;
@@ -9,7 +9,6 @@ import parser.ASTCondEq;
 import parser.ASTCondGt;
 import parser.ASTCondOr;
 import parser.ASTCreateClause;
-import parser.ASTExpression;
 import parser.ASTFloat;
 import parser.ASTFromClause;
 import parser.ASTFromList;
@@ -32,10 +31,10 @@ import parser.ASTWindowFrame;
 import parser.ASTWindowFrameStart;
 import parser.ASTWindowFrameUnits;
 import parser.ASTWindowSpec;
-import parser.EsperdentParserVisitor;
 import parser.SimpleNode;
+import parser.TritonParserVisitor;
 
-public class LogicPlanVisitor implements EsperdentParserVisitor {
+public class LogicPlanVisitor implements TritonParserVisitor {
 
 	@Override
   public Object visit(SimpleNode node, Object data) {

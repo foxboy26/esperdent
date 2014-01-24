@@ -1,4 +1,4 @@
-package operator;
+package edu.ucsd.cs.triton.operator;
 
 public interface SlidingWindow<T> {
 	public void add(T element);

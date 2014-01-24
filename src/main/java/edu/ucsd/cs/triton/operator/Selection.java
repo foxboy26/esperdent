@@ -1,4 +1,4 @@
-package operator;
+package edu.ucsd.cs.triton.operator;
 
 public class Selection extends BasicOperator {
 	public Selection(int id) {

@@ -1,14 +1,14 @@
-package main;
+package edu.ucsd.cs.triton.compiler;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import operator.BasicOperator;
-import operator.LogicPlanVisitor;
+import edu.ucsd.cs.triton.operator.BasicOperator;
+import edu.ucsd.cs.triton.operator.LogicPlanVisitor;
 
 import parser.ASTStart;
-import parser.EsperdentParser;
+import parser.TritonParser;
 import parser.ParseException;
 
 public class Parser {
@@ -16,8 +16,8 @@ public class Parser {
 		String fileName = "test.esp";
 
 		try {
-			EsperdentParser esperdentParser;
-			esperdentParser = new EsperdentParser(new FileInputStream(new File(
+			TritonParser esperdentParser;
+			esperdentParser = new TritonParser(new FileInputStream(new File(
 			    fileName)));
 
 			ASTStart root;

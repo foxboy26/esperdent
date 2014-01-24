@@ -1,4 +1,4 @@
-esperdent
+Triton
 =========
 
-An EPL over Trident
+An stream process engine over Trident.

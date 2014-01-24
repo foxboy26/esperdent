@@ -4,17 +4,17 @@ options {
   VISITOR = true;
 }
 
-PARSER_BEGIN(EsperdentParser)
+PARSER_BEGIN(TritonParser)
 
 package parser;
 
-/** An Esperdent Grammar. */
-public class EsperdentParser {
+/** An Triton Grammar. */
+public class TritonParser {
 
   /** Main entry point. */
   public static void main(String args[]) {
     System.out.println("Reading from standard input...");
-    EsperdentParser t = new EsperdentParser(System.in);
+    TritonParser t = new TritonParser(System.in);
     try {
       ASTStart n = t.Start();
       n.dump(">");
@@ -27,7 +27,7 @@ public class EsperdentParser {
   }
 }
 
-PARSER_END(EsperdentParser)
+PARSER_END(TritonParser)
 
 
 SKIP :
@@ -153,11 +153,11 @@ TOKEN :
 /** Main production */
 ASTStart Start() : {}
 {
-  Esperdent()
+  Triton()
   { return jjtThis; }
 }
 
-void Esperdent() #void : {}
+void Triton() #void : {}
 {
   CreateClause()
 |
