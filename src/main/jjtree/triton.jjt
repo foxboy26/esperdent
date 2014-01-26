@@ -8,23 +8,23 @@ PARSER_BEGIN(TritonParser)
 
 package parser;
 
-/** An Triton Grammar. */
+/** An Triton EPL Grammar. */
 public class TritonParser {
 
-  /** Main entry point. */
-  public static void main(String args[]) {
-    System.out.println("Reading from standard input...");
-    TritonParser t = new TritonParser(System.in);
-    try {
-      ASTStart n = t.Start();
-      n.dump(">");
-      System.out.println("Thank you.");
-    } catch (Exception e) {
-      System.out.println("Oops.");
-      System.out.println(e.getMessage());
-      e.printStackTrace();
+    /** Main entry point. */
+    public static void main(String args[]) {
+        System.out.println("Reading from standard input...");
+        TritonParser t = new TritonParser(System.in);
+        try {
+            ASTStart n = t.Start();
+            n.dump(">");
+            System.out.println("Thank you.");
+        } catch (Exception e) {
+            System.out.println("Oops.");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
-  }
 }
 
 PARSER_END(TritonParser)
@@ -32,92 +32,104 @@ PARSER_END(TritonParser)
 
 SKIP :
 {
-  " "
+    " "
 |
-  "\t"
+    "\t"
 |
-  "\n"
+    "\n"
 |
-  "\r"
+    "\r"
 |
-  <"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+    <"//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
 |
-  <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
+    <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
 }
 
 TOKEN [IGNORE_CASE]:
 {
-  < CREATE  : "create" >
+    < CREATE: "create" >
 |
-  < SCHEMA  : "schema" >
+    < SCHEMA: "schema" >
 |
-  < STREAM: "stream" >
+    < STREAM: "stream" >
 |
-  < SOURCE: "source" >
+    < SOURCE: "source" >
 |
-  < INSERT  : "insert" >
+    < INSERT: "insert" >
 |
-  < INTO  : "into" >
+    < INTO: "into" >
 |
-  < SELECT  : "select" >
+    < SELECT: "select" >
 |
-  < FROM : "from" >
+    < FROM: "from" >
 |
-  < WHERE   : "where" >
+    < WHERE: "where" >
 |
-  < AS   : "as" >
+    < AS: "as" >
 |
-  < WINDOW : "window" >
+    < BY: "by" >
 |
-  < AND  : "and" >
+    < GROUP: "group" >
 |
-  < OR   : "or" >
+    < ORDER: "order" >
 |
-  < NOT  : "not" >
+    < DESC: "desc" >
 |
-  < COMMA     : "," >
+    < ASC: "asc" >
 |
-  < WIN_LENGTH  : "win:length" >
+    < AND: "and" >
 |
-  < WIN_TIME  : "win:time" >
+    < OR: "or" >
 |
-  < WIN_TIME_BATCH  : "win:time_batch" >
+    < NOT: "not" >
 |
-  < ROWS : "rows" >
+    < WIN_LENGTH  : "win:length" >
 |
-  < RANGE : "range" >
+    < WIN_TIME  : "win:time" >
 |
-  < SLIDE : "slide" >
+    < WIN_TIME_BATCH  : "win:time_batch" >
 |
-  < UNBOUNDED : "unbounded" >
+    < AVG: "avg" >
+|
+    < SUM: "sum" >
+|
+    < MEDIAN: "median" >
+|
+    < STDDEV: "stddev" >
+|
+    < COMMA: "," >
+|
+    < STAR: "*" >
 }
 
-/** Type */
+/** Data type */
 TOKEN [IGNORE_CASE]:
 {
-  < INT : "int" >
+  < INT: "int" >
 |
-  < FLOAT : "float" >
+  < FLOAT: "float" >
 |
-  < TIMESTAMP : "timestamp" >
+  < STRING: "string" >
+|
+  < TIMESTAMP: "timestamp" >
 }
 
 /** Time units */
 TOKEN :
 {
-  < SECONDS : "seconds" | "second" | "sec" >
+  < SECONDS: "seconds" | "second" | "sec" >
 |
-  < MINUTES : "minutes" | "minute" | "min" >
+  < MINUTES: "minutes" | "minute" | "min" >
 |
-  < HOURS   : "hours" | "hour" | "hr" >
+  < HOURS: "hours" | "hour" | "hr" >
 |
-  < DAYS    : "days" | "day" | "d" >
+  < DAYS: "days" | "day" | "d" >
 }
 
 
 TOKEN :
 {
-  < STRING: "\"" (~["\""] | "\\\"")*  "\"" >
+  < STRING_LITERAL: "\"" (~["\""] | "\\\"")*  "\"" >
 |
   < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
 |
@@ -143,11 +155,19 @@ TOKEN:
 }
 
 /** Comparison */
-TOKEN :
+TOKEN:
 {
-  < EQ : "=" >
+    < EQ: "=" >
 |
-  < GT : ">" >
+    < NEQ: "<>" >
+|
+    < GT: ">" >
+|
+    < GTE: ">=" >
+|
+    < LT: "<" >
+|
+    < LTE: "<=">
 }
 
 /** Main production */
@@ -170,26 +190,28 @@ void Triton() #void : {}
 /** Create clause */
 void CreateClause() #CreateClause : {}
 {
-  <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source() ";"
+    <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source() ";"
 }
 
 void AttributeDefList() #AttributeDefList: {}
 {
-  AttributeDefinition() (<COMMA> AttributeDefinition())*
+    AttributeDefinition() (<COMMA> AttributeDefinition())*
 }
 
 void AttributeDefinition() #AttributeDefinition : {}
 {
-  Name() AttributeType()
+    Name() AttributeType()
 }
 
 void AttributeType() #AttributeType : {}
 {
-  <INT>
+    <INT>
 |
-  <FLOAT>
+    <FLOAT>
 |
-  <TIMESTAMP>
+    <STRING>
+|
+    <TIMESTAMP>
 }
 
 void Source() #Source : {}
@@ -211,7 +233,7 @@ void InsertClause() #InsertClause : {}
 /** Query clause */
 void Query() #Query : {}
 {
-  SelectClause() FromClause() WhereClause() ";"
+  SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())? ";"
 }
 
 /** Select clause */
@@ -222,16 +244,21 @@ void SelectClause() #SelectClause : {}
 
 void SelectList() #SelectList : {}
 {
-  "*"
+  <STAR>
 |
-  Attribute() (LOOKAHEAD(2) <COMMA> Attribute())*
+  SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*
+}
+
+void SelectAttribute() #SelectAttribute : {}
+{
+    Attribute() (LOOKAHEAD(2) <AS> Name())?
+|
+    AggregateFunction() "(" Expression() ")" (LOOKAHEAD(2) <AS> Name())?
 }
 
 void Attribute() #Attribute : {}
 {
-  <IDENTIFIER>
-  ( LOOKAHEAD(2) "." <IDENTIFIER>
-  )?
+  <IDENTIFIER> ( LOOKAHEAD(2) "." <IDENTIFIER>)?
 }
 /** End of select clause */
 
@@ -243,12 +270,12 @@ void FromClause() #FromClause : {}
 
 void FromList() #FromList : {}
 {
-  Stream() (<COMMA> Stream())*
+  StreamDef() (LOOKAHEAD(2) <COMMA> StreamDef())*
 }
 
-void Stream() #Stream : {}
+void StreamDef() #StreamDef : {}
 {
-  Name() (StreamFilter())? (WindowSpec())?
+  Name() (LOOKAHEAD(2) StreamFilter())? (LOOKAHEAD(2) "." WindowSpec())? (LOOKAHEAD(2) <AS> Name())?
 }
 
 void StreamFilter() #StreamFilter : {}
@@ -256,55 +283,51 @@ void StreamFilter() #StreamFilter : {}
   "[" Cond() "]"
 }
 
-void WindowSpec() #WindowSpec : {}
+void WindowSpec() #void : {}
 {
-  <WINDOW> "(" WindowFrame() ")" (SlideClause())?
-}
-
-void WindowFrame() #WindowFrame : {}
-{
-  WindowFrameUnits() WindowFrameStart()
-}
-
-void WindowFrameUnits() #WindowFrameUnits : {}
-{
-  <ROWS> | <RANGE>
-}
-
-void WindowFrameStart() #WindowFrameStart : {}
-{
-  <UNBOUNDED>
+    <WIN_LENGTH> "(" Integer() ")" #WinLength
 |
-  ValueSpec()
+    <WIN_TIME> "(" TimePeriod() ")" #WinTime
+|
+    <WIN_TIME_BATCH> "(" TimePeriod() ")" #WinTimBatch
 }
 
-void ValueSpec() #ValueSpec : {}
+void TimePeriod() #TimePeriod : {}
 {
-  <INTEGER_LITERAL> (Units())?
+    Number() Units()
+}
+
+Void Number() #void : {}
+{
+    Integer()
 }
 
 void Units() #Units : {}
 {
-  <SECONDS>
+    <SECONDS>
 |
-  <MINUTES>
+    <MINUTES>
 |
-  <HOURS>
+    <HOURS>
 |
-  <DAYS>
-}
-
-void SlideClause() #SlideClause : {}
-{
-  <SLIDE> ValueSpec()
+    <DAYS>
 }
 
 /** Where clause */
-void WhereClause() #void : {}
+void WhereClause() #WhereClause : {}
 {
-  (<WHERE> Cond())          #WhereClause
-|
-  {}
+    <WHERE> Cond()
+}
+
+void GroupByClause() #GroupByClause : {}
+{
+    <GROUP> <BY> Expression() (LOOKAHEAD(2) <COMMA> Expression())*
+}
+
+
+void OrderByClause() #GroupByClause : {}
+{
+    <ORDER> <BY> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
 }
 
 void Cond() #void : {}
@@ -319,27 +342,40 @@ void Cond() #void : {}
   CondPrime()                                             //#Epsilon
 }
 
-void CondPrime() #void : {}
+void CondPrime() #CondPrime : {}
 {
-  LOOKAHEAD(Expression() <EQ>)
-  (Expression() <EQ> Expression()) #CondEq
-|
-  LOOKAHEAD(Expression() <GT>)
-  (Expression() <GT> Expression()) #CondGt
+  Expression() CmpOp() (Expression() | Constant())
 }
 
-void Expression() #void : {}
+void CmpOp() #void : {}
 {
-  <STRING> #String
+    <EQ> | <NEQ> | <GT> | <GTE> | <LT> | <LTE>
+}
+
+void Expression() #Expression : {}
+{
+    Attribute()
+}
+
+void Constant() #void : {}
+{
+  <STRING_LITERAL> #String
 |
   <INTEGER_LITERAL> #Integer
 |
   <FLOATING_POINT_LITERAL> #Float
-|
-  Attribute()
 }
 
-/** End of where clause */
+void AggregateFunction() #void : {}
+{
+    <SUM>
+|
+    <AVG>
+|
+    <MEDIAN>
+|
+    <STDDEV>
+}
 
 void Name() #Name : { Token t; }
 {
