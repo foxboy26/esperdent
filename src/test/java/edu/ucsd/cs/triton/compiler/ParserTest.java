@@ -3,14 +3,17 @@ package edu.ucsd.cs.triton.compiler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 import parser.ASTStart;
 import parser.ParseException;
 import parser.TritonParser;
 
 public class ParserTest {
-	public static void main(String[] args) {
-		String fileName = "jjtree/test.esp";
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+		
+		String fileName = "src/test/jjtree/test.esp";
 
 		try {
 			TritonParser tritonParser;
