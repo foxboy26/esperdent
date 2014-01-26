@@ -167,13 +167,13 @@ TOKEN:
 |
     < LT: "<" >
 |
-    < LTE: "<=">
+    < LTE: "<=" >
 }
 
 /** Main production */
 ASTStart Start() : {}
 {
-  Triton()
+  Triton() ";"
   { return jjtThis; }
 }
 
@@ -190,7 +190,7 @@ void Triton() #void : {}
 /** Create clause */
 void CreateClause() #CreateClause : {}
 {
-    <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source() ";"
+    <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source()
 }
 
 void AttributeDefList() #AttributeDefList: {}
@@ -225,7 +225,7 @@ void Source() #Source : {}
 /** Insert clause */
 void InsertClause() #InsertClause : {}
 {
-  <INSERT> <INTO> Name() ";"
+  <INSERT> <INTO> Name()
 }
 /** End of insert clause */
 
@@ -233,7 +233,7 @@ void InsertClause() #InsertClause : {}
 /** Query clause */
 void Query() #Query : {}
 {
-  SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())? ";"
+  SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())?
 }
 
 /** Select clause */
@@ -251,15 +251,19 @@ void SelectList() #SelectList : {}
 
 void SelectAttribute() #SelectAttribute : {}
 {
-    Attribute() (LOOKAHEAD(2) <AS> Name())?
-|
-    AggregateFunction() "(" Expression() ")" (LOOKAHEAD(2) <AS> Name())?
+    (Attribute() | AggregateAttribute()) (LOOKAHEAD(2) ReName())?
 }
 
 void Attribute() #Attribute : {}
 {
   <IDENTIFIER> ( LOOKAHEAD(2) "." <IDENTIFIER>)?
 }
+
+void AggregateAttribute() #AggregateAttribute : {}
+{
+    AggregateFunction() "(" Expression() ")"
+}
+
 /** End of select clause */
 
 /** From clause. */
@@ -275,7 +279,7 @@ void FromList() #FromList : {}
 
 void StreamDef() #StreamDef : {}
 {
-  Name() (LOOKAHEAD(2) StreamFilter())? (LOOKAHEAD(2) "." WindowSpec())? (LOOKAHEAD(2) <AS> Name())?
+  Name() (LOOKAHEAD(2) StreamFilter())? (LOOKAHEAD(2) "." WindowSpec())? (LOOKAHEAD(2) ReName())?
 }
 
 void StreamFilter() #StreamFilter : {}
@@ -285,11 +289,11 @@ void StreamFilter() #StreamFilter : {}
 
 void WindowSpec() #void : {}
 {
-    <WIN_LENGTH> "(" Integer() ")" #WinLength
+    (<WIN_LENGTH> "(" Integer() ")") #WinLength
 |
-    <WIN_TIME> "(" TimePeriod() ")" #WinTime
+    (<WIN_TIME> "(" TimePeriod() ")") #WinTime
 |
-    <WIN_TIME_BATCH> "(" TimePeriod() ")" #WinTimBatch
+    (<WIN_TIME_BATCH> "(" TimePeriod() ")") #WinTimBatch
 }
 
 void TimePeriod() #TimePeriod : {}
@@ -366,7 +370,7 @@ void Constant() #void : {}
   <FLOATING_POINT_LITERAL> #Float
 }
 
-void AggregateFunction() #void : {}
+void AggregateFunction() #AggregateFunction : {}
 {
     <SUM>
 |
@@ -379,7 +383,12 @@ void AggregateFunction() #void : {}
 
 void Name() #Name : { Token t; }
 {
-  t = <IDENTIFIER> { jjtThis.name = t.image; }
+    t = <IDENTIFIER> { jjtThis.name = t.image; }
+}
+
+void ReName() #ReName : { Token t; }
+{
+    <AS> t = Name() { jjtThis.rename = t.image; }
 }
 
 void Integer() #Integer : { Token t; }
