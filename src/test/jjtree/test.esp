@@ -1,1 +1,1 @@
-select sum(a), b from stream1[a=3].win:time(3 sec), stream2 as s2 where s2.a = "tom" and b>3;
+select sum(a), b from stream1[a=3].win:time(3 sec), stream2 as s2 group by a order by c desc;

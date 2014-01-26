@@ -1,36 +1,41 @@
 package edu.ucsd.cs.triton.operator;
 
+import parser.ASTAggregateAttribute;
+import parser.ASTAggregateFunction;
 import parser.ASTAttribute;
 import parser.ASTAttributeDefList;
 import parser.ASTAttributeDefinition;
 import parser.ASTAttributeType;
+import parser.ASTCmpOp;
 import parser.ASTCondAnd;
-import parser.ASTCondEq;
-import parser.ASTCondGt;
 import parser.ASTCondOr;
+import parser.ASTCondPrime;
 import parser.ASTCreateClause;
-import parser.ASTFloat;
+import parser.ASTExpression;
+import parser.ASTFloatingLiteral;
 import parser.ASTFromClause;
 import parser.ASTFromList;
+import parser.ASTGroupByClause;
 import parser.ASTInsertClause;
 import parser.ASTInteger;
 import parser.ASTName;
+import parser.ASTOrderByClause;
 import parser.ASTQuery;
+import parser.ASTReName;
+import parser.ASTSelectAttribute;
 import parser.ASTSelectClause;
 import parser.ASTSelectList;
-import parser.ASTSlideClause;
 import parser.ASTSource;
 import parser.ASTStart;
-import parser.ASTStream;
+import parser.ASTStreamDef;
 import parser.ASTStreamFilter;
-import parser.ASTString;
+import parser.ASTStringLiteral;
+import parser.ASTTimePeriod;
 import parser.ASTUnits;
-import parser.ASTValueSpec;
 import parser.ASTWhereClause;
-import parser.ASTWindowFrame;
-import parser.ASTWindowFrameStart;
-import parser.ASTWindowFrameUnits;
-import parser.ASTWindowSpec;
+import parser.ASTWinLength;
+import parser.ASTWinTimBatch;
+import parser.ASTWinTime;
 import parser.SimpleNode;
 import parser.TritonParserVisitor;
 
@@ -158,55 +163,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   }
 
 	@Override
-  public Object visit(ASTStream node, Object data) {
-	  // TODO Auto-generated method stub
-		int numOfNodes = node.jjtGetNumChildren();
-		
-		Window windowOp = new Window(OperatorConstants.WINDOW);
-		
-		if (numOfNodes == 1) {
-			
-			return windowOp;
-		} else if (numOfNodes == 2) {
-
-			return windowOp;
-		} else if (numOfNodes == 3) {
-
-			Selection selectionOp = new Selection(OperatorConstants.SELECTION);
-			selectionOp.setParent(windowOp);
-			windowOp.addChild(selectionOp, 0);
-
-			return windowOp;
-		}
-		
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTWindowSpec node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTWindowFrame node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTWindowFrameUnits node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTWindowFrameStart node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
   public Object visit(ASTUnits node, Object data) {
 	  // TODO Auto-generated method stub
 	  return null;
@@ -232,18 +188,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   }
 
 	@Override
-  public Object visit(ASTCondEq node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTCondGt node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
   public Object visit(ASTName node, Object data) {
 	  // TODO Auto-generated method stub
 	  return null;
@@ -264,18 +208,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	}
 
 	@Override
-  public Object visit(ASTValueSpec node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
-  public Object visit(ASTSlideClause node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
   public Object visit(ASTSource node, Object data) {
 	  // TODO Auto-generated method stub
 	  return null;
@@ -288,13 +220,97 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   }
 
 	@Override
-  public Object visit(ASTString node, Object data) {
+  public Object visit(ASTSelectAttribute node, Object data) {
 	  // TODO Auto-generated method stub
 	  return null;
   }
 
 	@Override
-  public Object visit(ASTFloat node, Object data) {
+  public Object visit(ASTStreamDef node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTWinLength node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTWinTime node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTWinTimBatch node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTTimePeriod node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTGroupByClause node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTCondPrime node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTExpression node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTAggregateAttribute node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTOrderByClause node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTCmpOp node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTAggregateFunction node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTReName node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTStringLiteral node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTFloatingLiteral node, Object data) {
 	  // TODO Auto-generated method stub
 	  return null;
   }

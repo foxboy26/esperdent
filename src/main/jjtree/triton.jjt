@@ -122,8 +122,6 @@ TOKEN :
   < MINUTES: "minutes" | "minute" | "min" >
 |
   < HOURS: "hours" | "hour" | "hr" >
-|
-  < DAYS: "days" | "day" | "d" >
 }
 
 
@@ -254,9 +252,9 @@ void SelectAttribute() #SelectAttribute : {}
     (Attribute() | AggregateAttribute()) (LOOKAHEAD(2) ReName())?
 }
 
-void Attribute() #Attribute : {}
+void Attribute() #Attribute : { Token t; }
 {
-  <IDENTIFIER> ( LOOKAHEAD(2) "." <IDENTIFIER>)?
+  t = <IDENTIFIER> { jjtThis.name = t.image; } ( LOOKAHEAD(2) "." t = <IDENTIFIER> { jjtThis.name += ("." + t.image); })?
 }
 
 void AggregateAttribute() #AggregateAttribute : {}
@@ -301,20 +299,18 @@ void TimePeriod() #TimePeriod : {}
     Number() Units()
 }
 
-Void Number() #void : {}
+void Number() #void : {}
 {
     Integer()
 }
 
-void Units() #Units : {}
+void Units() #Units : { Token t; }
 {
-    <SECONDS>
+    t = <SECONDS> { jjtThis.unit = "sec"; }
 |
-    <MINUTES>
+    t = <MINUTES> { jjtThis.unit = "min"; }
 |
-    <HOURS>
-|
-    <DAYS>
+    t = <HOURS> { jjtThis.unit = "hr"; }
 }
 
 /** Where clause */
@@ -329,7 +325,7 @@ void GroupByClause() #GroupByClause : {}
 }
 
 
-void OrderByClause() #GroupByClause : {}
+void OrderByClause() #OrderByClause : {}
 {
     <ORDER> <BY> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
 }
@@ -351,9 +347,19 @@ void CondPrime() #CondPrime : {}
   Expression() CmpOp() (Expression() | Constant())
 }
 
-void CmpOp() #void : {}
+void CmpOp() #CmpOp : { Token t; }
 {
-    <EQ> | <NEQ> | <GT> | <GTE> | <LT> | <LTE>
+    t = <EQ> { jjtThis.op = t.image; }
+|
+    t = <NEQ> { jjtThis.op = t.image; }
+|
+    t = <GT> { jjtThis.op = t.image; }
+|
+    t = <GTE> { jjtThis.op = t.image; }
+|
+    t = <LT> { jjtThis.op = t.image; }
+|
+    t = <LTE> { jjtThis.op = t.image; }
 }
 
 void Expression() #Expression : {}
@@ -363,22 +369,22 @@ void Expression() #Expression : {}
 
 void Constant() #void : {}
 {
-  <STRING_LITERAL> #String
+    StringLiteral()
 |
-  <INTEGER_LITERAL> #Integer
+    Integer()
 |
-  <FLOATING_POINT_LITERAL> #Float
+    FloatingLiteral()
 }
 
-void AggregateFunction() #AggregateFunction : {}
+void AggregateFunction() #AggregateFunction : { Token t; }
 {
-    <SUM>
+    t = <SUM> { jjtThis.name = t.image; }
 |
-    <AVG>
+    t = <AVG> { jjtThis.name = t.image; }
 |
-    <MEDIAN>
+    t = <MEDIAN> { jjtThis.name = t.image; }
 |
-    <STDDEV>
+    t = <STDDEV> { jjtThis.name = t.image; }
 }
 
 void Name() #Name : { Token t; }
@@ -388,10 +394,20 @@ void Name() #Name : { Token t; }
 
 void ReName() #ReName : { Token t; }
 {
-    <AS> t = Name() { jjtThis.rename = t.image; }
+    <AS> t = <IDENTIFIER> { jjtThis.rename = t.image; }
+}
+
+void StringLiteral() #StringLiteral : { Token t; }
+{
+    t = <STRING_LITERAL> { jjtThis.value = t.image; }
 }
 
 void Integer() #Integer : { Token t; }
 {
-  t = <INTEGER_LITERAL> { jjtThis.number = Integer.parseInt(t.image); }
+    t = <INTEGER_LITERAL> { jjtThis.value = Integer.parseInt(t.image); }
+}
+
+void FloatingLiteral() #FloatingLiteral : { Token t; }
+{
+    t = <FLOATING_POINT_LITERAL> { jjtThis.value = Float.parseFloat(t.image); }
 }
