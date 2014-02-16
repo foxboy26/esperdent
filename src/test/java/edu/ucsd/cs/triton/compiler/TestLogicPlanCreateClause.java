@@ -28,7 +28,7 @@ public class TestLogicPlanCreateClause {
 			
 			ResourceManager resourceManager = ResourceManager.getInstance();
 			
-			LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor();
+			LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor(resourceManager);
 			
 			root.childrenAccept(logicPlanVisitor, resourceManager);
 			

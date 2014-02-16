@@ -4,10 +4,15 @@ import java.util.ArrayList;
 
 public class Product extends BasicOperator {
 	
-	private ArrayList<String> StreamList;
+	private ArrayList<String> streamList;
 	
-	public Product(int id) {
-	  super(id);
-	  // TODO Auto-generated constructor stub
+	public Product() {
+		super(OperatorConstants.PRODUCT);
+		streamList = new ArrayList<String> ();
   }
-}
+	
+	public void addStream(String stream) {
+		streamList.add(stream);
+	}
+	
+} 

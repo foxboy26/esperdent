@@ -49,7 +49,7 @@ TOKEN [IGNORE_CASE]:
 {
     < CREATE: "create" >
 |
-    < SCHEMA: "schema" >
+    < RELATION: "relation" >
 |
     < STREAM: "stream" >
 |
@@ -105,23 +105,25 @@ TOKEN [IGNORE_CASE]:
 /** Data type */
 TOKEN [IGNORE_CASE]:
 {
-  < INT: "int" >
+    < INT: "int" >
 |
-  < FLOAT: "float" >
+    < FLOAT: "float" >
 |
-  < STRING: "string" >
+    < BYTE: "byte" >
 |
-  < TIMESTAMP: "timestamp" >
+    < STRING: "string" >
+|
+    < TIMESTAMP: "timestamp" >
 }
 
 /** Time units */
 TOKEN :
 {
-  < SECONDS: "seconds" | "second" | "sec" >
+    < SECONDS: "seconds" | "second" | "sec" >
 |
-  < MINUTES: "minutes" | "minute" | "min" >
+    < MINUTES: "minutes" | "minute" | "min" >
 |
-  < HOURS: "hours" | "hour" | "hr" >
+    < HOURS: "hours" | "hour" | "hr" >
 }
 
 
@@ -186,12 +188,25 @@ void Triton() #void : {}
 
 
 /** Create clause */
-void CreateClause() #CreateClause : {}
+void CreateClause() #void : { Token t; }
 {
-    <CREATE> <STREAM> Name() "(" AttributeDefList() ")" Source()
+    LOOKAHEAD(2)
+    CreateStream()
+|
+    CreateRelation()
 }
 
-void AttributeDefList() #AttributeDefList: {}
+void CreateStream() #CreateStream : { Token t; }
+{
+    <CREATE> <STREAM> t = <IDENTIFIER> { jjtThis.streamName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
+}
+
+void CreateRelation() #CreateRelation : { Token t; }
+{
+    <CREATE> <RELATION> t = <IDENTIFIER> { jjtThis.relationName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
+}
+
+void AttributeDefList() #AttributeDefList : {}
 {
     AttributeDefinition() (<COMMA> AttributeDefinition())*
 }
@@ -201,20 +216,22 @@ void AttributeDefinition() #AttributeDefinition : {}
     Name() AttributeType()
 }
 
-void AttributeType() #AttributeType : {}
+void AttributeType() #void : {}
 {
-    <INT>
+    <INT> #TypeInt
 |
-    <FLOAT>
+    <FLOAT> #TypeFloat
 |
-    <STRING>
+    <STRING> #TypeString
 |
-    <TIMESTAMP>
+    <TIMESTAMP> #TypeTimestamp
 }
 
-void Source() #Source : {}
+void Source() #Source : { Token t; }
 {
-  <SOURCE> Name() (":" Integer())?
+    <SOURCE> t = <IDENTIFIER> { jjtThis.uri = t.image; }
+|
+    Query()
 }
 
 /** End of create clause */
@@ -237,14 +254,7 @@ void Query() #Query : {}
 /** Select clause */
 void SelectClause() #SelectClause : {}
 {
-  <SELECT> SelectList()
-}
-
-void SelectList() #SelectList : {}
-{
-  <STAR>
-|
-  SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*
+    <SELECT> (<STAR> | SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*)
 }
 
 void SelectAttribute() #SelectAttribute : {}
@@ -267,12 +277,7 @@ void AggregateAttribute() #AggregateAttribute : {}
 /** From clause. */
 void FromClause() #FromClause : {}
 {
-  <FROM> FromList()
-}
-
-void FromList() #FromList : {}
-{
-  StreamDef() (LOOKAHEAD(2) <COMMA> StreamDef())*
+  <FROM> StreamDef() (LOOKAHEAD(2) <COMMA> StreamDef())*
 }
 
 void StreamDef() #StreamDef : {}
@@ -291,7 +296,7 @@ void WindowSpec() #void : {}
 |
     (<WIN_TIME> "(" TimePeriod() ")") #WinTime
 |
-    (<WIN_TIME_BATCH> "(" TimePeriod() ")") #WinTimBatch
+    (<WIN_TIME_BATCH> "(" TimePeriod() ")") #WinTimeBatch
 }
 
 void TimePeriod() #TimePeriod : {}

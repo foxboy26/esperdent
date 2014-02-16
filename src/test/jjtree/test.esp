@@ -1,1 +1,1 @@
-select sum(a), b from stream1[a=3].win:time(3 sec), stream2 as s2 group by a order by c desc;
+create stream r1 (a int, b float, c string, d timestamp) from source adv;

@@ -2,35 +2,34 @@ package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
 
-public class BasicOperator implements Operator {
-	private ArrayList<Operator> children;
-	private Operator parent;
+public class BasicOperator implements IOperator {
+	private ArrayList<IOperator> children;
+	private IOperator parent;
 	private int id;
 	
-	public BasicOperator(int id) {
-		this.id = id;
-		children = new ArrayList<Operator> ();
+	public BasicOperator() {
+		children = new ArrayList<IOperator> ();
 	}
 	
-	public Operator getParent() {
+	public IOperator getParent() {
 		return this.parent;
 	}
 
 	@Override
-  public void setParent(Operator op) {
+  public void setParent(IOperator op) {
 	  // TODO Auto-generated method stub
 	  this.parent = op;
   }
 
 	
 	@Override
-  public void addChild(Operator n, int i) {
+  public void addChild(IOperator n, int i) {
 	  // TODO Auto-generated method stub
 	  this.children.add(i, n);
   }
 
 	@Override
-  public Operator getChild(int i) {
+  public IOperator getChild(int i) {
 	  // TODO Auto-generated method stub
 	  return this.children.get(i);
   }
@@ -55,6 +54,7 @@ public class BasicOperator implements Operator {
 	
   public String toString(String prefix) { return prefix + toString(); }
 	
+  @Override
 	public String toString() {
 		return OperatorConstants.OperatorName[this.id];
 	}

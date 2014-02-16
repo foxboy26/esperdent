@@ -6,8 +6,8 @@ public interface OperatorConstants {
 	public int WINDOW = 1;
 	public int SELECTION = 2;
 	public int PROJECTION = 3;
-	public int ISTREAM = 4;
+	public int INPUT_STREAM = 4;
 
 	public String[] OperatorName = { "Product", "Window", "Selection",
-	    "Projection", "IStream" };
+	    "Projection", "InputStream" };
 }

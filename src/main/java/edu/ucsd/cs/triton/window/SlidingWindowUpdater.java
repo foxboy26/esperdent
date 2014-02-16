@@ -23,8 +23,10 @@ public class SlidingWindowUpdater extends BaseStateUpdater<BaseSlidingWindow> {
 	  
 	  List<TridentTuple> window = state.getWindowBulk();
 	  for (TridentTuple tuple : window) {
-	  	tuple.add(windowId);
-		  collector.emit(tuple);
+	  	//tuple.add(windowId);
+	  	Values value = new Values(windowId);
+	  	value.addAll(tuple.getValues());
+		  collector.emit(value);
 	  }
   }
 }

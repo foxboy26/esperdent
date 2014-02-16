@@ -1,13 +1,13 @@
 package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Projection extends BasicOperator {
-
-	public Projection(int id) {
-	  super(id);
-	  // TODO Auto-generated constructor stub
-  }
+	private ArrayList<Attribute> attributeList;
+	private HashMap<String, String> aggreatorAttributeList;
 	
-	private ArrayList<String> AttributeList;
+	public void addAttribute(Attribute attribute) {
+		attributeList.add(attribute);
+	}	
 }
