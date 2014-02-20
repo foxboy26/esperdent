@@ -45,6 +45,11 @@ SKIP :
     <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
 }
 
+SPECIAL_TOKEN : /* COMMENTS */
+{
+    <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+}
+
 TOKEN [IGNORE_CASE]:
 {
     < CREATE: "create" >
@@ -96,6 +101,12 @@ TOKEN [IGNORE_CASE]:
     < MEDIAN: "median" >
 |
     < STDDEV: "stddev" >
+|
+    < COUNT: "count" >
+|
+    < MAX: "max" >
+|
+    < MIN: "min" >
 |
     < COMMA: "," >
 }
@@ -189,8 +200,7 @@ void Statement() #void : {}
   Query()
 }
 
-
-/** Create clause */)+
+/** Create clause */
 void CreateClause() #void : { Token t; }
 {
     LOOKAHEAD(2)
@@ -272,7 +282,7 @@ void Attribute() #Attribute : { Token t; }
 
 void AggregateAttribute() #AggregateAttribute : {}
 {
-    AggregateFunction() "(" Expression() ")"
+    AggregateFunction() "(" Attribute() ")"
 }
 
 /** End of select clause */
@@ -404,6 +414,12 @@ void Constant() #void : {}
 
 void AggregateFunction() #AggregateFunction : { Token t; }
 {
+    t = <COUNT> { jjtThis.name = t.image; }
+|
+    t = <MIN> { jjtThis.name = t.image; }
+|
+    t = <MAX> { jjtThis.name = t.image; }
+|
     t = <SUM> { jjtThis.name = t.image; }
 |
     t = <AVG> { jjtThis.name = t.image; }
