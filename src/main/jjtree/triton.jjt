@@ -98,8 +98,6 @@ TOKEN [IGNORE_CASE]:
     < STDDEV: "stddev" >
 |
     < COMMA: "," >
-|
-    < STAR: "*" >
 }
 
 /** Data type */
@@ -173,11 +171,16 @@ TOKEN:
 /** Main production */
 ASTStart Start() : {}
 {
-  Triton() ";"
+  Triton()
   { return jjtThis; }
 }
 
 void Triton() #void : {}
+{
+    (Statement() ";")+
+}
+
+void Statement() #void : {}
 {
   CreateClause()
 |
@@ -187,7 +190,7 @@ void Triton() #void : {}
 }
 
 
-/** Create clause */
+/** Create clause */)+
 void CreateClause() #void : { Token t; }
 {
     LOOKAHEAD(2)
@@ -254,12 +257,12 @@ void Query() #Query : {}
 /** Select clause */
 void SelectClause() #SelectClause : {}
 {
-    <SELECT> (<STAR> | SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*)
+    <SELECT> ("*" | SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*)
 }
 
 void SelectAttribute() #SelectAttribute : {}
 {
-    (Attribute() | AggregateAttribute()) (LOOKAHEAD(2) ReName())?
+    (Expression() | AggregateAttribute()) (LOOKAHEAD(2) ReName())?
 }
 
 void Attribute() #Attribute : { Token t; }
@@ -326,13 +329,12 @@ void WhereClause() #WhereClause : {}
 
 void GroupByClause() #GroupByClause : {}
 {
-    <GROUP> <BY> Expression() (LOOKAHEAD(2) <COMMA> Expression())*
+    <GROUP> <BY> Attribute() (LOOKAHEAD(2) <COMMA> Attribute())*
 }
-
 
 void OrderByClause() #OrderByClause : {}
 {
-    <ORDER> <BY> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Expression() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
+    <ORDER> <BY> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
 }
 
 void Cond() #void : {}
@@ -349,7 +351,7 @@ void Cond() #void : {}
 
 void CondPrime() #CondPrime : {}
 {
-  Expression() CmpOp() (Expression() | Constant())
+  Expression() CmpOp() Expression()
 }
 
 void CmpOp() #CmpOp : { Token t; }
@@ -367,9 +369,28 @@ void CmpOp() #CmpOp : { Token t; }
     t = <LTE> { jjtThis.op = t.image; }
 }
 
-void Expression() #Expression : {}
+/** An Expression. */
+void Expression() #Expression: {}
 {
-    Attribute()
+  AdditiveExpression()
+}
+
+/** An Additive Expression. */
+void AdditiveExpression() #AdditiveExpression: { Token t;}
+{
+    MultiplicativeExpression() ( ( t = "+" { jjtThis.op = t.image; } | t = "-" { jjtThis.op = t.image; }) MultiplicativeExpression() )*
+}
+
+/** A Multiplicative Expression. */
+void MultiplicativeExpression() #MultiplicativeExpression: { Token t; }
+{
+  UnaryExpression() ( ( t = "*" { jjtThis.op = t.image; } | t = "/" { jjtThis.op = t.image; } ) UnaryExpression() )*
+}
+
+/** A Unary Expression. */
+void UnaryExpression() : {}
+{
+  "(" Expression() ")" | Attribute() | Constant()
 }
 
 void Constant() #void : {}
