@@ -209,22 +209,22 @@ void CreateClause() #void : { Token t; }
     CreateRelation()
 }
 
-void CreateStream() #CreateStream : { Token t; }
+void CreateStream() : { Token t; }
 {
     <CREATE> <STREAM> t = <IDENTIFIER> { jjtThis.streamName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
 }
 
-void CreateRelation() #CreateRelation : { Token t; }
+void CreateRelation() : { Token t; }
 {
     <CREATE> <RELATION> t = <IDENTIFIER> { jjtThis.relationName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
 }
 
-void AttributeDefList() #AttributeDefList : {}
+void AttributeDefList() : {}
 {
     AttributeDefinition() (<COMMA> AttributeDefinition())*
 }
 
-void AttributeDefinition() #AttributeDefinition : {}
+void AttributeDefinition() : {}
 {
     Name() AttributeType()
 }
@@ -240,7 +240,7 @@ void AttributeType() #void : {}
     <TIMESTAMP> #TypeTimestamp
 }
 
-void Source() #Source : { Token t; }
+void Source() : { Token t; }
 {
     <SOURCE> t = <IDENTIFIER> { jjtThis.uri = t.image; }
 |
@@ -251,7 +251,7 @@ void Source() #Source : { Token t; }
 
 
 /** Insert clause */
-void InsertClause() #InsertClause : {}
+void InsertClause() : {}
 {
   <INSERT> <INTO> Name()
 }
@@ -259,28 +259,28 @@ void InsertClause() #InsertClause : {}
 
 
 /** Query clause */
-void Query() #Query : {}
+void Query() : {}
 {
   SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())?
 }
 
 /** Select clause */
-void SelectClause() #SelectClause : {}
+void SelectClause() : {}
 {
     <SELECT> ("*" | SelectAttribute() (LOOKAHEAD(2) <COMMA> SelectAttribute())*)
 }
 
-void SelectAttribute() #SelectAttribute : {}
+void SelectAttribute() : {}
 {
     (Expression() | AggregateAttribute()) (LOOKAHEAD(2) ReName())?
 }
 
-void Attribute() #Attribute : { Token t; }
+void Attribute() : { Token t; }
 {
   t = <IDENTIFIER> { jjtThis.name = t.image; } ( LOOKAHEAD(2) "." t = <IDENTIFIER> { jjtThis.name += ("." + t.image); })?
 }
 
-void AggregateAttribute() #AggregateAttribute : {}
+void AggregateAttribute() : {}
 {
     AggregateFunction() "(" Attribute() ")"
 }
@@ -288,17 +288,17 @@ void AggregateAttribute() #AggregateAttribute : {}
 /** End of select clause */
 
 /** From clause. */
-void FromClause() #FromClause : {}
+void FromClause() : {}
 {
   <FROM> StreamDef() (LOOKAHEAD(2) <COMMA> StreamDef())*
 }
 
-void StreamDef() #StreamDef : {}
+void StreamDef() : {}
 {
   Name() (LOOKAHEAD(2) StreamFilter())? (LOOKAHEAD(2) "." WindowSpec())? (LOOKAHEAD(2) ReName())?
 }
 
-void StreamFilter() #StreamFilter : {}
+void StreamFilter() : {}
 {
   "[" Cond() "]"
 }
@@ -312,7 +312,7 @@ void WindowSpec() #void : {}
     (<WIN_TIME_BATCH> "(" TimePeriod() ")") #WinTimeBatch
 }
 
-void TimePeriod() #TimePeriod : {}
+void TimePeriod() : {}
 {
     Number() Units()
 }
@@ -322,7 +322,7 @@ void Number() #void : {}
     Integer()
 }
 
-void Units() #Units : { Token t; }
+void Units() : { Token t; }
 {
     t = <SECONDS> { jjtThis.unit = "sec"; }
 |
@@ -332,17 +332,17 @@ void Units() #Units : { Token t; }
 }
 
 /** Where clause */
-void WhereClause() #WhereClause : {}
+void WhereClause() : {}
 {
     <WHERE> Cond()
 }
 
-void GroupByClause() #GroupByClause : {}
+void GroupByClause() : {}
 {
     <GROUP> <BY> Attribute() (LOOKAHEAD(2) <COMMA> Attribute())*
 }
 
-void OrderByClause() #OrderByClause : {}
+void OrderByClause() : {}
 {
     <ORDER> <BY> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
 }
@@ -359,12 +359,12 @@ void Cond() #void : {}
   CondPrime()                                             //#Epsilon
 }
 
-void CondPrime() #CondPrime : {}
+void CondPrime() : {}
 {
   Expression() CmpOp() Expression()
 }
 
-void CmpOp() #CmpOp : { Token t; }
+void CmpOp() : { Token t; }
 {
     t = <EQ> { jjtThis.op = t.image; }
 |
@@ -380,25 +380,25 @@ void CmpOp() #CmpOp : { Token t; }
 }
 
 /** An Expression. */
-void Expression() #Expression: {}
+void Expression() #void : {}
 {
   AdditiveExpression()
 }
 
 /** An Additive Expression. */
-void AdditiveExpression() #AdditiveExpression: { Token t;}
+void AdditiveExpression() : { Token t;}
 {
     MultiplicativeExpression() ( ( t = "+" { jjtThis.op = t.image; } | t = "-" { jjtThis.op = t.image; }) MultiplicativeExpression() )*
 }
 
 /** A Multiplicative Expression. */
-void MultiplicativeExpression() #MultiplicativeExpression: { Token t; }
+void MultiplicativeExpression() : { Token t; }
 {
   UnaryExpression() ( ( t = "*" { jjtThis.op = t.image; } | t = "/" { jjtThis.op = t.image; } ) UnaryExpression() )*
 }
 
 /** A Unary Expression. */
-void UnaryExpression() : {}
+void UnaryExpression() #void :  {}
 {
   "(" Expression() ")" | Attribute() | Constant()
 }
@@ -412,7 +412,7 @@ void Constant() #void : {}
     FloatingLiteral()
 }
 
-void AggregateFunction() #AggregateFunction : { Token t; }
+void AggregateFunction() : { Token t; }
 {
     t = <COUNT> { jjtThis.name = t.image; }
 |
@@ -429,27 +429,27 @@ void AggregateFunction() #AggregateFunction : { Token t; }
     t = <STDDEV> { jjtThis.name = t.image; }
 }
 
-void Name() #Name : { Token t; }
+void Name() : { Token t; }
 {
     t = <IDENTIFIER> { jjtThis.name = t.image; }
 }
 
-void ReName() #ReName : { Token t; }
+void ReName() : { Token t; }
 {
     <AS> t = <IDENTIFIER> { jjtThis.rename = t.image; }
 }
 
-void StringLiteral() #StringLiteral : { Token t; }
+void StringLiteral() : { Token t; }
 {
     t = <STRING_LITERAL> { jjtThis.value = t.image; }
 }
 
-void Integer() #Integer : { Token t; }
+void Integer() : { Token t; }
 {
     t = <INTEGER_LITERAL> { jjtThis.value = Integer.parseInt(t.image); }
 }
 
-void FloatingLiteral() #FloatingLiteral : { Token t; }
+void FloatingLiteral() : { Token t; }
 {
     t = <FLOATING_POINT_LITERAL> { jjtThis.value = Float.parseFloat(t.image); }
 }
