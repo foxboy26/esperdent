@@ -1,13 +1,16 @@
 package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 public class Projection extends BasicOperator {
-	private ArrayList<Attribute> attributeList;
-	private HashMap<String, String> aggreatorAttributeList;
+	private List<ProjectionField> _projectionField;
 	
-	public void addAttribute(Attribute attribute) {
-		attributeList.add(attribute);
+	public Projection() {
+		_projectionField = new ArrayList<ProjectionField> ();
+	}
+	
+	public void addField(ProjectionField attribute) {
+		_projectionField.add(attribute);
 	}	
 }
