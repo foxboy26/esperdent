@@ -282,10 +282,10 @@ void Attribute() : { Token t; }
 
 void AggregateAttribute() : {}
 {
-    LOOKAHEAD(1)
+    LOOKAHEAD(3)
     AggregateFunction() "(" Attribute() ")"
 |
-    <COUNT> "(" <STAR> ")"
+    <COUNT> "(" "*" ")"
 }
 
 /** End of select clause */
@@ -403,12 +403,12 @@ void MultiplicativeExpression() : { Token t; }
 }
 
 /** A Unary Expression. */
-void UnaryExpression() #void :  {}
+void UnaryExpression() :  {}
 {
   "(" Expression() ")" | Attribute() | Constant()
 }
 
-void Constant() #void : {}
+void Constant() : {}
 {
     StringLiteral()
 |

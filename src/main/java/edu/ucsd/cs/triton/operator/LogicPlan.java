@@ -76,17 +76,17 @@ public class LogicPlan {
 	 * @return String[2] = {stream, attribute}
 	 */
 	public String[] unifiyAttribute(final String attribute) {
-		String[] res = attribute.split(".");
-		
+		String[] res = attribute.split("\\.");
+
 		ResourceManager resourceManager = ResourceManager.getInstance();
 		
 		// "attr" only
 		if (res.length == 1) {
-			String attributeName = res[0];
+			String attributeName = attribute;
 			boolean isFound = false;
 			final Map<String, BaseDefinition> definitions = resourceManager.getDefinitions();
 			for (Entry<String, BaseDefinition> definition : definitions.entrySet()) {
-				if (definition.getValue().containsAttribute(res[0])) {
+				if (definition.getValue().containsAttribute(attributeName)) {
 					res = new String[2];
 					res[0] = definition.getKey();
 					res[1] = attributeName;
@@ -135,13 +135,22 @@ public class LogicPlan {
 	public boolean addAggregator(final Aggregator aggregator) {
 		return _aggregatorList.add(aggregator);
 	}
-	
-	public void generatePlan() {
-		//TODO
-	}
 
 	public Selection getSelection() {
 	  // TODO Auto-generated method stub
 	  return _selection;
   }
+	
+	public void generatePlan() {
+		//TODO
+	}
+
+	public void dump() {
+		System.out.println("rename table: " + _renameTable);
+		System.out.println("input stream: " + _inputStreams);
+		System.out.println("relations: " + _relations);
+		System.out.println("projection: " + _projection);
+		System.out.println("aggregate list:" + _aggregatorList);
+		System.out.println("groupby list:" + _groupByList);
+	}
 }

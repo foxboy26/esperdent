@@ -1,5 +1,5 @@
 package edu.ucsd.cs.triton.expression;
 
-public class BooleanExpression extends BaseExpression {
+public abstract class BooleanExpression extends BaseExpression {
 
 }

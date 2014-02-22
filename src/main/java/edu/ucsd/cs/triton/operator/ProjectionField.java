@@ -11,4 +11,8 @@ public abstract class ProjectionField {
 	  // TODO Auto-generated method stub
 		_outputField = outputField;
   }
+	
+	public void dump() {
+		System.out.println("Base field");
+	}
 }

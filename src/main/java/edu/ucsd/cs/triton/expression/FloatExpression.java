@@ -12,4 +12,12 @@ public class FloatExpression extends BaseExpression {
 	public float getValue() {
 		return _value;
 	}
+	
+	public void dump(String prefix) {
+		System.out.println(prefix + toString());
+	}
+	
+	public String toString() {
+		return Float.toString(_value);
+	}
 }

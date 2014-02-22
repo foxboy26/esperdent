@@ -12,4 +12,14 @@ public class IntegerExpression extends BaseExpression {
 	public int getValue() {
 		return _value;
 	}
+	
+	@Override
+	public String toString() {
+		return Integer.toString(_value);
+	}
+
+	@Override
+	public void dump(String prefix) {
+		System.out.println(prefix + toString());
+	}
 }

@@ -18,6 +18,10 @@ public class Attribute {
 		return _name;
 	}
 	
+	public String getDefaultOutputField() {
+		return toString();
+	}
+	
 	@Override
 	public String toString() {
 		return _stream + "." + _name;

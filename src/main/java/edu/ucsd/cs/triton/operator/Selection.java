@@ -15,4 +15,8 @@ public class Selection extends BasicOperator {
 	  // TODO Auto-generated method stub
 	  _filter = filter;
   }
+	
+	public String toString() {
+		return _filter.toString();
+	}
 }

@@ -19,4 +19,8 @@ public class Aggregator extends BasicOperator {
 	public void setOutputField(final String outputField) {
 		_outputField = outputField;
 	}
+	
+	public String toString() {
+		return "{name: " + _name + ", inputField: " + _inputField + ", outputField: " + _outputField + "}";
+	}
 }

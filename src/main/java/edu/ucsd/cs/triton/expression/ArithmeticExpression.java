@@ -12,4 +12,10 @@ public class ArithmeticExpression extends BaseExpression {
 		_left = left;
 		_right = right;
 	}
+	
+	public void dump(String prefix) {
+		System.out.println(prefix + _op);
+		_left.dump(prefix + " ");
+		_right.dump(prefix + " ");
+	}
 }

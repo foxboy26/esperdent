@@ -22,4 +22,12 @@ public class ExpressionField extends ProjectionField {
 	public BaseExpression getBaseExpression() {
 		return _expression;
 	}
+	
+	public void dump() {
+		_expression.dump("");
+	}
+	
+	public String toString() {
+		return "input: " + "expression" + " output: " + _outputField;
+	}
 }

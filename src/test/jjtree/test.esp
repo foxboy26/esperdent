@@ -19,6 +19,7 @@ select * from stream1 as s1, stream2 as s2 where s1.a=s2.a;
 
 # aggregation
 select max(a), count(b), c from s group by c;
+select count(*) from s1;
 
 # window
 select a from s1[a=3].win:length(3);

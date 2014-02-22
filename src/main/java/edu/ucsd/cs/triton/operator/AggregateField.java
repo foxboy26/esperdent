@@ -21,4 +21,10 @@ public class AggregateField extends ProjectionField {
 	public String getAggregateFunction(){
 		return _aggregateFunction;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "aggregate function: " + _aggregateFunction + " output: " + _outputField;
+	}
 }

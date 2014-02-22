@@ -13,6 +13,7 @@ import parser.ASTCmpOp;
 import parser.ASTCondAnd;
 import parser.ASTCondOr;
 import parser.ASTCondPrime;
+import parser.ASTConstant;
 import parser.ASTCreateRelation;
 import parser.ASTCreateStream;
 import parser.ASTFloatingLiteral;
@@ -37,6 +38,7 @@ import parser.ASTTypeFloat;
 import parser.ASTTypeInt;
 import parser.ASTTypeString;
 import parser.ASTTypeTimestamp;
+import parser.ASTUnaryExpression;
 import parser.ASTUnits;
 import parser.ASTWhereClause;
 import parser.ASTWinLength;
@@ -58,6 +60,7 @@ import edu.ucsd.cs.triton.expression.FloatExpression;
 import edu.ucsd.cs.triton.expression.IntegerExpression;
 import edu.ucsd.cs.triton.expression.LogicExpression;
 import edu.ucsd.cs.triton.expression.LogicOperator;
+import edu.ucsd.cs.triton.expression.StringExpression;
 import edu.ucsd.cs.triton.resources.AttributeType;
 import edu.ucsd.cs.triton.resources.BaseDefinition;
 import edu.ucsd.cs.triton.resources.DynamicSource;
@@ -215,7 +218,18 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	  // TODO Auto-generated method stub
 		LogicPlan logicPlan = new LogicPlan();
 		
-		node.childrenAccept(this, logicPlan);
+		int numOfChildren = node.jjtGetNumChildren();
+		Node selectNode = node.jjtGetChild(0);
+		Node fromNode = node.jjtGetChild(1);
+		
+		// visit FROM clause before the SELECT clause
+		fromNode.jjtAccept(this, logicPlan);
+		selectNode.jjtAccept(this, logicPlan);
+		
+		// visit rest clause;
+		for (int i = 2; i < numOfChildren; i++) {
+			node.jjtGetChild(i).jjtAccept(this, logicPlan);
+		}
 		
 		logicPlan.generatePlan();
 		
@@ -262,7 +276,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		Aggregator aggregator = null;
 		
 		if (attributeNode instanceof ASTAdditiveExpression) {
-			BaseExpression expression = (BaseExpression) attributeNode.jjtAccept(this, null);
+			BaseExpression expression = (BaseExpression) attributeNode.jjtAccept(this, data);
 			
 			if (expression instanceof AttributeExpression) {
 				expression = (AttributeExpression) expression;
@@ -308,7 +322,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   public Object visit(ASTAttribute node, Object data) {
 	  // TODO Auto-generated method stub
 		LogicPlan logicPlan = (LogicPlan) data;
-
 		return logicPlan.unifiyAttribute(node.name);
   }
 
@@ -528,7 +541,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			BaseExpression left = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
 			BaseExpression right = (BaseExpression) node.jjtGetChild(1).jjtAccept(this, data);
 			
-			ArithmeticOperator op = ArithmeticOperator.valueOf(node.op);
+			ArithmeticOperator op = ArithmeticOperator.fromString(node.op);
 			expression = new ArithmeticExpression(op, left, right);
 		} else {
 			expression = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
@@ -539,36 +552,63 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 
 	@Override
   public Object visit(ASTMultiplicativeExpression node, Object data) {
-	  // TODO Auto-generated method stub
-		
-		BaseExpression expression = null;
 		
 		int numOfChildren = node.jjtGetNumChildren();
-		if (numOfChildren == 2) {
+		
+		switch (numOfChildren) {
+		case 1:
+			return node.jjtGetChild(0).jjtAccept(this, data);
+		case 2:
 			BaseExpression left = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
 			BaseExpression right = (BaseExpression) node.jjtGetChild(1).jjtAccept(this, data);
+			ArithmeticOperator op = ArithmeticOperator.fromString(node.op);
 			
-			ArithmeticOperator op = ArithmeticOperator.valueOf(node.op);
-			expression = new ArithmeticExpression(op, left, right);
-		} else {
-			Node childNode = node.jjtGetChild(0);
-			if (childNode instanceof ASTAdditiveExpression) {
-				expression = (BaseExpression) childNode.jjtAccept(this, data);
-			} else if (childNode instanceof ASTAttribute) {
-				String[] attribute = (String[]) childNode.jjtAccept(this, data);
-				expression = new AttributeExpression(new Attribute(attribute[0], attribute[1]));
-			} else if (childNode instanceof ASTInteger) {
-				expression = new IntegerExpression((Integer) childNode.jjtAccept(this, data));
-			} else if (childNode instanceof ASTFloatingLiteral) {
-				expression = new FloatExpression((Float) childNode.jjtAccept(this, data));
-			} else {
-				System.err.println("type error in expression!");
-			}
+			return new ArithmeticExpression(op, left, right);
+		default:
+			System.err.println("error in expression");
+			System.exit(1);
 		}
-		
-	  return expression;
+
+	  return null;
   }
 
+	@Override
+  public Object visit(ASTUnaryExpression node, Object data) {
+		
+		Node childNode = node.jjtGetChild(0);
+		if (childNode instanceof ASTAttribute) {
+			String[] attribute = (String[]) childNode.jjtAccept(this, data);
+			
+			return new AttributeExpression(new Attribute(attribute[0], attribute[1]));
+		} else if (childNode instanceof ASTAdditiveExpression ||
+				       childNode instanceof ASTConstant) {
+			return childNode.jjtAccept(this, data);
+		} else {
+			System.err.println("type error in expression!");
+			System.exit(1);
+		}
+	
+		return null;
+	}
+	
+	@Override
+  public Object visit(ASTConstant node, Object data) {
+	  
+		Node childNode = node.jjtGetChild(0);
+	  if (childNode instanceof ASTInteger) {
+			return new IntegerExpression((Integer) childNode.jjtAccept(this, data));
+		} else if (childNode instanceof ASTFloatingLiteral) {
+			return new FloatExpression((Float) childNode.jjtAccept(this, data));
+		} else if (childNode instanceof ASTStringLiteral) {
+			return new StringExpression((String) childNode.jjtAccept(this, data));
+		} else {
+			System.err.println("type error in constant expression!");
+			System.exit(1);
+		}
+	  
+	  return null;
+  }
+	
 	@Override
   public Object visit(ASTReName node, Object data) {
 	  return node.rename;

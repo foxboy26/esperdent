@@ -11,4 +11,11 @@ public class LogicExpression extends BooleanExpression {
 		_left = left;
 		_right = right;
 	}
+	
+	@Override
+	public void dump(String prefix) {
+		System.out.println(prefix + _op);
+		_left.dump(prefix + " ");
+		_right.dump(prefix + " ");
+	}
 }

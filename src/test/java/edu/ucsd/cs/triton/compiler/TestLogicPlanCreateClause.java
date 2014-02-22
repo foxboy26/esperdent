@@ -14,7 +14,7 @@ import edu.ucsd.cs.triton.resources.ResourceManager;
 public class TestLogicPlanCreateClause {
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
-		String fileName = "src/test/jjtree/test.esp";
+		String fileName = "src/test/jjtree/create.esp";
 
 		try {
 			TritonParser tritonParser;
@@ -32,7 +32,7 @@ public class TestLogicPlanCreateClause {
 			
 			root.childrenAccept(logicPlanVisitor, resourceManager);
 			
-			System.out.println(resourceManager.getRelationByName("r1"));
+			System.out.println(resourceManager.getStreamByName("s1"));
 			
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

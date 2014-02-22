@@ -7,6 +7,7 @@ public class SimpleField extends ProjectionField {
 
 	public SimpleField(String streamName, String attribute) {
 		_attribute = new Attribute(streamName, attribute);
+		_outputField = _attribute.getDefaultOutputField();
   }
 
 	/**
@@ -15,7 +16,7 @@ public class SimpleField extends ProjectionField {
 	 */
 	public SimpleField(final Attribute attribute) {
 		_attribute = attribute;
-		_outputField = attribute.toString();
+		_outputField = attribute.getDefaultOutputField();
   }
 
 	public String getStream() {
@@ -24,5 +25,10 @@ public class SimpleField extends ProjectionField {
 	
 	public String getAttributeName() {
 		return _attribute.getName();
+	}
+	
+	@Override
+	public String toString() {
+		return "input: " + _attribute.toString() + " output: " + _outputField;
 	}
 }

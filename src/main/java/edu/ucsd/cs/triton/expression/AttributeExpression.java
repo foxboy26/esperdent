@@ -13,4 +13,9 @@ public class AttributeExpression extends BaseExpression {
 	public Attribute getAttribute() {
 		return _attribute;
 	}
+	
+	@Override
+	public String toString() {
+		return _attribute.toString();
+	}
 }

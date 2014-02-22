@@ -12,5 +12,9 @@ public class Projection extends BasicOperator {
 	
 	public void addField(ProjectionField attribute) {
 		_projectionField.add(attribute);
-	}	
+	}
+	
+	public String toString() {
+		return _projectionField.toString();
+	}
 }
