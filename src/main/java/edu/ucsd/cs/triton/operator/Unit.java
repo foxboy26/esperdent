@@ -15,4 +15,19 @@ public enum Unit {
 	public int getValue() {
 		return _value;
 	}
+
+	public static Unit fromString(String unit) {
+	  // TODO Auto-generated method stub
+		if (unit.equalsIgnoreCase("sec")) {
+			return SECOND;
+		} else if (unit.equalsIgnoreCase("min")) {
+			return MINITUE;
+		} else if (unit.equalsIgnoreCase("hr")) {
+			return HOUR;
+		} else if (unit.equalsIgnoreCase("day")) {
+			return DAY; 
+		} else {
+			throw new IllegalArgumentException("Invalid logic opeartor [" + unit + "]");
+		}
+  }
 }

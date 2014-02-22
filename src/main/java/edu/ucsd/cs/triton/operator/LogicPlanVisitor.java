@@ -436,7 +436,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTUnits node, Object data) {
 	  // TODO Auto-generated method stub
-	  return Unit.valueOf(node.unit);
+	  return Unit.fromString(node.unit);
   }
 
 	@Override
@@ -509,23 +509,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTCmpOp node, Object data) {
 	  // TODO Auto-generated method stub
-		String op = node.op;
-		
-		if (op.equals("=")) {
-			return ComparisonOperator.EQ;
-		} else if (op.equals("<>")) {
-			return ComparisonOperator.NEQ;
-		} else if (op.equals(">")) {
-			return ComparisonOperator.GT;
-		} else if (op.equals(">=")) {
-			return ComparisonOperator.GET;
-		} else if (op.equals("<")) {
-			return ComparisonOperator.LT;
-		} else if (op.equals("<=")) {
-			return ComparisonOperator.LET;
-		}
-		
-	  return null;
+		return ComparisonOperator.fromString(node.op);
   }
 
 	@Override
