@@ -1,0 +1,15 @@
+# Create stream
+create stream s1 (a int, b float, c string, d timestamp) from source adv;
+
+# Create relation
+# create relation r1 (a int, b float, c string, d timestamp) from source adv;
+
+# Basic select
+select * from s1;
+select a, s.b as sb from s1 as s;
+
+# Projection with expression
+select a+3, b*c from s1;
+
+# Window
+# select a, b from s1[a=3].win_length(3);
