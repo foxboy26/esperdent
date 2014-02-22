@@ -12,7 +12,7 @@ select * from s1;
 select a.b from a;
 
 # select with expression
-select a+4 from s1;
+select (a+4)*3 from s1;
 
 # rename with join
 select * from stream1 as s1, stream2 as s2 where s1.a=s2.a;
@@ -25,3 +25,6 @@ select a from s1[a=3].win:length(3);
 select *
 from stream1[a=3].win:time(3 seconds) as s1, stream2[b=3].win:time(10 seconds) as s2
 where s1.c = s2.c;
+
+# complex condition
+select * from stream1 where a = 3 and (b > 4 or c = d);

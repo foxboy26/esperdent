@@ -8,10 +8,14 @@ public class ResourceManager {
 	
 	private static final ResourceManager INSTANCE = new ResourceManager();
 
-	private static final String UNNAMED_PRIFEX = "unnamed";
+	private static final String UNNAMED_STREAM_PREFIX = "unnamed_stream_";
 	
-	private static int unnamedCount = 0;
+	private static final String UNNAMED_FIELD_PREFIX = "unnamed_field_";
+
+	private static int unnamedStreamCount = 0;
 	
+	private static int unnamedFieldCount = 0;
+
 	private ResourceManager() {
 		this._definitions = new HashMap<String, BaseDefinition> ();
 	}
@@ -44,6 +48,10 @@ public class ResourceManager {
 		return _definitions.get(name);
 	}
 	
+	public Map<String, BaseDefinition> getDefinitions() {
+		return _definitions;
+	}
+	
 	public boolean containsStream(final String name) {
 		return _definitions.containsKey(name);
 	}
@@ -54,6 +62,10 @@ public class ResourceManager {
 	
 	public String allocateUnnamedStream() {
 	  // TODO Auto-generated method stub
-	  return (UNNAMED_PRIFEX + (unnamedCount++));
+	  return (UNNAMED_STREAM_PREFIX + (unnamedStreamCount++));
   }
+	
+	public String allocateUnnamedField() {
+		return (UNNAMED_FIELD_PREFIX + (unnamedFieldCount++));
+	}
 }
