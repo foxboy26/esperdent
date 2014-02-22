@@ -282,7 +282,10 @@ void Attribute() : { Token t; }
 
 void AggregateAttribute() : {}
 {
+    LOOKAHEAD(1)
     AggregateFunction() "(" Attribute() ")"
+|
+    <COUNT> "(" <STAR> ")"
 }
 
 /** End of select clause */
@@ -349,19 +352,21 @@ void OrderByClause() : {}
 
 void Cond() #void : {}
 {
-  LOOKAHEAD(CondPrime() (<AND> Cond())+)
-  (CondPrime() (LOOKAHEAD(<AND> Cond()) <AND> Cond())+) #CondAnd
+    LOOKAHEAD(CondPrime() (<AND> Cond())+)
+    (CondPrime() (LOOKAHEAD(<AND> Cond()) <AND> Cond())+) #CondAnd
 |
-  LOOKAHEAD(CondPrime() (<OR>  Cond())+)
-  (CondPrime() (LOOKAHEAD(<AND> Cond()) <OR>  Cond())+) #CondOr
+    LOOKAHEAD(CondPrime() (<OR>  Cond())+)
+    (CondPrime() (LOOKAHEAD(<AND> Cond()) <OR>  Cond())+) #CondOr
 |
-  LOOKAHEAD(CondPrime())
-  CondPrime()                                             //#Epsilon
+    LOOKAHEAD(CondPrime())
+    CondPrime()                                             //#Epsilon
+|
+    "(" Cond() ")"
 }
 
 void CondPrime() : {}
 {
-  Expression() CmpOp() Expression()
+    Expression() CmpOp() Expression()
 }
 
 void CmpOp() : { Token t; }
