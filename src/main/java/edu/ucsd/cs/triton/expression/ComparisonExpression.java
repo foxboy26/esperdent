@@ -1,6 +1,6 @@
 package edu.ucsd.cs.triton.expression;
 
-public class ComparisonExpression extends BaseExpression {
+public class ComparisonExpression extends BooleanExpression {
 	
 	private ComparisonOperator _op;
 	

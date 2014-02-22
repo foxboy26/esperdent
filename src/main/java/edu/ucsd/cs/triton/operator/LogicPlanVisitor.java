@@ -46,12 +46,12 @@ import parser.ASTWinTimeBatch;
 import parser.Node;
 import parser.SimpleNode;
 import parser.TritonParserVisitor;
-
 import edu.ucsd.cs.triton.expression.ArithmeticExpression;
 import edu.ucsd.cs.triton.expression.ArithmeticOperator;
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.AttributeExpression;
 import edu.ucsd.cs.triton.expression.BaseExpression;
+import edu.ucsd.cs.triton.expression.BooleanExpression;
 import edu.ucsd.cs.triton.expression.ComparisonExpression;
 import edu.ucsd.cs.triton.expression.ComparisonOperator;
 import edu.ucsd.cs.triton.expression.FloatExpression;
@@ -397,7 +397,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTStreamFilter node, Object data) {
 
-		BaseExpression filter = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
+		BooleanExpression filter = (BooleanExpression) node.jjtGetChild(0).jjtAccept(this, data);
 		
 		return new Selection(filter);
   }
@@ -446,7 +446,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 
 		Selection selectionOperator = logicPlan.getSelection();
 		
-		BaseExpression filter = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
+		BooleanExpression filter = (BooleanExpression) node.jjtGetChild(0).jjtAccept(this, data);
 		
 		selectionOperator.setFilter(filter);
 		
@@ -465,8 +465,8 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTCondAnd node, Object data) {
 	  // TODO Auto-generated method stub
-		BaseExpression left = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
-		BaseExpression right = (BaseExpression) node.jjtGetChild(1).jjtAccept(this, data);
+		BooleanExpression left = (BooleanExpression) node.jjtGetChild(0).jjtAccept(this, data);
+		BooleanExpression right = (BooleanExpression) node.jjtGetChild(1).jjtAccept(this, data);
 		
 	  return new LogicExpression(LogicOperator.AND, left, right);
   }
@@ -474,8 +474,8 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTCondOr node, Object data) {
 	  // TODO Auto-generated method stub
-		BaseExpression left = (BaseExpression) node.jjtGetChild(0).jjtAccept(this, data);
-		BaseExpression right = (BaseExpression) node.jjtGetChild(1).jjtAccept(this, data);
+		BooleanExpression left = (BooleanExpression) node.jjtGetChild(0).jjtAccept(this, data);
+		BooleanExpression right = (BooleanExpression) node.jjtGetChild(1).jjtAccept(this, data);
 		
 	  return new LogicExpression(LogicOperator.OR, left, right);
   }
