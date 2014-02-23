@@ -313,7 +313,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		
 		return null;
   }
-
 	
 	@Override
 	/**
@@ -505,8 +504,8 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		LogicPlan logicPlan = (LogicPlan) data;
 		int numOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numOfChildren; i++) {
-			Attribute attribute = (Attribute) node.jjtGetChild(i).jjtAccept(this, data);
-			logicPlan.addGroupByAttribute(attribute);
+			String[] res = (String[]) node.jjtGetChild(i).jjtAccept(this, data);
+			logicPlan.addGroupByAttribute(new Attribute(res[0], res[1]));
 		}
 		
 	  return null;

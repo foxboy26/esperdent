@@ -28,6 +28,7 @@ public class ExpressionField extends ProjectionField {
 	}
 	
 	public String toString() {
+		dump();
 		return "input: " + "expression" + " output: " + _outputField;
 	}
 }

@@ -11,8 +11,10 @@ public class ArithmeticExpression extends BaseExpression {
 	public ArithmeticExpression(ArithmeticOperator op, BaseExpression left, BaseExpression right) {
 		_left = left;
 		_right = right;
+		_op = op;
 	}
-	
+
+	@Override
 	public void dump(String prefix) {
 		System.out.println(prefix + _op);
 		_left.dump(prefix + " ");

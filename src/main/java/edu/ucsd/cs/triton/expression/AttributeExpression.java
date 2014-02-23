@@ -18,4 +18,9 @@ public class AttributeExpression extends BaseExpression {
 	public String toString() {
 		return _attribute.toString();
 	}
+	
+	@Override
+	public void dump(String prefix) {
+		System.out.println(prefix + toString());
+	}
 }

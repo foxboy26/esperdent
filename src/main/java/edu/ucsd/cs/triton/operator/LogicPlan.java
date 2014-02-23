@@ -28,6 +28,7 @@ public class LogicPlan {
 		_inputStreams = new HashMap<String, BasicOperator> ();
 		_relations = new HashSet<String> ();
 		_projection = new Projection();
+		_selection = new Selection();
 		_aggregatorList = new ArrayList<Aggregator> ();
 		_groupByList = new ArrayList<Attribute> ();
 	}
@@ -150,6 +151,8 @@ public class LogicPlan {
 		System.out.println("input stream: " + _inputStreams);
 		System.out.println("relations: " + _relations);
 		System.out.println("projection: " + _projection);
+		System.out.println("selection: ");
+		_selection.dump();
 		System.out.println("aggregate list:" + _aggregatorList);
 		System.out.println("groupby list:" + _groupByList);
 	}

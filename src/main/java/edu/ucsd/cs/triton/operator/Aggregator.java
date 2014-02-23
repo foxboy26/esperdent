@@ -10,6 +10,8 @@ public class Aggregator extends BasicOperator {
 	public Aggregator(final String aggregateFunction, final String inputField) {
 		_name = aggregateFunction;
 		_inputField = inputField;
+		// default output field
+		_outputField = _name + "(" + _inputField + ")";
 	}
 	
 	public String getName() {

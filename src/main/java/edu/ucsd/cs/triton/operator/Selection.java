@@ -11,12 +11,26 @@ public class Selection extends BasicOperator {
 		_filter = filter;
   }
 
+	public Selection() {
+	  // TODO Auto-generated constructor stub
+  }
+
 	public void setFilter(final BooleanExpression filter) {
 	  // TODO Auto-generated method stub
 	  _filter = filter;
   }
 	
+	public void dump() {
+		if (_filter != null) {
+			_filter.dump("");
+		}
+	}
+	
 	public String toString() {
-		return _filter.toString();
+		if (_filter != null) {
+			return _filter.toString();
+		} else {
+			return "";
+		}
 	}
 }
