@@ -1,5 +1,8 @@
 package edu.ucsd.cs.triton.expression;
 
+import edu.ucsd.cs.triton.operator.Join;
+import edu.ucsd.cs.triton.operator.KeyPair;
+
 public class ComparisonExpression extends BooleanExpression {
 	
 	private ComparisonOperator _op;
@@ -15,6 +18,25 @@ public class ComparisonExpression extends BooleanExpression {
 		_op = op;
 	}
 	
+	public ComparisonOperator getOperator() {
+		return _op;
+	}
+	
+	public boolean isJoinExpression() {
+		if (_op != ComparisonOperator.EQ) {
+			return false;
+		}
+		
+		if (!( _left instanceof AttributeExpression && _right instanceof AttributeExpression)) {
+			return false;
+		}
+		
+		Attribute left = ((AttributeExpression) _left).getAttribute();
+		Attribute right = ((AttributeExpression) _right).getAttribute();
+
+		return ! (left.getStream().equals(right.getStream()));
+	}
+	
 	@Override
 	public void dump(String prefix) {
 		System.out.println(prefix + _op);
@@ -22,7 +44,13 @@ public class ComparisonExpression extends BooleanExpression {
 		_right.dump(prefix + " ");
 	}
 	
+	@Override
 	public String toString() {
-		return "";
+		return _op.toString();
+	}
+	
+	@Override
+	public ComparisonExpression clone() {
+		return new ComparisonExpression(_op, _left.clone(), _right.clone());
 	}
 }

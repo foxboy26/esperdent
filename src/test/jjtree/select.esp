@@ -12,10 +12,13 @@ select a, s.b as sb from s1 as s;
 select (a+3)/2, b*c from s1;
 
 # Where clause
-select a, b from s1 where s1.a = 3 and c="apple";
+select a, b from s1 where s1.a = 3;
 
 # Aggregate, group by
 select a, avg(b), sum(b) from s1 where d = 1 group by a, d;
 
 # Window
 # select a, b from s1[a=3].win_length(3);
+
+# join
+select s.b, r.c from s1 as s, r1 as r where s.a=r.a and (s.b=3 or s.d=4);

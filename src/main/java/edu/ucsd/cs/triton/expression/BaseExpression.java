@@ -4,15 +4,21 @@ public abstract class BaseExpression {
 	protected BaseExpression _left;
 	protected BaseExpression _right;
 	protected boolean _isLeaf;
+
+	abstract public BaseExpression clone();
+	abstract public void dump(String prefix);
 	
 	public BaseExpression() {
 		_left = _right = null;
 		_isLeaf = false;
 	}
 	
-	public void dump(String prefix) {
-		_left.dump(prefix + " ");
-		_right.dump(prefix + " ");
+	public BaseExpression getLeft() {
+		return _left;
+	}
+	
+	public BaseExpression getRight() {
+		return _right;
 	}
 	
 	public String toString() {

@@ -20,4 +20,9 @@ public class ArithmeticExpression extends BaseExpression {
 		_left.dump(prefix + " ");
 		_right.dump(prefix + " ");
 	}
+
+	@Override
+  public ArithmeticExpression clone() {
+	  return new ArithmeticExpression(_op, _left.clone(), _right.clone());
+  }
 }

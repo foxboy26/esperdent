@@ -22,4 +22,10 @@ public class StringExpression extends BaseExpression {
 		public void dump(String prefix) {
 			System.out.println(prefix + _value);
 		}
+
+		@Override
+	  public StringExpression clone() {
+		  // TODO Auto-generated method stub
+		  return new StringExpression(_value);
+	  }
 }

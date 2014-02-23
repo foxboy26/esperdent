@@ -23,4 +23,9 @@ public class AttributeExpression extends BaseExpression {
 	public void dump(String prefix) {
 		System.out.println(prefix + toString());
 	}
+
+	@Override
+  public AttributeExpression clone() {
+	  return new AttributeExpression(new Attribute(_attribute.getStream(), _attribute.getName()));
+  }
 }

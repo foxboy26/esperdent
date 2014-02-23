@@ -20,4 +20,10 @@ public class FloatExpression extends BaseExpression {
 	public String toString() {
 		return Float.toString(_value);
 	}
+
+	@Override
+  public FloatExpression clone() {
+	  // TODO Auto-generated method stub
+	  return new FloatExpression(_value);
+  }
 }

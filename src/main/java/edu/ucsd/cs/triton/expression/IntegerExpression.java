@@ -22,4 +22,10 @@ public class IntegerExpression extends BaseExpression {
 	public void dump(String prefix) {
 		System.out.println(prefix + toString());
 	}
+	
+	@Override
+  public IntegerExpression clone() {
+	  // TODO Auto-generated method stub
+	  return new IntegerExpression(_value);
+  }
 }

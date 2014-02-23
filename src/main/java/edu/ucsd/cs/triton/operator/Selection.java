@@ -20,6 +20,10 @@ public class Selection extends BasicOperator {
 	  _filter = filter;
   }
 	
+	public BooleanExpression getFilter() {
+		return _filter;
+	}
+	
 	public void dump() {
 		if (_filter != null) {
 			_filter.dump("");

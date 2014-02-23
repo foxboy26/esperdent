@@ -1,17 +1,72 @@
 package edu.ucsd.cs.triton.expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LogicExpression extends BooleanExpression {
+	private BooleanExpression _left;
+	private BooleanExpression _right;
 	private LogicOperator _op;
+	
+	public static LogicExpression createAndExpression() {
+		return new LogicExpression(LogicOperator.AND);
+	}
+	
+	public static LogicExpression createOrExpression() {
+		return new LogicExpression(LogicOperator.OR);
+	}
+	
+	public static LogicExpression createNotExpression() {
+		return new LogicExpression(LogicOperator.NOT);
+	}
 	
 	public LogicExpression(LogicOperator op) {
 		super();
 		_op = op;
 	}
 	
+	public static BooleanExpression fromAndList(List<BooleanExpression> expList) {
+		
+		return new LogicExpression(LogicOperator.AND); 
+	}
+	
 	public LogicExpression(LogicOperator op, BooleanExpression left, BooleanExpression right) {
 		_left = left;
 		_right = right;
 		_op = op;
+	}
+
+	public LogicOperator getOperator() {
+	  // TODO Auto-generated method stub
+	  return _op;
+  }
+	
+	public List<BooleanExpression> toAndList() {
+		List<BooleanExpression> list = new ArrayList<BooleanExpression> ();
+		
+		if (_left == null || _right == null) {
+			System.err.println("error in logic expression!");
+			System.exit(1);
+		}
+		
+		if (_left instanceof LogicExpression && ((LogicExpression) _left)._op == LogicOperator.AND) {
+			list = ((LogicExpression) _left).toAndList();
+		} else {
+			list.add(_left.clone());
+		}
+		
+		if (_right instanceof LogicExpression && ((LogicExpression) _right)._op == LogicOperator.AND) {
+			List<BooleanExpression> rightList = ((LogicExpression) _right).toAndList();
+			list.addAll(rightList);
+		} else {
+			list.add(_right.clone());
+		}
+		
+		return list;
+	}
+	
+	public LogicExpression clone() {
+		return new LogicExpression(_op, _left.clone(), _right.clone());
 	}
 	
 	@Override
