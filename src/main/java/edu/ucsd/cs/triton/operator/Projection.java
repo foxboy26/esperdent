@@ -7,6 +7,7 @@ public class Projection extends BasicOperator {
 	private List<ProjectionField> _projectionField;
 	
 	public Projection() {
+		_type = OperatorType.PROJECTION;
 		_projectionField = new ArrayList<ProjectionField> ();
 	}
 	
@@ -15,6 +16,6 @@ public class Projection extends BasicOperator {
 	}
 	
 	public String toString() {
-		return _projectionField.toString();
+		return super.toString() + _projectionField.toString();
 	}
 }

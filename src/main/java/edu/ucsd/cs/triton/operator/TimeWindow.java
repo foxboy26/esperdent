@@ -6,6 +6,7 @@ public class TimeWindow extends BaseWindow {
 
 	public TimeWindow(long duration) {
 		_duration = duration;
+		_type = OperatorType.TIME_WINDOW;
 	}
 	
 	public TimeWindow(int duration, Unit unit) {

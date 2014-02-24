@@ -8,11 +8,13 @@ public class Selection extends BasicOperator {
 
 	public Selection(final BooleanExpression filter) {
 	  // TODO Auto-generated constructor stub
+		_type = OperatorType.SELECTION;
 		_filter = filter;
   }
 
 	public Selection() {
 	  // TODO Auto-generated constructor stub
+		_filter = null;
   }
 
 	public void setFilter(final BooleanExpression filter) {
@@ -24,17 +26,13 @@ public class Selection extends BasicOperator {
 		return _filter;
 	}
 	
+	public boolean isEmpty() {
+		return (_filter == null);
+	}
+	
 	public void dump() {
 		if (_filter != null) {
 			_filter.dump("");
-		}
-	}
-	
-	public String toString() {
-		if (_filter != null) {
-			return _filter.toString();
-		} else {
-			return "";
 		}
 	}
 }

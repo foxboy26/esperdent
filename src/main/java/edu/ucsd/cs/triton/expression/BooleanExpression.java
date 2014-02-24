@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public abstract class BooleanExpression extends BaseExpression {
 
-	private String _definition = null;
+	protected String _definition = null;
 	
 	public abstract BooleanExpression clone();
 

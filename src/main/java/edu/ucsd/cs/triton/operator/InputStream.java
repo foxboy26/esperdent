@@ -4,7 +4,8 @@ public class InputStream extends BasicOperator {
 	private String _name;
 
 	public InputStream(final String name) {
-		_name = name;
+		_type = OperatorType.INPUT_STREAM;
+		_name = name;		
 	}
 
 	public void setName(String name) {

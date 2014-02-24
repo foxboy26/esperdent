@@ -1,6 +1,6 @@
 package edu.ucsd.cs.triton.operator;
 
-public class Aggregator extends BasicOperator {
+public class Aggregator {
 	private String _name;
 	
 	private String _inputField;

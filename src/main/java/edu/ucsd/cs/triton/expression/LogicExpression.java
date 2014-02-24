@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LogicExpression extends BooleanExpression {
-	private BooleanExpression _left;
-	private BooleanExpression _right;
 	private LogicOperator _op;
 	
 	public static LogicExpression createAndExpression() {
@@ -52,21 +50,21 @@ public class LogicExpression extends BooleanExpression {
 		if (_left instanceof LogicExpression && ((LogicExpression) _left)._op == LogicOperator.AND) {
 			list = ((LogicExpression) _left).toAndList();
 		} else {
-			list.add(_left.clone());
+			list.add((BooleanExpression) _left.clone());
 		}
 		
 		if (_right instanceof LogicExpression && ((LogicExpression) _right)._op == LogicOperator.AND) {
 			List<BooleanExpression> rightList = ((LogicExpression) _right).toAndList();
 			list.addAll(rightList);
 		} else {
-			list.add(_right.clone());
+			list.add((BooleanExpression) _right.clone());
 		}
 		
 		return list;
 	}
 	
 	public LogicExpression clone() {
-		return new LogicExpression(_op, _left.clone(), _right.clone());
+		return new LogicExpression(_op, (BooleanExpression) _left.clone(), (BooleanExpression) _right.clone());
 	}
 	
 	@Override

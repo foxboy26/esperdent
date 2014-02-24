@@ -1,50 +1,52 @@
 package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BasicOperator implements IOperator {
-	private ArrayList<IOperator> children;
-	private IOperator parent;
-	private int id;
+	protected OperatorType _type;
+	protected List<IOperator> _children;
+	protected IOperator _parent;
 	
 	public BasicOperator() {
-		children = new ArrayList<IOperator> ();
+		_children = new ArrayList<IOperator> ();
+		_type = OperatorType.BASIC;
 	}
 	
 	public IOperator getParent() {
-		return this.parent;
+		return this._parent;
 	}
 
 	@Override
   public void setParent(IOperator op) {
 	  // TODO Auto-generated method stub
-	  this.parent = op;
+	  this._parent = op;
   }
 
 	
 	@Override
   public void addChild(IOperator n, int i) {
 	  // TODO Auto-generated method stub
-	  this.children.add(i, n);
+	  this._children.add(i, n);
   }
 
 	@Override
   public IOperator getChild(int i) {
 	  // TODO Auto-generated method stub
-	  return this.children.get(i);
+	  return this._children.get(i);
   }
 
 	@Override
   public int getNumChildren() {
 	  // TODO Auto-generated method stub
-	  return this.children.size();
+	  return this._children.size();
   }
 	
 	public void dump(String prefix) {
     System.out.println(toString(prefix));
-    if (children != null) {
-      for (int i = 0; i < children.size(); ++i) {
-      	BasicOperator n = (BasicOperator) children.get(i);
+    if (_children != null) {
+      for (int i = 0; i < _children.size(); ++i) {
+      	IOperator n = _children.get(i);
         if (n != null) {
           n.dump(prefix + " ");
         }
@@ -56,6 +58,6 @@ public class BasicOperator implements IOperator {
 	
   @Override
 	public String toString() {
-		return OperatorConstants.OperatorName[this.id];
+		return _type.toString();
 	}
 }

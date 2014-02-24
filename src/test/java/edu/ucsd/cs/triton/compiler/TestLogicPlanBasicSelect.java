@@ -10,6 +10,7 @@ import java.util.List;
 import parser.ASTStart;
 import parser.ParseException;
 import parser.TritonParser;
+import edu.ucsd.cs.triton.operator.BasicOperator;
 import edu.ucsd.cs.triton.operator.LogicPlan;
 import edu.ucsd.cs.triton.operator.LogicPlanVisitor;
 import edu.ucsd.cs.triton.resources.ResourceManager;
@@ -40,7 +41,9 @@ public class TestLogicPlanBasicSelect {
 			ArrayList<LogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 			
 			for (LogicPlan logicPlan : logicPlanList) {
-				logicPlan.dump();
+				logicPlan.dump();	
+				BasicOperator plan = logicPlan.generatePlan();
+				plan.dump("");
 				System.out.println("------------------");
 			}
 		} catch (FileNotFoundException e1) {

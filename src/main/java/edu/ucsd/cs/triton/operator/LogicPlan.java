@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.AttributeExpression;
 import edu.ucsd.cs.triton.expression.BooleanExpression;
@@ -19,14 +22,15 @@ import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public class LogicPlan {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlan.class);
+	
 	private Map<String, String> _renameTable;
 	private Set<String> _relations;
 
 	private Map<String, BasicOperator> _inputStreams;
 	private Projection _projection;
 	private Selection _selection;
-	private List<Aggregator> _aggregatorList;
-	private List<Attribute> _groupByList;
+	private Aggregation _aggregation;
 
 	private JoinPlan _joinPlan;
 	
@@ -36,8 +40,7 @@ public class LogicPlan {
 		_relations = new HashSet<String>();
 		_projection = new Projection();
 		_selection = new Selection();
-		_aggregatorList = new ArrayList<Aggregator>();
-		_groupByList = new ArrayList<Attribute>();
+		_aggregation = new Aggregation();
 		_joinPlan = new JoinPlan();
 	}
 
@@ -138,14 +141,6 @@ public class LogicPlan {
 		return _projection;
 	}
 
-	public boolean addGroupByAttribute(Attribute attribute) {
-		return _groupByList.add(attribute);
-	}
-
-	public boolean addAggregator(final Aggregator aggregator) {
-		return _aggregatorList.add(aggregator);
-	}
-
 	public Selection getSelection() {
 		// TODO Auto-generated method stub
 		return _selection;
@@ -154,11 +149,11 @@ public class LogicPlan {
 	/**
 	 * join detect
 	 */
-	public void rewriteJoin() {
+	public BasicOperator rewriteJoin() {
 		BooleanExpression filter = _selection.getFilter();
 
 		if (filter instanceof ComparisonExpression) {
-			return;
+			return null;
 		}
 
 		List<BooleanExpression> andList = ((LogicExpression) filter).toAndList();
@@ -207,61 +202,54 @@ public class LogicPlan {
 			}
 		}
 
+		// set new filter into selection operator
+		if (newFilterList.isEmpty()) {
+			_selection.setFilter(null);
+		} else {
+			_selection.setFilter(LogicExpression.fromAndList(newFilterList));
+		}
+		
 		// set local filter for each definition
 		for (Map.Entry<String, List<BooleanExpression>> entry : localSelectionMap.entrySet()) {
 			BasicOperator op = _inputStreams.get(entry.getKey());
 			Selection selection = new Selection(LogicExpression.fromAndList(entry.getValue()));
 			selection.addChild(op, 0);
 			op.setParent(selection);
-			op = selection;
+			_inputStreams.put(entry.getKey(), selection);
 		}
 		
 		// create join
 		// step 2: partition graph into join cluster
 		List<List<String>> partition = _joinPlan.getPartition();
 		
-		System.out.println(partition);
+		LOGGER.info("Find partition: " + partition);
 		
 		// build join operator
-		BasicOperator product = constructProduct(partition);
-		product.dump("");
+		BasicOperator plan = constructProduct(partition);
 		
-		// set new filter into selection operator
-		_selection.setFilter(LogicExpression.fromAndList(newFilterList));
-	}
-
-	private BasicOperator constructProduct(final List<List<String>> partition) {
-		BasicOperator product = constructJoin(partition.get(0));
-		for (int i = 1; i < partition.size(); i++) {
-			Product newProduct = new Product();
-			newProduct.addChild(product, 0);
-			BasicOperator right = constructJoin(partition.get(i));
-			newProduct.addChild(right, 1);
-			product = newProduct;
-		}
-		
-		return product;
+		return plan;
 	}
 	
-	private BasicOperator constructJoin(final List<String> joinList) {
-		BasicOperator join = _inputStreams.get(joinList.get(0));
-		for (int i = 1; i < joinList.size(); i++) {
-			Join newJoin = new Join();
-			List<KeyPair> joinFields = _joinPlan.getJoinFields(joinList.get(i-1), joinList.get(i));
-			newJoin.setJoinFields(joinFields);
-			newJoin.addChild(join, 0);
-			BasicOperator right = _inputStreams.get(joinList.get(i));
-			newJoin.addChild(right, 1);
-			join = newJoin;
+	public BasicOperator generatePlan() {
+		
+		LOGGER.info("Generating plan...");
+		
+		BasicOperator logicPlan = null;
+		
+		if (_inputStreams.size() == 1) {
+			logicPlan = _inputStreams.values().iterator().next();
+		} else {
+			logicPlan = new Product();
+			int i = 0;
+			for (BasicOperator op : _inputStreams.values()) {
+				logicPlan.addChild(op, i++);
+				op.setParent(logicPlan);
+			}
 		}
 		
-		return join;
-	}
-	
-	public void generatePlan() {
-		// TODO
-		rewriteJoin();
-		
+		if (_selection.getFilter() != null && _inputStreams.size() > 1) {
+			logicPlan = rewriteJoin();
+		}
 		//order: projection
 		//           |
 		//       aggregation (group by)
@@ -270,6 +258,28 @@ public class LogicPlan {
 		//           |
 		//         join
 		
+		// selection
+		if (!_selection.isEmpty()) {
+			_selection.addChild(logicPlan, 0);
+			logicPlan.setParent(_selection);
+			logicPlan = _selection;
+		}
+		
+		// aggregation
+		if (!_aggregation.isEmpty()) {
+			_aggregation.addChild(logicPlan, 0);
+			logicPlan.setParent(_aggregation);
+			logicPlan = _aggregation;
+		}	
+		
+		// projection
+		if (_projection != null) {
+			_projection.addChild(logicPlan, 0);
+			logicPlan.setParent(_projection);
+			logicPlan = _projection;
+		}
+		
+		return logicPlan;
 	}
 
 	public void dump() {
@@ -279,7 +289,51 @@ public class LogicPlan {
 		System.out.println("projection: " + _projection);
 		System.out.println("selection: ");
 		_selection.dump();
-		System.out.println("aggregate list:" + _aggregatorList);
-		System.out.println("groupby list:" + _groupByList);
+		System.out.println("aggregation: " + _aggregation);
+	}
+
+	public Aggregation getAggregation() {
+	  // TODO Auto-generated method stub
+	  return _aggregation;
+  }
+	
+
+	private BasicOperator constructProduct(final List<List<String>> partition) {
+		BasicOperator product = constructJoin(partition.get(0));
+		for (int i = 1; i < partition.size(); i++) {
+			Product newProduct = new Product();
+			newProduct.addChild(product, 0);
+			product.setParent(newProduct);
+			BasicOperator right = constructJoin(partition.get(i));
+			newProduct.addChild(right, 1);
+			right.setParent(newProduct);
+			product = newProduct;
+		}
+		
+		return product;
+	}
+	
+	private BasicOperator constructJoin(final List<String> joinList) {
+		BasicOperator join = _inputStreams.get(joinList.get(0));
+		for (int i = 1; i < joinList.size(); i++) {
+			String leftStream;
+			String rightStream = joinList.get(i);
+			if (i == 1) {
+				leftStream = joinList.get(0);
+			} else {
+				leftStream = ((Join) join).getOutputDefinition();
+			}
+			Join newJoin = new Join(leftStream, rightStream);
+			List<KeyPair> joinFields = _joinPlan.getJoinFields(joinList.get(i-1), joinList.get(i));
+			newJoin.setJoinFields(joinFields);
+			newJoin.addChild(join, 0);
+			join.setParent(newJoin);
+			BasicOperator right = _inputStreams.get(rightStream);
+			newJoin.addChild(right, 1);
+			right.setParent(newJoin);
+			join = newJoin;
+		}
+		
+		return join;
 	}
 }

@@ -5,6 +5,7 @@ public class FixedLengthWindow extends BaseWindow {
 	
 	public FixedLengthWindow(final int row) {
 		super();
+		_type = OperatorType.LENGTH_WINDOW;
 		_row = row;
 	}
 	

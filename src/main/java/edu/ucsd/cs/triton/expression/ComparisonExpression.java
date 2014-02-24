@@ -1,7 +1,5 @@
 package edu.ucsd.cs.triton.expression;
 
-import edu.ucsd.cs.triton.operator.Join;
-import edu.ucsd.cs.triton.operator.KeyPair;
 
 public class ComparisonExpression extends BooleanExpression {
 	

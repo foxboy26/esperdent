@@ -79,15 +79,18 @@ public class JoinPlan {
 		Set<String> visited = new HashSet<String> ();
 	  for (String s : _joinGraph.keySet()) {
 	  	if (!visited.contains(s)) {
-	  		visited.add(s);
 	  		String cur = s;
 	  		stack.push(cur);
 	  		List<String> joinList = new ArrayList<String> ();
+	  		joinList.add(cur);
 	  		while(!stack.empty()) {
 	  			cur = stack.pop();
+		  		visited.add(cur);
 	  			for (String neighbour : _joinGraph.get(cur)) {
-	  				joinList.add(neighbour);
-	  				stack.push(neighbour);
+	  				if (!visited.contains(neighbour)) {
+	  					joinList.add(neighbour);
+	  					stack.push(neighbour);
+	  				}
 	  			}
 	  		}
 	  		partition.add(joinList);

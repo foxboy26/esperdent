@@ -42,7 +42,6 @@ import parser.ASTUnaryExpression;
 import parser.ASTUnits;
 import parser.ASTWhereClause;
 import parser.ASTWinLength;
-import parser.ASTWinTimBatch;
 import parser.ASTWinTime;
 import parser.ASTWinTimeBatch;
 import parser.Node;
@@ -231,8 +230,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			node.jjtGetChild(i).jjtAccept(this, logicPlan);
 		}
 		
-		logicPlan.generatePlan();
-		
 		_logicPlanList.add(logicPlan);
 		
 	  return null;
@@ -270,7 +267,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		LogicPlan logicPlan = (LogicPlan) data;
 
 		Projection projectionOperator = logicPlan.getProjection();
-		
+		Aggregation aggregation = logicPlan.getAggregation();
 		Node attributeNode = node.jjtGetChild(0);
 		ProjectionField field = null;
 		Aggregator aggregator = null;
@@ -306,7 +303,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		}
 		
 		if (aggregator != null) {
-			logicPlan.addAggregator(aggregator);
+			aggregation.addAggregator(aggregator);
 		}
 		
 		projectionOperator.addField(field);
@@ -382,7 +379,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 				selectionOperator = (Selection) childNode.jjtAccept(this, data);
 			} else if (childNode instanceof ASTWinLength || 
 					       childNode instanceof ASTWinTime || 
-					       childNode instanceof ASTWinTimBatch) {
+					       childNode instanceof ASTWinTimeBatch) {
 				windowOperator = (BaseWindow) childNode.jjtAccept(this, data);
 			} else {
 				System.err.println("Err");
@@ -392,12 +389,14 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		
 		BasicOperator currentOperator = inputStream;
 		if (selectionOperator != null) {
+			selectionOperator.addChild(inputStream, 0);
 			inputStream.setParent(selectionOperator);
 			currentOperator = selectionOperator;
 		}
 		
 		if (windowOperator != null) {
-			inputStream.setParent(windowOperator);
+			windowOperator.addChild(currentOperator, 0);
+			currentOperator.setParent(windowOperator);
 			currentOperator = windowOperator;
 		}
 		
@@ -502,10 +501,11 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   public Object visit(ASTGroupByClause node, Object data) {
 	  // TODO Auto-generated method stub
 		LogicPlan logicPlan = (LogicPlan) data;
+		Aggregation aggregation = logicPlan.getAggregation();
 		int numOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numOfChildren; i++) {
 			String[] res = (String[]) node.jjtGetChild(i).jjtAccept(this, data);
-			logicPlan.addGroupByAttribute(new Attribute(res[0], res[1]));
+			aggregation.addGroupByAttribute(new Attribute(res[0], res[1]));
 		}
 		
 	  return null;
