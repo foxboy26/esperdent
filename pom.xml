@@ -23,8 +23,15 @@
 			<url>http://clojars.org/repo</url>
 		</repository>
 		<repository>
-			<id>twitter4j</id>
+			<id>twitter4j.org</id>
+			<name>twitter4j.org Repository</name>
 			<url>http://twitter4j.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -69,13 +76,14 @@
 		<dependency>
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-core</artifactId>
-			<version>2.2.6-SNAPSHOT</version>
+			<version>3.0.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.twitter4j</groupId>
 			<artifactId>twitter4j-stream</artifactId>
-			<version>2.2.6-SNAPSHOT</version>
+			<version>3.0.5</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
@@ -96,18 +104,21 @@
 			<artifactId>javacc</artifactId>
 			<version>5.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.6</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.6</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.hmsonline</groupId>
+			<artifactId>storm-cassandra</artifactId>
+			<version>0.4.0-rc4</version>
 		</dependency>
 	</dependencies>
 
