@@ -4,12 +4,6 @@ import java.util.List;
 
 public class ImportStatement extends BaseJavaStatement {
 	
-	private JavaProgram _program;
-	
-	public ImportStatement(JavaProgram program) {
-		_program = program;
-	}
-	
 	public ImportStatement add(final String importString) {
 		_children.add(new SingleImportStatement(importString));
 		return this;
@@ -24,8 +18,7 @@ public class ImportStatement extends BaseJavaStatement {
 	} 
 	
 	public JavaProgram endImport() {
-		_program.addChild(this);
-		return _program;
+		return (JavaProgram) _parent;
 	}
 
 	@Override

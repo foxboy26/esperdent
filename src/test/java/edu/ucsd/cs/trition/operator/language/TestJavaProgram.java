@@ -12,6 +12,8 @@ public class TestJavaProgram {
 				.add("lolo")
 			.endImport()
 			.newClass()
+				.addSimpleStatement("int a")
+				.addSimpleStatement("int b")
 			.endClass();
 	
 		//OutputStream outputStream = System.out;

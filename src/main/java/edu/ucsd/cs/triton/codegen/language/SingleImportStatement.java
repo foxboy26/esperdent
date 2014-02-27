@@ -11,8 +11,7 @@ public class SingleImportStatement extends BaseJavaStatement {
 	@Override
   protected void translate(String prefix, StringBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.append(prefix)
-	  	.append("import ")
+	  sb.append("import ")
 	  	.append(_importString)
 	  	.append(";\n");
   }

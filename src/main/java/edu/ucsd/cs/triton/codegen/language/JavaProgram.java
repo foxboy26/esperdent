@@ -6,15 +6,25 @@ public class JavaProgram extends BaseJavaStatement {
 	
 	public JavaProgram(final String programName) {
 		_programName = programName;
+		_parent = null;
 	}
 
 	public ImportStatement newImport() {
-		return new ImportStatement(this);
+		ImportStatement stmt = new ImportStatement();
+		addChild(stmt);
+		return stmt;
 	}
 
 	public ClassStatement newClass() {
-	  return new ClassStatement(this, _programName);
+		ClassStatement stmt = new ClassStatement(_programName);
+		addChild(stmt);
+	  return stmt;
   }
+	
+	public JavaProgram addSimpleStatement(final String stmt) {
+		addChild(new SimpleStatement(stmt));
+		return this;
+	}
 	
 	@Override
   protected void translate(String prefix, StringBuilder sb) {

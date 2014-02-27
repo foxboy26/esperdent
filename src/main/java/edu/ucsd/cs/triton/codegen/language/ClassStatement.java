@@ -2,12 +2,15 @@ package edu.ucsd.cs.triton.codegen.language;
 
 public class ClassStatement extends BaseJavaStatement {
 
-	private JavaProgram _program;
 	private final String _className;
 	
-	public ClassStatement(JavaProgram program, final String className) {
-		_program = program;
+	public ClassStatement(final String className) {
 		_className = className;
+	}
+	
+	public ClassStatement addSimpleStatement(final String stmt) {
+		addChild(new SimpleStatement(stmt));
+		return this;
 	}
 	
 	@Override
@@ -23,9 +26,7 @@ public class ClassStatement extends BaseJavaStatement {
   }
 
 	public JavaProgram endClass() {
-	  // TODO Auto-generated method stub
-		_program.addChild(this);
-	  return _program;
+	  return (JavaProgram) _parent;
   }
 
 }
