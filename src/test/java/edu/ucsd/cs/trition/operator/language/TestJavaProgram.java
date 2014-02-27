@@ -10,6 +10,12 @@ public class TestJavaProgram {
 			.newImport()
 				.add("hahah")
 				.add("lolo")
-			.endImport();
+			.endImport()
+			.newClass()
+			.endClass();
+	
+		//OutputStream outputStream = System.out;
+		//Writer       writer       = new OutputStreamWriter(outputStream);
+		System.out.println(program.translate());
 	}
 }
