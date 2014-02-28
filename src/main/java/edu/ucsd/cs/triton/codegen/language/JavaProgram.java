@@ -27,7 +27,7 @@ public class JavaProgram extends BaseJavaStatement {
 	}
 	
 	@Override
-  protected void translate(String prefix, StringBuilder sb) {
+  protected void translate(String prefix, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
 		childrenTranslate(prefix, sb);
   }

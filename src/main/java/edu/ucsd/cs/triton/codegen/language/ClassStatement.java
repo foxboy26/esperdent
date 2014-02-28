@@ -14,15 +14,15 @@ public class ClassStatement extends BaseJavaStatement {
 	}
 	
 	@Override
-  protected void translate(String prefix, StringBuilder sb) {
+  protected void translate(String prefix, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.append("class ")
-	  	.append(_className)
-	  	.append(" {\n");
+	  sb.append(Keyword.CLASS).space()
+	  	.append(_className).space()
+	  	.append('{').newline();
 	  
 	  childrenTranslate(prefix + PrintStyle.INDENT, sb);
 	  
-	  sb.append("}\n");
+	  sb.append('}').newline();
   }
 
 	public JavaProgram endClass() {

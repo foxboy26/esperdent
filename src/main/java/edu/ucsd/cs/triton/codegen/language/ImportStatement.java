@@ -22,9 +22,9 @@ public class ImportStatement extends BaseJavaStatement {
 	}
 
 	@Override
-  protected void translate(String prefix, StringBuilder sb) {
+  protected void translate(String prefix, LanguageBuilder builder) {
 	  // TODO Auto-generated method stub
-	  childrenTranslate(prefix, sb);
-	  sb.append("\n");
+	  childrenTranslate(prefix, builder);
+	  builder.newline();
   }
 }

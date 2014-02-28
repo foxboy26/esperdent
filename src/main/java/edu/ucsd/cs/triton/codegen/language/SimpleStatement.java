@@ -9,9 +9,9 @@ public class SimpleStatement extends BaseJavaStatement {
 	}
 	
 	@Override
-  protected void translate(String prefix, StringBuilder sb) {
+  protected void translate(String prefix, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.append(_stmt + ";\n");
+	  sb.append(_stmt).end();
   }
 
 }

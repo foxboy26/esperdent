@@ -7,7 +7,7 @@ public abstract class BaseJavaStatement implements IStatement {
 	protected List<IStatement> _children;
 	protected IStatement _parent;
 	
-	protected abstract void translate(String prefix, StringBuilder sb);
+	protected abstract void translate(String prefix, LanguageBuilder sb);
 	
 	public BaseJavaStatement() {
 		_children = new ArrayList<IStatement> ();
@@ -50,12 +50,12 @@ public abstract class BaseJavaStatement implements IStatement {
 	
 	@Override
 	public String translate() {
-		StringBuilder sb = new StringBuilder();
+		LanguageBuilder sb = new LanguageBuilder();
 		translate("", sb);
 		return sb.toString();
 	}
 	
-	protected void childrenTranslate(String prefix, StringBuilder sb) {
+	protected void childrenTranslate(String prefix, LanguageBuilder sb) {
 		for (IStatement statement: _children) {
 			sb.append(prefix);
 			((BaseJavaStatement) statement).translate(prefix, sb);
