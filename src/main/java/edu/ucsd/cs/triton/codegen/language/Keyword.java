@@ -25,8 +25,8 @@ public final class Keyword {
 	
 	public final static String IF = "if";
 	public final static String ELSE = "else";
-	public final static String WHILE = "if";
-	public final static String FOR = "if";
+	public final static String WHILE = "while";
+	public final static String FOR = "for";
 
 	public final static String NEW = "new";
 	public final static String THIS = "this";

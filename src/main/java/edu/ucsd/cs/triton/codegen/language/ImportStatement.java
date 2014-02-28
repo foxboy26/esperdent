@@ -17,14 +17,14 @@ public class ImportStatement extends BaseJavaStatement {
 		return this;
 	} 
 	
-	public JavaProgram endImport() {
-		return (JavaProgram) _parent;
+	public JavaProgram EndImport() {
+		return (JavaProgram) end();
 	}
 
 	@Override
-  protected void translate(String prefix, LanguageBuilder builder) {
+  protected void translate(int n, LanguageBuilder builder) {
 	  // TODO Auto-generated method stub
-	  childrenTranslate(prefix, builder);
+	  childrenTranslate(n, builder);
 	  builder.newline();
   }
 }

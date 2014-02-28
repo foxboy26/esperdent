@@ -9,13 +9,13 @@ public class JavaProgram extends BaseJavaStatement {
 		_parent = null;
 	}
 
-	public ImportStatement newImport() {
+	public ImportStatement Import() {
 		ImportStatement stmt = new ImportStatement();
 		addChild(stmt);
 		return stmt;
 	}
 
-	public ClassStatement newClass() {
+	public ClassStatement Class() {
 		ClassStatement stmt = new ClassStatement(_programName);
 		addChild(stmt);
 	  return stmt;
@@ -27,8 +27,8 @@ public class JavaProgram extends BaseJavaStatement {
 	}
 	
 	@Override
-  protected void translate(String prefix, LanguageBuilder sb) {
+  protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-		childrenTranslate(prefix, sb);
+		childrenTranslate(n, sb);
   }
 }

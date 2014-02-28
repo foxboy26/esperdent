@@ -9,11 +9,12 @@ public class SingleImportStatement extends BaseJavaStatement {
 	}
 
 	@Override
-  protected void translate(String prefix, LanguageBuilder builder) {
+  protected void translate(int n, LanguageBuilder builder) {
 	  // TODO Auto-generated method stub
-	  builder.append(Keyword.IMPORT).space()
+	  builder.indent(n)
+	  	.append(Keyword.IMPORT).space()
 	  	.append(_importString)
 	  	.end();
-  }
+	}
 
 }

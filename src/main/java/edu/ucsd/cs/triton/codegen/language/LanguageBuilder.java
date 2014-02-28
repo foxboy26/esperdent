@@ -1,10 +1,20 @@
 package edu.ucsd.cs.triton.codegen.language;
 
+import org.apache.commons.lang.StringUtils;
+
 public final class LanguageBuilder {
 	private StringBuilder _sb;
 	
 	LanguageBuilder() {
 		_sb = new StringBuilder();
+	}
+	
+	public LanguageBuilder indent(int n) {
+		if (n > 0) {
+			_sb.append(StringUtils.leftPad("", n, ' '));
+		}
+		
+		return this;
 	}
 	
 	public LanguageBuilder newline() {
@@ -14,6 +24,24 @@ public final class LanguageBuilder {
 	
 	public LanguageBuilder space() {
 		_sb.append(' ');
+		return this;
+	}
+	
+	/**
+	 * append " {\n"
+	 * @return
+	 */
+	public LanguageBuilder beginBlock() {
+		_sb.append(" {\n");
+		return this;
+	}
+	
+	/**
+	 * append "}\n"
+	 * @return this
+	 */
+	public LanguageBuilder endBlock() {
+		_sb.append("}\n");
 		return this;
 	}
 	

@@ -1,6 +1,6 @@
 package edu.ucsd.cs.triton.codegen.language;
 
-public class SimpleStatement extends BaseJavaStatement {
+public final class SimpleStatement extends BaseJavaStatement {
 
 	private final String _stmt;
 	
@@ -9,9 +9,9 @@ public class SimpleStatement extends BaseJavaStatement {
 	}
 	
 	@Override
-  protected void translate(String prefix, LanguageBuilder sb) {
+  protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.append(_stmt).end();
+	  sb.indent(n).append(_stmt).end();
   }
 
 }

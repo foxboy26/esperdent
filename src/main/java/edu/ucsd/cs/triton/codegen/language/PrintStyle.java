@@ -1,7 +1,7 @@
 package edu.ucsd.cs.triton.codegen.language;
 
 public final class PrintStyle {
-	public static final String INDENT = "    ";
+	public static final int INDENT = 4;
 	
 	
 	

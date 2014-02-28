@@ -7,14 +7,38 @@ public class TestJavaProgram {
 		JavaProgram program = new JavaProgram("name");
 		
 		program
-			.newImport()
+			.Import()
 				.add("hahah")
 				.add("lolo")
-			.endImport()
-			.newClass()
-				.addSimpleStatement("int a")
-				.addSimpleStatement("int b")
-			.endClass();
+			.EndImport()
+			.Class()
+				.InnerClass("Filter")
+					.MemberFunction("public boolean filter(int a)")
+						.If("a > 0")
+							.SimpleStmt("fafasf")
+							.SimpleStmt("hahah")
+							.If("b > c")
+								.SimpleStmt("bb")
+							.EndIf()
+							.SimpleStmt("lalal")
+						.EndIf()
+						.Return("true")
+					.EndMemberFunction()
+				.EndInnerClass()
+				.SimpleStmt("int a")
+				.SimpleStmt("int b")
+				.MemberFunction("public static void main(String[] args)")
+					.SimpleStmt("System.out.println(\"hello world\\n\")")
+					.For("int a = 0; i < 3; i++")
+						.SimpleStmt("hahahdd")
+					.EndFor()
+					.While("true")
+						.SimpleStmt("fadsfsd")
+						.SimpleStmt("baddsaf")
+					.EndWhile()
+					.Return("")
+				.EndMemberFunction()
+			.EndClass();
 	
 		//OutputStream outputStream = System.out;
 		//Writer       writer       = new OutputStreamWriter(outputStream);

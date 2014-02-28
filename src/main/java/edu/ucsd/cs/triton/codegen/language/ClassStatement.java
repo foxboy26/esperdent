@@ -1,6 +1,6 @@
 package edu.ucsd.cs.triton.codegen.language;
 
-public class ClassStatement extends BaseJavaStatement {
+public class ClassStatement extends BlockStatement {
 
 	private final String _className;
 	
@@ -8,25 +8,19 @@ public class ClassStatement extends BaseJavaStatement {
 		_className = className;
 	}
 	
-	public ClassStatement addSimpleStatement(final String stmt) {
-		addChild(new SimpleStatement(stmt));
-		return this;
-	}
-	
 	@Override
-  protected void translate(String prefix, LanguageBuilder sb) {
+  protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.append(Keyword.CLASS).space()
-	  	.append(_className).space()
-	  	.append('{').newline();
+	  sb.indent(n)
+	  	.append(Keyword.CLASS).space()
+	  	.append(_className).beginBlock();
 	  
-	  childrenTranslate(prefix + PrintStyle.INDENT, sb);
+	  childrenTranslate(n + PrintStyle.INDENT, sb);
 	  
-	  sb.append('}').newline();
+	  sb.indent(n)
+	  	.endBlock();
+	  sb.newline();
   }
 
-	public JavaProgram endClass() {
-	  return (JavaProgram) _parent;
-  }
 
 }
