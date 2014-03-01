@@ -1,18 +1,19 @@
 # Create stream
-create stream r1 (a int, b float, c string, d timestamp) from source adv;
+register stream r1 (a int, b float, c string, d timestamp) from source("adv");
 
 # Create relation
-create relation r1 (a int, b float, c string, d timestamp) from source adv;
+register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.java");
 
 # Create stream from query
-create stream a(b int, c timestamp) from select * from b;
+register stream a(b int, c timestamp) from select * from b;
 
 # Basic select
 select * from s1;
 select a.b from a;
 
 # select with expression
-select (a+4)*3 from s1;
+select (a+4)*3 from s1
+output to file("asdfsad");
 
 # rename with join
 select * from stream1 as s1, stream2 as s2 where s1.a=s2.a;

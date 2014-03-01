@@ -16,6 +16,7 @@ import parser.ASTCondPrime;
 import parser.ASTConstant;
 import parser.ASTCreateRelation;
 import parser.ASTCreateStream;
+import parser.ASTFile;
 import parser.ASTFloatingLiteral;
 import parser.ASTFromClause;
 import parser.ASTGroupByClause;
@@ -24,11 +25,13 @@ import parser.ASTInteger;
 import parser.ASTMultiplicativeExpression;
 import parser.ASTName;
 import parser.ASTOrderByClause;
+import parser.ASTOutputClause;
 import parser.ASTQuery;
 import parser.ASTReName;
 import parser.ASTSelectAttribute;
 import parser.ASTSelectClause;
 import parser.ASTSource;
+import parser.ASTSpout;
 import parser.ASTStart;
 import parser.ASTStreamDef;
 import parser.ASTStreamFilter;
@@ -642,4 +645,22 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 					+ " children, but only have " + numOfChild);
 		}
 	}
+
+	@Override
+  public Object visit(ASTOutputClause node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTSpout node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+	@Override
+  public Object visit(ASTFile node, Object data) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
 }

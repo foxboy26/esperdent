@@ -52,7 +52,7 @@ SPECIAL_TOKEN : /* COMMENTS */
 
 TOKEN [IGNORE_CASE]:
 {
-    < CREATE: "create" >
+    < REGISTER: "register" >
 |
     < RELATION: "relation" >
 |
@@ -60,9 +60,15 @@ TOKEN [IGNORE_CASE]:
 |
     < SOURCE: "source" >
 |
+    < FILE: "file" >
+|
     < INSERT: "insert" >
 |
     < INTO: "into" >
+|
+    < OUTPUT: "output" >
+|
+    < TO: "to" >
 |
     < SELECT: "select" >
 |
@@ -211,12 +217,12 @@ void CreateClause() #void : { Token t; }
 
 void CreateStream() : { Token t; }
 {
-    <CREATE> <STREAM> t = <IDENTIFIER> { jjtThis.streamName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
+    <REGISTER> <STREAM> t = <IDENTIFIER> { jjtThis.streamName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
 }
 
 void CreateRelation() : { Token t; }
 {
-    <CREATE> <RELATION> t = <IDENTIFIER> { jjtThis.relationName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
+    <REGISTER> <RELATION> t = <IDENTIFIER> { jjtThis.relationName = t.image; } "(" AttributeDefList() ")" <FROM> Source()
 }
 
 void AttributeDefList() : {}
@@ -240,9 +246,11 @@ void AttributeType() #void : {}
     <TIMESTAMP> #TypeTimestamp
 }
 
-void Source() : { Token t; }
+void Source() : {}
 {
-    <SOURCE> t = <IDENTIFIER> { jjtThis.uri = t.image; }
+    Spout()
+|
+    File()
 |
     Query()
 }
@@ -261,7 +269,7 @@ void InsertClause() : {}
 /** Query clause */
 void Query() : {}
 {
-  SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())?
+  SelectClause() FromClause() (WhereClause())? (GroupByClause())? (OrderByClause())? (OutputClause())?
 }
 
 /** Select clause */
@@ -349,6 +357,22 @@ void OrderByClause() : {}
 {
     <ORDER> <BY> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
 }
+
+void OutputClause() : {}
+{
+    <OUTPUT> <TO> File()
+}
+
+void Spout() : { Token t; }
+{
+    <SOURCE> "(" t = <STRING_LITERAL> { jjtThis.name = t.image; } ")"
+}
+
+void File() : { Token t; }
+{
+    <FILE> "(" t = <STRING_LITERAL> { jjtThis.uri = t.image; } ")"
+}
+
 
 void Cond() #void : {}
 {
