@@ -2,8 +2,8 @@ package edu.ucsd.cs.triton.codegen;
 
 import java.util.Map;
 
-public class Import {
-	private static final String[] DEFAULT_IMPORT_LIST = new String[] {
+public final class Import {
+	public static final String[] DEFAULT_IMPORT_LIST = new String[] {
 	    "storm.trident.Stream", 
 	    "storm.trident.TridentTopology",
 	    "backtype.storm.Config", 
@@ -25,6 +25,5 @@ public class Import {
 	// "edu.ucsd.cs.triton.builtin.Max
 
 	public Import() {
-		DYNAMIC_IMPORT_LIST = new 
 	}
 }

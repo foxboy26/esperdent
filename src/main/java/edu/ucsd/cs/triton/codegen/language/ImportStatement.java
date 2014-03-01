@@ -17,6 +17,14 @@ public class ImportStatement extends BaseJavaStatement {
 		return this;
 	} 
 	
+	public ImportStatement add(final String[] importList) {
+		for (String importString : importList) {
+			_children.add(new SingleImportStatement(importString));
+		}
+		
+		return this;
+	} 
+	
 	public JavaProgram EndImport() {
 		return (JavaProgram) end();
 	}

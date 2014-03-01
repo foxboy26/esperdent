@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.twitter;
+package edu.ucsd.cs.triton.spout;
 
 import static backtype.storm.utils.Utils.tuple;
 
