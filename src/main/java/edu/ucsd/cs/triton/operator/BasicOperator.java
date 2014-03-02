@@ -41,6 +41,12 @@ public class BasicOperator implements IOperator {
 	  // TODO Auto-generated method stub
 	  return this._children.size();
   }
+
+	@Override
+  public Object accept(OperatorVisitor visitor, Object data) {
+	  // TODO Auto-generated method stub
+	  return visitor.visit(this, data);
+  }
 	
 	public void dump(String prefix) {
     System.out.println(toString(prefix));
@@ -60,4 +66,12 @@ public class BasicOperator implements IOperator {
 	public String toString() {
 		return _type.toString();
 	}
+
+	
+  public Object childrenAccept(OperatorVisitor visitor, Object data) {
+    for (IOperator operator : _children) {
+      operator.accept(visitor, data);
+    }
+    return data;
+  }
 }

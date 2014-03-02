@@ -24,5 +24,7 @@ public interface IOperator {
 	/** Return the number of children the node has. */
 	public int getNumChildren();
 	
+  public Object accept(OperatorVisitor visitor, Object data);
+	
 	public void dump(String prefix);
 }
