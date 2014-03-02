@@ -108,4 +108,9 @@ public class TwitterSpout extends BaseRichSpout implements StatusListener
 	    // TODO Auto-generated method stub
 	    
     }
+
+		public Fields getOutputFields() {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
 }
