@@ -1,5 +1,5 @@
 # Create stream
-register stream r1 (a int, b float, c string, d timestamp) from source("adv");
+register stream r1 (a int, b float, c string, d timestamp) from source("TwitterSpout");
 
 # Create relation
 register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.java");

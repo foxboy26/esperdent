@@ -11,5 +11,6 @@ public enum OperatorType {
 	PROJECTION,
 	INPUT_STREAM,
 	JOIN,
-	AGGREGATION;
+	AGGREGATION, 
+	OUTPUT_STREAM;
 }

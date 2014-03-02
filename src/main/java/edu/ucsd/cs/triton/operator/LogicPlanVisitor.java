@@ -3,6 +3,9 @@ package edu.ucsd.cs.triton.operator;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import parser.ASTAdditiveExpression;
 import parser.ASTAggregateAttribute;
 import parser.ASTAggregateFunction;
@@ -73,6 +76,8 @@ import edu.ucsd.cs.triton.resources.StreamDefinition;
 
 public class LogicPlanVisitor implements TritonParserVisitor {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlanVisitor.class);
+	
 	private ResourceManager _resourceManager;
 	private ArrayList<LogicPlan> _logicPlanList;
 	
@@ -192,24 +197,27 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTSource node, Object data) {
 	  // TODO Auto-generated method stub
+		checkNumOfChildren(node, 1, "ASTSource");
 		
 		BaseDefinition definition = (BaseDefinition) data;
 
-		int numOfChildren = node.jjtGetNumChildren();
+		Node child = node.jjtGetChild(0);
 		
-		switch (numOfChildren) {
-		case 0:
+		if (child instanceof ASTSpout) {
+			String spout = (String) child.jjtAccept(this, data);
+			definition.setSource(new DynamicSource(spout));
+		} else if (child instanceof ASTFile) {
 			// static source from database or data set
-			definition.setSource(new StaticSource(node.uri));
-			break;
-		case 1:
+			String filename = (String) child.jjtAccept(this, data);
+			definition.setSource(new StaticSource(filename));			
+		} else if (child instanceof ASTQuery) {
 			// dynamic source from a stream query result
 			ResourceManager resoureManager = ResourceManager.getInstance();
 			String unnamedStream = resoureManager.allocateUnnamedStream();
 			definition.setSource(new DynamicSource(unnamedStream));
-			break;
-		default:
-			System.err.println("Error in source node!");
+			child.jjtAccept(this, data);
+		} else {
+			LOGGER.error("Error in source node!");
 		}
 		
 	  return null;
@@ -218,8 +226,18 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTQuery node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = new LogicPlan();
+		String planName = null;
+		LogicPlan logicPlan = null;
 		
+		if (data instanceof BaseDefinition) {
+			BaseDefinition definition = (BaseDefinition) data;
+			planName = definition.getName();
+			logicPlan = LogicPlan.newNamedLogicPlan(planName);
+		} else {
+			planName = _resourceManager.allocateUnnamedQuery();
+			logicPlan = LogicPlan.newAnonymousLogicPlan(planName);
+		}
+
 		int numOfChildren = node.jjtGetNumChildren();
 		Node selectNode = node.jjtGetChild(0);
 		Node fromNode = node.jjtGetChild(1);
@@ -522,6 +540,22 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   }
 
 	@Override
+  public Object visit(ASTOutputClause node, Object data) {
+	  // TODO Auto-generated method stub
+		LogicPlan logicPlan = (LogicPlan) data;
+		
+		Node child = node.jjtGetChild(0);
+		if (child instanceof ASTFile) {
+			String fileName = (String) child.jjtAccept(this, data);
+			logicPlan.setOutputStream(new OutputStream(fileName));
+		} else {
+			LOGGER.error("unsupported output stream.");
+		}
+	  
+		return null;
+  }
+	
+	@Override
   public Object visit(ASTCmpOp node, Object data) {
 	  // TODO Auto-generated method stub
 		return ComparisonOperator.fromString(node.op);
@@ -647,20 +681,14 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	}
 
 	@Override
-  public Object visit(ASTOutputClause node, Object data) {
-	  // TODO Auto-generated method stub
-	  return null;
-  }
-
-	@Override
   public Object visit(ASTSpout node, Object data) {
 	  // TODO Auto-generated method stub
-	  return null;
+	  return node.name;
   }
 
 	@Override
   public Object visit(ASTFile node, Object data) {
 	  // TODO Auto-generated method stub
-	  return null;
+	  return node.uri;
   }
 }

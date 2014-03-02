@@ -45,7 +45,6 @@ public class TwitterSpout extends BaseRichSpout implements StatusListener
         this.queue = new ArrayBlockingQueue<Status>(1000);
         this.collector = collector;
 
-        //Configuration twitterConf = new ConfigurationBuilder().setUser(username).setPassword(pwd).build();
         TwitterStreamFactory fact = new TwitterStreamFactory();
 
         twitterStream = fact.getInstance();

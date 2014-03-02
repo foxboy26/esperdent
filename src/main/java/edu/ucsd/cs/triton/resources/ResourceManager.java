@@ -12,9 +12,13 @@ public class ResourceManager {
 	
 	private static final String UNNAMED_FIELD_PREFIX = "unnamed_field_";
 
+	private static final String UNNAMED_QUERY_PREFIX = "query";
+	
 	private static int unnamedStreamCount = 0;
 	
 	private static int unnamedFieldCount = 0;
+	
+	private static int unnamedQueryCount = 0;
 
 	private ResourceManager() {
 		this._definitions = new HashMap<String, BaseDefinition> ();
@@ -68,4 +72,9 @@ public class ResourceManager {
 	public String allocateUnnamedField() {
 		return (UNNAMED_FIELD_PREFIX + (unnamedFieldCount++));
 	}
+
+	public String allocateUnnamedQuery() {
+	  // TODO Auto-generated method stub
+		return (UNNAMED_QUERY_PREFIX + (unnamedQueryCount++));
+  }
 }

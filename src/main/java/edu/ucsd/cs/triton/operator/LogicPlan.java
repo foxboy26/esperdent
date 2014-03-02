@@ -24,6 +24,8 @@ public class LogicPlan {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlan.class);
 	
+	private final String _planName;
+	private final boolean _isNamedQuery;
 	private Map<String, String> _renameTable;
 	private Set<String> _relations;
 
@@ -31,21 +33,40 @@ public class LogicPlan {
 	private Projection _projection;
 	private Selection _selection;
 	private Aggregation _aggregation;
-
+	private OutputStream _outputStream;
+	
 	private JoinPlan _joinPlan;
 	
-	public LogicPlan() {
+	private LogicPlan(final String planName, final boolean isNamedQuery) {
+		_planName = planName;
+		_isNamedQuery = isNamedQuery;
+		
+		// input streams/relations
 		_renameTable = new HashMap<String, String>();
 		_inputStreams = new HashMap<String, BasicOperator>();
 		_relations = new HashSet<String>();
+		
+		// operator
 		_projection = new Projection();
 		_selection = new Selection();
 		_aggregation = new Aggregation();
+		
+		// join rewrite
 		_joinPlan = new JoinPlan();
+		
+		// output
+		_outputStream = null;
 	}
 
-	public boolean addInputStream(final String name,
-	    final BasicOperator inputStream) {
+	public static LogicPlan newNamedLogicPlan(final String planName) {
+		return new LogicPlan(planName, true);
+	}
+	
+	public static LogicPlan newAnonymousLogicPlan(final String planName) {
+		return new LogicPlan(planName, false);
+	}
+	
+	public boolean addInputStream(final String name, final BasicOperator inputStream) {
 		return _inputStreams.put(name, inputStream) != null;
 	}
 
@@ -146,8 +167,12 @@ public class LogicPlan {
 		return _selection;
 	}
 
+	public void setOutputStream(final OutputStream outputStream) {
+		_outputStream = outputStream;
+	}
+	
 	/**
-	 * join detect
+	 * join detection, and selection push down.
 	 */
 	public BasicOperator rewriteJoin() {
 		BooleanExpression filter = _selection.getFilter();
@@ -250,7 +275,10 @@ public class LogicPlan {
 		if (_selection.getFilter() != null && _inputStreams.size() > 1) {
 			logicPlan = rewriteJoin();
 		}
-		//order: projection
+		
+		//order:  output
+		//           |
+		//       projection
 		//           |
 		//       aggregation (group by)
 		//           |
@@ -279,6 +307,17 @@ public class LogicPlan {
 			logicPlan = _projection;
 		}
 		
+		if (_outputStream == null && !_isNamedQuery) {
+			_outputStream = OutputStream.newStdoutStream();
+		}
+		
+		// output
+		if (_outputStream != null) {
+			_outputStream.addChild(logicPlan, 0);
+			logicPlan.setParent(_projection);
+			logicPlan = _outputStream;
+		}
+		
 		return logicPlan;
 	}
 
@@ -297,6 +336,9 @@ public class LogicPlan {
 	  return _aggregation;
   }
 	
+	public String getPlanName() {
+		return _planName;
+	}
 
 	private BasicOperator constructProduct(final List<List<String>> partition) {
 		BasicOperator product = constructJoin(partition.get(0));
