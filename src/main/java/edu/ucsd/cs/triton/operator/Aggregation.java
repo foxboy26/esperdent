@@ -23,6 +23,14 @@ public class Aggregation extends BasicOperator {
 		return _aggregatorList.add(aggregator);
 	}
 	
+	public List<Aggregator> getAggregatorList() {
+		return _aggregatorList;
+	}
+	
+	public List<Attribute> getGroupByList() {
+		return _groupByList;
+	}
+	
 	public boolean containsGroupBy() {
 		return _groupByList.size() > 0;
 	}

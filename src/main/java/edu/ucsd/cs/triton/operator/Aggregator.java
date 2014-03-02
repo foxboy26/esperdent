@@ -18,6 +18,14 @@ public class Aggregator {
 		return _name;
 	}
 	
+	public String getInputField() {
+		return _inputField;
+	}
+	
+	public String getOutputField() {
+		return _outputField;
+	}
+	
 	public void setOutputField(final String outputField) {
 		_outputField = outputField;
 	}

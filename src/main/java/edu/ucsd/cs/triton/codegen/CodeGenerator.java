@@ -82,9 +82,8 @@ public final class CodeGenerator {
 	  
 	  mf.SimpleStmt("TridentTopology topology = new TridentTopology()");
 	  
-	  generateSpout(mf);
-	  
-	  
+	  Translator translator = new Translator();
+	  translator.visit(operator, data);
 	  
 	  mf.Return("topology.build()")
 	  	.EndMemberFunction();

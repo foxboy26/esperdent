@@ -17,4 +17,8 @@ public class OutputStream extends BasicOperator {
 	  // TODO Auto-generated method stub
 	  return new OutputStream(STDOUT);
   }
+	
+	public boolean isStdout() {
+		return _fileName != null && _fileName.equals(STDOUT);
+	}
 }

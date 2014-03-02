@@ -33,6 +33,8 @@ public class TwitterDemo extends SimpleQuery {
   	.chainEnd()
   	.each(new Fields("tps", "maxRetweets"), new PrintFilter()); // output
     //.partitionPersist(stateFactory, updater)
+    
+    
 	}
   
 	public static void main(String[] args) {
