@@ -1,43 +1,49 @@
 package edu.ucsd.cs.triton.codegen;
 
 import storm.trident.TridentTopology;
-import storm.trident.spout.IBatchSpout;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
-import backtype.storm.generated.StormTopology;
 
 public class SimpleQuery implements IQuery {
 	
-	protected IBatchSpout _spout;
-	
+  protected String _jobName;
 	protected TridentTopology _topology;
-	
   protected Config _conf;
-
-  public void init() {
   
+  public SimpleQuery() {
+  	_topology = new TridentTopology();
+    _conf = new Config();
+  }
+  
+  @Override
+  public void init() {
+  	_jobName = "local_test";
+  	// TODO conf init
   }
 
-	@Override
-  public StormTopology buildTopology() {
-	  // TODO Auto-generated method stub
-	  return _topology.build();
-  }
+  @Override
+	public void buildQuery() {
+	}
 
 	@Override
   public void execute(String[] args) {
-	  // TODO Auto-generated method stub
 	  // local mode
+		init();
+		
+		// build query
+		buildQuery();
+		
+		// execute
 		if (args.length == 0) {
 	    LocalCluster cluster = new LocalCluster();
-	    cluster.submitTopology("twitter_demo", _conf, buildTopology());
+	    cluster.submitTopology(_jobName, _conf, _topology.build());
 	  } else {
 	  	// cluster mode
 	    try {
-	      StormSubmitter.submitTopology(args[0], _conf, buildTopology());
+	      StormSubmitter.submitTopology(args[0], _conf, _topology.build());
       } catch (AlreadyAliveException e) {
 	      // TODO Auto-generated catch block
 	      e.printStackTrace();

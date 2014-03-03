@@ -87,7 +87,7 @@ public final class TridentBuilder {
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(Object[] args) {
-		return newFunction("Fields", args);
+		return newStringValueFunction("Fields", args);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public final class TridentBuilder {
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(Collection args) {
-		return newFunction("Fields", args);
+		return newStringValueFunction("Fields", args);
 	}
 	
 	/**
@@ -105,11 +105,23 @@ public final class TridentBuilder {
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(String... args) {
-		return newFunction("Fields", args);
+		return newStringValueFunction("Fields", args);
 	}
 	
 	
 	private static String newTridentFunction(String func, String... args) {
 		return "." + func + "(" + StringUtils.join(args, ", ") + ")\n"; 
+	}
+	
+	private static String newStringValueFunction(String func, String... args) {
+		return Keyword.NEW + " " + func + "(\"" + StringUtils.join(args, "\", \"") + "\")"; 
+	}
+	
+	private static String newStringValueFunction(String func, Object[] args) {
+		return Keyword.NEW + " " + func + "(\"" + StringUtils.join(args, "\", \"") + "\")"; 
+	}
+	
+	private static String newStringValueFunction(String func, Collection args) {
+		return Keyword.NEW + " " + func + "(\"" + StringUtils.join(args, "\", \"") + "\")"; 
 	}
 }

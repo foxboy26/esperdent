@@ -547,7 +547,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		Node child = node.jjtGetChild(0);
 		if (child instanceof ASTFile) {
 			String fileName = (String) child.jjtAccept(this, data);
-			logicPlan.setOutputStream(new OutputStream(fileName));
+			logicPlan.setOutputStream(new OutputStream(fileName, logicPlan.getProjection().getOutputFieldList()));
 		} else {
 			LOGGER.error("unsupported output stream.");
 		}

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Projection extends BasicOperator {
 	private List<ProjectionField> _projectionFieldList;
+	private String[] _outputFieldList = null;
 	
 	public Projection() {
 		_type = OperatorType.PROJECTION;
@@ -17,6 +18,18 @@ public class Projection extends BasicOperator {
 	
 	public List<ProjectionField> getProjectionFieldList() {
 		return _projectionFieldList;
+	}
+	
+	public String[] getOutputFieldList() {
+		
+		if (_outputFieldList != null) return _outputFieldList;
+		
+		String[] outputFields = new String[_projectionFieldList.size()];
+		for (int i = 0; i < _projectionFieldList.size(); i++) {
+			outputFields[i] = _projectionFieldList.get(i).getOutputField();
+		}
+		
+		return outputFields;
 	}
 	
 	public String toString() {

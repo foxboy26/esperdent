@@ -8,4 +8,4 @@ register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.
 # register stream a(b int, c timestamp) from select * from b;
 
 # Basic select
-select * from s1;
+select a + 3, max(b) from s1 where d=3 and b=3 group by c;

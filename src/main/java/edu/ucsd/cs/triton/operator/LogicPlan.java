@@ -308,7 +308,7 @@ public class LogicPlan {
 		}
 		
 		if (_outputStream == null && !_isNamedQuery) {
-			_outputStream = OutputStream.newStdoutStream();
+			_outputStream = OutputStream.newStdoutStream(_projection.getOutputFieldList());
 		}
 		
 		// output

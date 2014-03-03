@@ -1,7 +1,15 @@
 package edu.ucsd.cs.trition.twitter;
 
+import java.util.Map;
+
+import storm.trident.operation.BaseFunction;
+import storm.trident.operation.Filter;
+import storm.trident.operation.TridentCollector;
+import storm.trident.operation.TridentOperationContext;
 import storm.trident.operation.builtin.Count;
+import storm.trident.tuple.TridentTuple;
 import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Values;
 import edu.ucsd.cs.triton.builtin.Max;
 import edu.ucsd.cs.triton.codegen.SimpleQuery;
 import edu.ucsd.cs.triton.spout.TwitterSpout;
@@ -14,13 +22,30 @@ import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
  */
 public class TwitterDemo extends SimpleQuery {
 
-	private TwitterSpout _spout;
-  
-  public TwitterDemo(TwitterSpout spout) {
-  	init();
-  	_spout = spout;
-  }
+	private TwitterSpout _spout = new TwitterSpout();
 	
+  public static class MyFunction extends BaseFunction {
+    @Override
+    public void execute(TridentTuple tuple, TridentCollector collector) {
+    	collector.emit(new Values(tuple.getInteger(0) * 2, tuple.getString(1) + "!!", tuple.getInteger(2) + 2));
+    }
+  }
+  
+  /*public static class S1PreWindowFilter implements Filter  {
+  	@Override
+  	public void prepare(Map conf, TridentOperationContext context) {
+  	}
+  	@Override
+  	public void cleanup() {
+  	}
+
+  	@Override
+  	public boolean isKeep(TridentTuple tuple) {
+  		return tuple.getInteger(0) == 3;
+  	}
+  }*/
+	
+	@Override
 	public void buildQuery() {
     _topology.newStream("s1", _spout) 
 		.partitionPersist(new FixedLengthSlidingWindow.Factory(3), _spout.getOutputFields(), new SlidingWindowUpdater(), new Fields("windowId", "createdAt", "retweetCount"))
@@ -33,15 +58,10 @@ public class TwitterDemo extends SimpleQuery {
   	.chainEnd()
   	.each(new Fields("tps", "maxRetweets"), new PrintFilter()); // output
     //.partitionPersist(stateFactory, updater)
-    
-    
 	}
   
 	public static void main(String[] args) {
-		
-		TwitterSpout spout = new TwitterSpout();
-		TwitterDemo demo = new TwitterDemo(spout);
-		demo.buildQuery();
+		TwitterDemo demo = new TwitterDemo();
     demo.execute(args);
 	}
 }

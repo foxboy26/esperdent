@@ -3,8 +3,6 @@ package edu.ucsd.cs.triton.operator;
 import java.util.ArrayList;
 import java.util.List;
 
-import parser.TritonParserVisitor;
-
 import edu.ucsd.cs.triton.expression.Attribute;
 
 public class Aggregation extends BasicOperator {

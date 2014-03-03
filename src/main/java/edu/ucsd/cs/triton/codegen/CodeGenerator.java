@@ -1,101 +1,80 @@
 package edu.ucsd.cs.triton.codegen;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import edu.ucsd.cs.triton.codegen.language.ClassStatement;
+import edu.ucsd.cs.triton.codegen.language.BlockStatement;
 import edu.ucsd.cs.triton.codegen.language.JavaProgram;
+import edu.ucsd.cs.triton.codegen.language.MemberFunction;
 import edu.ucsd.cs.triton.operator.LogicPlan;
 import edu.ucsd.cs.triton.operator.Start;
+import edu.ucsd.cs.triton.resources.BaseDefinition;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public final class CodeGenerator {
-	//final LogicPlan _logicPlan;
-	ResourceManager _resourceManager;
-	List<LogicPlan> _planList;
-	JavaProgram _program;
-
-	public CodeGenerator(ResourceManager resourceManager) {
+	private final ResourceManager _resourceManager;
+	private final List<LogicPlan> _planList;
+	
+	private TridentProgram _program;
+	
+	public CodeGenerator(List<LogicPlan> planList, final String fileName) {
 	  // TODO Auto-generated constructor stub
-		_resourceManager = resourceManager;
-		_planList = new ArrayList<LogicPlan> ();
-	}
-
-	public void setLogicPlanList(List<LogicPlan> planList) {
+		_resourceManager = ResourceManager.getInstance();
 		_planList = planList;
+		_program = new TridentProgram(fileName);
 	}
 	
-	public void addLogicPlan(LogicPlan plan) {
-		_planList.add(plan);
+	public JavaProgram generate() {
+		
+		generateSpoutsDefinition();
+		
+	  generateTopology();
+	  
+	  generateDefaultMainEntry();
+		
+		return _program.toJava();
 	}
-	
-	public JavaProgram generate(String fileName) {
-		
-		_program = new JavaProgram(fileName);
-		
-		generateImport();
-		
-		generateClass();
-//		for (int i : orders) {
-//			Translator t = new Translator(_planList[i]);
-//			t.translate(outputStream);
-//		}
-//		
-//		if (defaultMain) {
-//			generateMain();
-//		}
-//		
-		return _program;
-	}
-	
-	private void generateClass() {
-	  // TODO Auto-generated method stub
-		ClassStatement classStmt = _program.Class();
-		
-		// TODO generate spout list
-		//classStatement.SimpleStmt("private " + _logicPlan.getInputStreams() + "_spout")
-	  generateSpoutsList(classStmt);
-	  
-	  generateTopology(classStmt);
-	  
-	  generateDefaultMainEntry(classStmt);
-	  
-	  classStmt.EndClass();
-  }
 
-	// TODO
-	private void generateSpoutsList(ClassStatement classStmt) {
-	  // TODO Auto-generated method stub
-		for (LogicPlan logicPlan : _planList) {
+	private void generateSpoutsDefinition() {
+		Map<String, BaseDefinition> defList = _resourceManager.getDefinitions();
+		
+		for (Entry<String, BaseDefinition> def : defList.entrySet()) {
+			// def.getValue()
 			
-			classStmt.SimpleStmt(sb.toString());
+			// _program.addSpoutDefinition("private " + def)
 		}
-  }
-
-	private void generateTopology(ClassStatement c) {
+	}
+	
+	private void generateTopology() {
 	  // TODO Auto-generated method stub
 		
-		//Map<Integer, List<Integer>> dependencyGraph = buildDependencyGraph();
-		//List<Integer> orders = Util.tsort(dependencyGraph);
+		// Map<Integer, List<Integer>> dependencyGraph = buildDependencyGraph();
 		
-		c.MemberFunction("public void buildQuery()");
-
+		// List<Integer> orders = Util.tsort(dependencyGraph);
+		
 		for (LogicPlan logicPlan : _planList) {
 			StringBuilder sb = new StringBuilder();
 			Start plan = logicPlan.generatePlan();
-			Translator translator = new Translator(logicPlan, _resourceManager);
+			QueryTranslator translator = new QueryTranslator(logicPlan, _program);
 			translator.visit(plan, sb);
-			c.SimpleStmt(sb.toString());
+			_program.addStmtToBuildQuery(sb.toString());
 		}
 		
-		c.EndMemberFunction();
+		/*
+		for (int i : orders) {
+			StringBuilder sb = new StringBuilder();
+			Start plan = _planList.get(i).generatePlan();
+			QueryTranslator translator = new QueryTranslator(_planList.get(i), _resourceManager);
+			translator.visit(plan, sb);
+			_program.addStmtToBuildQuery(sb.toString());
+		}*/
   }
 
 	// TODO
-	private void generateDefaultMainEntry(ClassStatement c) {
+	private void generateDefaultMainEntry() {
 	  // TODO Auto-generated method stub
-	  c.MemberFunction("public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException")
+	  BlockStatement mainEntry = new MemberFunction("public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException")
 	  	.SimpleStmt("Config conf = new Config()")
 	  	.SimpleStmt("conf.setMaxSpoutPending(20)")
 	  	.If("args.length == 0")
@@ -103,14 +82,8 @@ public final class CodeGenerator {
 	    	.SimpleStmt("LocalCluster cluster = new LocalCluster()")
 	    	.SimpleStmt("cluster.submitTopology(\"twitter_demo\", conf, buildTopology(drpc))")
 	    .EndIf();
-  }
-
-	private void generateImport() {
-	  // TODO Auto-generated method stub
-		_program
-			.Import()
-				.add(Import.DEFAULT_IMPORT_LIST)
-			.EndImport();
+	  
+	  _program.setDefaultMain((MemberFunction) mainEntry);
   }
 
 	private Map<Integer, List<Integer>> buildDependencyGraph() {
