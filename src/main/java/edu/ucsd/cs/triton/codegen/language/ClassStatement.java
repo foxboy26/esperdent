@@ -8,6 +8,14 @@ public class ClassStatement extends BlockStatement {
 		_className = className;
 	}
 	
+	public void addInnerClass(ClassStatement cs) {
+		_children.add(cs);
+	}
+	
+	public void addMemberFunction(MemberFunction mf) {
+		_children.add(mf);
+	}
+	
 	@Override
   protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub

@@ -14,7 +14,6 @@ import edu.ucsd.cs.triton.expression.AttributeExpression;
 import edu.ucsd.cs.triton.expression.BaseExpression;
 import edu.ucsd.cs.triton.expression.FloatExpression;
 import edu.ucsd.cs.triton.expression.IntegerExpression;
-import edu.ucsd.cs.triton.expression.LogicExpression;
 import edu.ucsd.cs.triton.expression.StringExpression;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 

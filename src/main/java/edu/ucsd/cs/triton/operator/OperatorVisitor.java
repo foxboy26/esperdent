@@ -2,6 +2,7 @@ package edu.ucsd.cs.triton.operator;
 
 public interface OperatorVisitor {
 	public Object visit(BasicOperator operator, Object data);
+	public Object visit(Start operator, Object data);
 	public Object visit(Projection operator, Object data);
 	public Object visit(Selection operator, Object data);
 	public Object visit(InputStream operator, Object data);

@@ -1,6 +1,5 @@
 package edu.ucsd.cs.triton.codegen;
 
-import java.beans.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
-import edu.ucsd.cs.triton.codegen.language.JavaProgram;
 import edu.ucsd.cs.triton.operator.Aggregation;
 import edu.ucsd.cs.triton.operator.Aggregator;
 import edu.ucsd.cs.triton.operator.BasicOperator;
@@ -23,6 +21,7 @@ import edu.ucsd.cs.triton.operator.Product;
 import edu.ucsd.cs.triton.operator.Projection;
 import edu.ucsd.cs.triton.operator.ProjectionField;
 import edu.ucsd.cs.triton.operator.Selection;
+import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
 import edu.ucsd.cs.triton.operator.TimeWindow;
 import edu.ucsd.cs.triton.resources.ResourceManager;
@@ -31,30 +30,26 @@ public class Translator implements OperatorVisitor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Translator.class);
 	
-	
-	
 	private final LogicPlan _logicPlan;
 	private final ResourceManager _resourceManager;
 
-
-
-	private JavaProgram _program;
-	
 	public Translator(final LogicPlan logicPlan, final ResourceManager resourceManager) {
 		_logicPlan = logicPlan;
 		_resourceManager = resourceManager;
 	}
 	
-	public void translate() {
-		
-	}
-
 	@Override
-  public Object visit(BasicOperator operator, Object data) {
-	  // TODO Auto-generated method stub
-		operator.childrenAccept(this, data);
+  public Object visit(Start operator, Object data) {
+		
+		StringBuilder sb = (StringBuilder) data;
 
-	  return null;
+		if (_logicPlan.isNamedQuery()) {
+			sb.append("Stream " + _logicPlan.getPlanName() + " = ");
+		}
+
+		operator.childrenAccept(this, sb);
+		
+		return null;
   }
 
 	@Override
@@ -107,6 +102,7 @@ public class Translator implements OperatorVisitor {
 		
 		//_program.addInnerClass(filterClass);
 		
+		// add filter
 		String fields = TridentBuilder.newFields(filterTranslator.getFilterInputFields());
 		String filter = TridentBuilder.newFunction(filterTranslator.getFilterName());
 		sb.append(TridentBuilder.each(fields, filter));
@@ -211,6 +207,15 @@ public class Translator implements OperatorVisitor {
 	@Override
   public Object visit(Product operator, Object data) {
 	  // TODO Auto-generated method stub
+		operator.childrenAccept(this, data);
+
+	  return null;
+  }
+
+	@Override
+  public Object visit(BasicOperator operator, Object data) {
+	  // TODO Auto-generated method stub
+		
 		operator.childrenAccept(this, data);
 
 	  return null;

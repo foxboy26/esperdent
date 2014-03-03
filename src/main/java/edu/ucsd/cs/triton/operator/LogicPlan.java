@@ -255,7 +255,7 @@ public class LogicPlan {
 		return plan;
 	}
 	
-	public BasicOperator generatePlan() {
+	public Start generatePlan() {
 		
 		LOGGER.info("Generating plan...");
 		
@@ -318,7 +318,12 @@ public class LogicPlan {
 			logicPlan = _outputStream;
 		}
 		
-		return logicPlan;
+		// append a start operator
+		Start start = new Start();
+		start.addChild(logicPlan, 0);
+		logicPlan.setParent(start);
+		
+		return start;
 	}
 
 	public void dump() {
@@ -338,6 +343,10 @@ public class LogicPlan {
 	
 	public String getPlanName() {
 		return _planName;
+	}
+	
+	public boolean isNamedQuery() {
+		return _isNamedQuery;
 	}
 
 	private BasicOperator constructProduct(final List<List<String>> partition) {

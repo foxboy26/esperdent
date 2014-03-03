@@ -12,6 +12,14 @@ public final class TridentBuilder {
 		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
 	}
 	
+	public static String newFunction(String func, Object[] args) {
+		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
+	}
+	
+	public static String newFunction(String func, Collection args) {
+		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
+	}
+	
 	public static String newString(String arg) {
 		return "\"" + arg + "\"";
 	}
@@ -65,13 +73,21 @@ public final class TridentBuilder {
 		return newTridentFunction("stateQuery", args);
 	}
 	
+	public static String newValues(String... args) {
+		return newFunction("Values", args);
+	}
+	
+	public static String newValues(Collection args) {
+		return newFunction("Values", args);
+	}
+	
 	/**
 	 * 
 	 * @param args
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(Object[] args) {
-		return "new Fields(\"" + StringUtils.join(args, "\", \"") + "\")";
+		return newFunction("Fields", args);
 	}
 	
 	/**
@@ -80,7 +96,7 @@ public final class TridentBuilder {
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(Collection args) {
-		return "new Fields(\"" + StringUtils.join(args, "\", \"") + "\")";
+		return newFunction("Fields", args);
 	}
 	
 	/**
@@ -89,7 +105,7 @@ public final class TridentBuilder {
 	 * @return new Fields("f1", "f2", "f3")
 	 */
 	public static String newFields(String... args) {
-		return "new Fields(\"" + StringUtils.join(args, "\", \"") + "\")";
+		return newFunction("Fields", args);
 	}
 	
 	

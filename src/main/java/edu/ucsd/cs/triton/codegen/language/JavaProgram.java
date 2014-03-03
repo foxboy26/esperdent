@@ -26,6 +26,10 @@ public class JavaProgram extends BaseJavaStatement {
 		return this;
 	}
 	
+	public String getProgramName() {
+		return _programName;
+	}
+	
 	@Override
   protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
