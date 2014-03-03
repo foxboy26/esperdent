@@ -25,4 +25,9 @@ public class ArithmeticExpression extends BaseExpression {
   public ArithmeticExpression clone() {
 	  return new ArithmeticExpression(_op, _left.clone(), _right.clone());
   }
+
+	public ArithmeticOperator getOperator() {
+	  // TODO Auto-generated method stub
+	  return _op;
+  }
 }

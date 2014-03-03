@@ -21,4 +21,10 @@ public class OutputStream extends BasicOperator {
 	public boolean isStdout() {
 		return _fileName != null && _fileName.equals(STDOUT);
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

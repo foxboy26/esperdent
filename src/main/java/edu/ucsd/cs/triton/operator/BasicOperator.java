@@ -69,8 +69,8 @@ public class BasicOperator implements IOperator {
 
 	
   public Object childrenAccept(OperatorVisitor visitor, Object data) {
-    for (IOperator operator : _children) {
-      operator.accept(visitor, data);
+    for (int i = 0; i < _children.size(); i++) {
+      _children.get(i).accept(visitor, data);
     }
     return data;
   }

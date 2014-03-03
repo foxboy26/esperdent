@@ -17,4 +17,10 @@ public class TimeWindow extends BaseWindow {
 	public long getDuration() {
 		return _duration;
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

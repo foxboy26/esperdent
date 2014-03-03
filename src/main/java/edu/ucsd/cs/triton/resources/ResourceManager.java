@@ -77,4 +77,11 @@ public class ResourceManager {
 	  // TODO Auto-generated method stub
 		return (UNNAMED_QUERY_PREFIX + (unnamedQueryCount++));
   }
+
+	public String getAttributeType(String stream, String attribute) {
+	  // TODO Auto-generated method stub
+		AttributeType type = _definitions.get(stream).getAttributeType(attribute);
+		
+		return type.toString();
+  }
 }

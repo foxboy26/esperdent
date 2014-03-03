@@ -12,4 +12,10 @@ public class FixedLengthWindow extends BaseWindow {
 	public int getLength() {
 		return _row;
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

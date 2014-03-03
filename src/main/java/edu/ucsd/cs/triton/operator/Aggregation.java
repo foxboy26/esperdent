@@ -3,6 +3,8 @@ package edu.ucsd.cs.triton.operator;
 import java.util.ArrayList;
 import java.util.List;
 
+import parser.TritonParserVisitor;
+
 import edu.ucsd.cs.triton.expression.Attribute;
 
 public class Aggregation extends BasicOperator {
@@ -38,4 +40,10 @@ public class Aggregation extends BasicOperator {
 	public boolean isEmpty() {
 		return _aggregatorList.isEmpty() || _groupByList.isEmpty();
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

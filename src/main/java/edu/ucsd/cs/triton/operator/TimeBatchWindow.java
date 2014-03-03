@@ -8,4 +8,9 @@ public class TimeBatchWindow extends TimeWindow {
 		_type = OperatorType.TIME_BATCH_WINDOW;
   }
 
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

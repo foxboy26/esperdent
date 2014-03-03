@@ -82,9 +82,6 @@ public final class CodeGenerator {
 	  
 	  mf.SimpleStmt("TridentTopology topology = new TridentTopology()");
 	  
-	  Translator translator = new Translator();
-	  translator.visit(operator, data);
-	  
 	  mf.Return("topology.build()")
 	  	.EndMemberFunction();
   }

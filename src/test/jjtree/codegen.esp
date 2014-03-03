@@ -1,0 +1,11 @@
+# Create stream
+register stream s1 (a int, b float, c string, d timestamp) from source("TwitterSpout");
+
+# Create relation
+register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.java");
+
+# Create stream from query
+# register stream a(b int, c timestamp) from select * from b;
+
+# Basic select
+select * from s1;

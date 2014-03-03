@@ -15,4 +15,10 @@ public class InputStream extends BasicOperator {
 	public String getName() {
 		return _name;
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

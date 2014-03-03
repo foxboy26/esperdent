@@ -29,4 +29,10 @@ public class Join extends BasicOperator {
 	  // TODO Auto-generated method stub
 	  return _outputDefinition;
   }
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

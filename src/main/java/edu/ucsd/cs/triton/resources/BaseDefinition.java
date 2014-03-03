@@ -38,6 +38,10 @@ public abstract class BaseDefinition {
 	public Map<String, AttributeType> getAttributes() {
 		return _attributes;
 	}
+	
+	public AttributeType getAttributeType(String attribute) {
+		return _attributes.get(attribute);
+	}
 
 	public boolean containsAttribute(String attribute) {
 	  // TODO Auto-generated method stub

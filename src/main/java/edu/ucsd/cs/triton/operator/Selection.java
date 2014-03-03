@@ -1,5 +1,6 @@
 package edu.ucsd.cs.triton.operator;
 
+import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.BooleanExpression;
 
 public class Selection extends BasicOperator {
@@ -26,6 +27,11 @@ public class Selection extends BasicOperator {
 		return _filter;
 	}
 	
+	public Attribute[] getFilterInputFields() {
+	  // TODO Auto-generated method stub
+	  return _filter.getInputFields();
+  }
+	
 	public boolean isEmpty() {
 		return (_filter == null);
 	}
@@ -35,4 +41,10 @@ public class Selection extends BasicOperator {
 			_filter.dump("");
 		}
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }
