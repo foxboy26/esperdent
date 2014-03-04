@@ -127,13 +127,20 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		String streamName = node.streamName;
 		
 		StreamDefinition streamDef = new StreamDefinition(streamName);
+	
+		// get source node
+		ASTSource source = (ASTSource) node.jjtGetChild(node.jjtGetNumChildren() - 1);
 		streamDef = (StreamDefinition) node.childrenAccept(this, streamDef);
 		
 		_resourceManager.addStream(streamDef);
 		
-		LogicRegisterPlan logicPlan = new LogicRegisterPlan(streamName, streamDef);
-	  _logicPlanList.put(streamName, logicPlan);
-	  
+		if (source.jjtGetChild(0) instanceof ASTQuery) {
+			// TODO
+		} else {
+			LogicRegisterPlan logicPlan = new LogicRegisterPlan(streamName, streamDef);
+		  _logicPlanList.put(streamName, logicPlan);
+		}
+		
 		return null;
   }
 

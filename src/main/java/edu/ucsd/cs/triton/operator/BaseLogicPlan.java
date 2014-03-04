@@ -24,6 +24,19 @@ public abstract class BaseLogicPlan {
 		return _planName;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		
+		if (o == null || !(o instanceof BaseLogicPlan)) {
+			return false;
+		}
+		
+		BaseLogicPlan plan = (BaseLogicPlan) o;
+		
+		return _planName.equals(plan._planName);
+	}
 	
 	@Override
 	public String toString() {

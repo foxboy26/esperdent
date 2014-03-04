@@ -8,8 +8,8 @@ import edu.ucsd.cs.triton.codegen.language.Keyword;
 
 public final class TridentBuilder {
 	
-	public static String newInstance(String className, String varName) {
-		return className + " " + varName + " = " + Keyword.NEW + " " + className + "()";
+	public static String newInstance(String className, String instanceName, String... args) {
+		return className + " " + instanceName + " = " + Keyword.NEW + " " + className + "(" + StringUtils.join(args, ", ") + ")";
 	}
 	
 	public static String newFunction(String func, String... args) {
@@ -112,9 +112,9 @@ public final class TridentBuilder {
 		return newStringValueFunction("Fields", args);
 	}
 	
-	
+	//TODO: this is a hack on the indent!
 	private static String newTridentFunction(String func, String... args) {
-		return "." + func + "(" + StringUtils.join(args, ", ") + ")\n"; 
+		return "            " + "." + func + "(" + StringUtils.join(args, ", ") + ")\n"; 
 	}
 	
 	private static String newStringValueFunction(String func, String... args) {

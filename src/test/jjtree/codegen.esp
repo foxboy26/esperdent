@@ -2,10 +2,13 @@
 register stream s1 (a int, b float, c string, d timestamp) from source("TwitterSpout");
 
 # Create relation
-register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.java");
+register relation r1 (a int, b float, c string, d timestamp) from file("ab/text.data");
 
 # Create stream from query
-# register stream a(b int, c timestamp) from select * from b;
+register stream s2(b int, c timestamp) from select b, c from s1;
 
 # Basic select
 select a + 3, max(b) from s1 where d=3 and b=3 group by c;
+
+# select from s2
+select b + c from s2 where c = 3;

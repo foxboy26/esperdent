@@ -64,11 +64,10 @@ public final class Util {
   }
 	
 	public static List<BaseLogicPlan> tsort(final List<BaseLogicPlan> list) {
-		Set<BaseLogicPlan> visited = new HashSet<BaseLogicPlan> ();
+		Set<String> visited = new HashSet<String> ();
 		Deque<BaseLogicPlan> stack = new ArrayDeque<BaseLogicPlan>();
 		for (BaseLogicPlan cur : list) {
-			if (!visited.contains(cur)) {
-				visited.add(cur);
+			if (!visited.contains(cur.getPlanName())) {
 				tsortHelp(list, visited, stack, cur);
 			}
 		}
@@ -83,10 +82,11 @@ public final class Util {
 		return res;
 	}
 	
-	private static <T> void tsortHelp(final List<BaseLogicPlan> list, Set<BaseLogicPlan> visited, Deque<BaseLogicPlan> stack, BaseLogicPlan cur) {
+	private static <T> void tsortHelp(final List<BaseLogicPlan> list, Set<String> visited, Deque<BaseLogicPlan> stack, BaseLogicPlan cur) {
+		visited.add(cur.getPlanName());
 		List<BaseLogicPlan> neighbor = cur.getDependenceList();
 		for (BaseLogicPlan n : neighbor) {
-			if (!visited.contains(n)) {
+			if (!visited.contains(n.getPlanName())) {
 				tsortHelp(list, visited, stack, n);
 			}
 		}

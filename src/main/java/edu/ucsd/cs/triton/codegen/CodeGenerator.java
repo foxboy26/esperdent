@@ -35,6 +35,8 @@ public final class CodeGenerator {
 	}
 
 	private void generateTopology() {
+		System.out.println(_planList);
+		
 		List<BaseLogicPlan> orderedPlanList = Util.tsort(_planList);
 		
 		System.out.println(orderedPlanList);

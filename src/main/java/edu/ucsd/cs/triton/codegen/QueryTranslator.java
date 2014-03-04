@@ -51,15 +51,12 @@ public class QueryTranslator implements OperatorVisitor {
   public Object visit(Start operator, Object data) {
 		StringBuilder sb = (StringBuilder) data;
 
-		if (_logicPlan instanceof LogicQueryPlan) {
-			LogicQueryPlan logicPlan = (LogicQueryPlan) _logicPlan;
-			if (logicPlan.isNamedQuery()) {
-				sb.append("Stream " + _planName + " = ");
-			}
-			sb.append("_topology");
-		}
-		
 		operator.childrenAccept(this, sb);
+		
+		//TODO fix me! This is a hack on the style. trim the last '\n'
+		if (sb.charAt(sb.length() - 1) == '\n') {
+			sb.deleteCharAt(sb.length()-1);
+		}
 		
 		return null;
   }
@@ -74,8 +71,7 @@ public class QueryTranslator implements OperatorVisitor {
 		AbstractSource source = operator.getDefinition().getSource();
 		if (source instanceof StaticSource) {
 			String fileName = source.toString();
-			//sb.append(TridentBuilder.newInstance(fileName, instance));
-			sb.append("this is static source! TBD");
+			sb.append(TridentBuilder.newInstance("StaticFileSpout", instance, TridentBuilder.newString(fileName)));
 		} else if (source instanceof DynamicSource) {
 			String spout = source.toString();
 			sb.append(TridentBuilder.newInstance(spout, instance));
@@ -153,6 +149,14 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		StringBuilder sb = (StringBuilder) data;
 		
+		if (_logicPlan instanceof LogicQueryPlan) {
+			LogicQueryPlan logicPlan = (LogicQueryPlan) _logicPlan;
+			if (logicPlan.isNamedQuery()) {
+				sb.append("Stream " + _planName + " = ");
+			} //else if (_resourceManager.getStreamByName(operator.getName()).) //TODO query def
+			sb.append("_topology\n");
+		}
+		
 		String streamName = TridentBuilder.newString(_planName);
 		sb.append(TridentBuilder.newStream(streamName, operator.getName().toLowerCase()));
 		
@@ -185,7 +189,7 @@ public class QueryTranslator implements OperatorVisitor {
 				sb.append(TridentBuilder.aggregate(input, aggregator, output));
 			}
 		}
-		sb.append(".chainEnd()\n");
+		sb.append(TridentBuilder.chainEnd());
 	  return null;
   }
 
