@@ -2,6 +2,7 @@ package edu.ucsd.cs.triton.codegen;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,6 @@ public final class Util {
 		}
   }
 	
-	
 	public static List<BaseLogicPlan> tsort(final List<BaseLogicPlan> list) {
 		Set<BaseLogicPlan> visited = new HashSet<BaseLogicPlan> ();
 		Deque<BaseLogicPlan> stack = new ArrayDeque<BaseLogicPlan>();
@@ -77,6 +77,9 @@ public final class Util {
 		while (!stack.isEmpty()) {
 			res.add(stack.pop());
 		}
+		
+		Collections.reverse(res);
+		
 		return res;
 	}
 	

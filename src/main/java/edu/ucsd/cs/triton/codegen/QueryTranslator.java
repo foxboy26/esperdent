@@ -26,7 +26,10 @@ import edu.ucsd.cs.triton.operator.Selection;
 import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
 import edu.ucsd.cs.triton.operator.TimeWindow;
+import edu.ucsd.cs.triton.resources.AbstractSource;
+import edu.ucsd.cs.triton.resources.DynamicSource;
 import edu.ucsd.cs.triton.resources.ResourceManager;
+import edu.ucsd.cs.triton.resources.StaticSource;
 
 public class QueryTranslator implements OperatorVisitor {
 	
@@ -64,10 +67,19 @@ public class QueryTranslator implements OperatorVisitor {
 	@Override
   public Object visit(Register operator, Object data) {
 	  // TODO Auto-generated method stub
-		String spoutName = operator.getDefinition().getName();
-		String spoutDef = TridentBuilder.newInstance(spoutName, spoutName.toLowerCase());
+		StringBuilder sb = (StringBuilder) data;
 		
-		_program.addStmtToBuildQuery(spoutDef);
+		String instance = operator.getDefinition().getName();
+		
+		AbstractSource source = operator.getDefinition().getSource();
+		if (source instanceof StaticSource) {
+			String fileName = source.toString();
+			//sb.append(TridentBuilder.newInstance(fileName, instance));
+			sb.append("this is static source! TBD");
+		} else if (source instanceof DynamicSource) {
+			String spout = source.toString();
+			sb.append(TridentBuilder.newInstance(spout, instance));
+		}
 		
 	  return null;
   }

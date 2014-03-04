@@ -4,7 +4,7 @@ public abstract class AbstractSource implements ISource {
 	String _uri;
 	
 	public AbstractSource(final String uri) {
-		_uri = uri;
+		_uri = uri.substring(1, uri.length()-1);
 	}
 	
 	@Override

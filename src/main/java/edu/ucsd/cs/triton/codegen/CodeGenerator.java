@@ -35,9 +35,11 @@ public final class CodeGenerator {
 	}
 
 	private void generateTopology() {
-		List<BaseLogicPlan> orderdPlanList = Util.tsort(_planList);
+		List<BaseLogicPlan> orderedPlanList = Util.tsort(_planList);
 		
-		for (BaseLogicPlan logicPlan : orderdPlanList) {
+		System.out.println(orderedPlanList);
+		
+		for (BaseLogicPlan logicPlan : orderedPlanList) {
 			StringBuilder sb = new StringBuilder();
 			Start plan = logicPlan.generatePlan();
 			QueryTranslator translator = new QueryTranslator(logicPlan, _program);

@@ -13,4 +13,10 @@ public class Register extends BasicOperator {
 	public BaseDefinition getDefinition() {
 		return _definition;
 	}
+	
+  /** Accept the visitor. **/
+  @Override
+	public Object accept(OperatorVisitor visitor, Object data) {
+    return visitor.visit(this, data);
+  }
 }

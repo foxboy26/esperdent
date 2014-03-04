@@ -24,5 +24,16 @@ public abstract class BaseLogicPlan {
 		return _planName;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return _planName;
+	}
+	
 	public abstract Start generatePlan();
+
+	public void dump() {
+	  // TODO Auto-generated method stub
+	  
+  }
 }
