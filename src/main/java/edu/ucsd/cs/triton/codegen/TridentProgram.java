@@ -3,7 +3,6 @@ package edu.ucsd.cs.triton.codegen;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.ucsd.cs.triton.codegen.language.BlockStatement;
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
 import edu.ucsd.cs.triton.codegen.language.JavaProgram;
 import edu.ucsd.cs.triton.codegen.language.MemberFunction;

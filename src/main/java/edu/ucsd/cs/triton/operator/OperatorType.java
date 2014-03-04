@@ -13,5 +13,6 @@ public enum OperatorType {
 	JOIN,
 	AGGREGATION, 
 	OUTPUT_STREAM,
+	REGISTER,
 	START;
 }

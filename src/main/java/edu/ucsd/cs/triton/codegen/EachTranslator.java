@@ -10,7 +10,7 @@ import edu.ucsd.cs.triton.codegen.language.Keyword;
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.BaseExpression;
 import edu.ucsd.cs.triton.operator.ExpressionField;
-import edu.ucsd.cs.triton.operator.LogicPlan;
+import edu.ucsd.cs.triton.operator.LogicQueryPlan;
 
 
 /**
@@ -29,14 +29,14 @@ public class EachTranslator {
 	
 	private static int filterCount = 0;
 	
-	private final LogicPlan _logicPlan;
+	private final String _planName;
 	private final Attribute[] _inputFields;
 	private final String[] _outputFields;
 	private final String _name;
 	private final List<ExpressionField> _exprFieldList;
 	
-	public EachTranslator(LogicPlan logicPlan, List<ExpressionField> exprList) {
-		_logicPlan = logicPlan;
+	public EachTranslator(final String planName, List<ExpressionField> exprList) {
+		_planName = planName;
 		_exprFieldList = exprList;
 
 		// gather input fields;
@@ -57,7 +57,7 @@ public class EachTranslator {
 		}
 		
 		// allocate class name
-		_name = _logicPlan.getPlanName() + FILTER_PREFIX + (filterCount++);
+		_name = _planName + FILTER_PREFIX + (filterCount++);
 	}
 
 	/**

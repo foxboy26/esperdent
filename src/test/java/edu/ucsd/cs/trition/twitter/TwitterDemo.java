@@ -22,7 +22,6 @@ import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
  */
 public class TwitterDemo extends SimpleQuery {
 
-	private TwitterSpout _spout = new TwitterSpout();
 	
   public static class MyFunction extends BaseFunction {
     @Override
@@ -47,6 +46,9 @@ public class TwitterDemo extends SimpleQuery {
 	
 	@Override
 	public void buildQuery() {
+		
+		TwitterSpout _spout = new TwitterSpout();
+
     _topology.newStream("s1", _spout) 
 		.partitionPersist(new FixedLengthSlidingWindow.Factory(3), _spout.getOutputFields(), new SlidingWindowUpdater(), new Fields("windowId", "createdAt", "retweetCount"))
     .newValuesStream() // win:time_batch(1 sec)

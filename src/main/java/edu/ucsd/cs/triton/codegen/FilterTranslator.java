@@ -12,7 +12,6 @@ import edu.ucsd.cs.triton.expression.FloatExpression;
 import edu.ucsd.cs.triton.expression.IntegerExpression;
 import edu.ucsd.cs.triton.expression.LogicExpression;
 import edu.ucsd.cs.triton.expression.StringExpression;
-import edu.ucsd.cs.triton.operator.LogicPlan;
 
 
 /**
@@ -36,16 +35,14 @@ public class FilterTranslator {
 	private static final String FILTER_PREFIX = "SelectionFilter";
 	private static int filterCount = 0;
 	
-	private final LogicPlan _logicPlan;
 	private final BooleanExpression _filter;
 	private final Attribute[] _inputFields;
 	private final String _filterName;
 	
-	public FilterTranslator(LogicPlan logicPlan, BooleanExpression filter) {
-		_logicPlan = logicPlan;
+	public FilterTranslator(final String planName, BooleanExpression filter) {
 		_filter = filter;
 		_inputFields = filter.getInputFields();
-		_filterName = _logicPlan.getPlanName() + FILTER_PREFIX + (filterCount++);
+		_filterName = planName + FILTER_PREFIX + (filterCount++);
 	}
 
 	/**

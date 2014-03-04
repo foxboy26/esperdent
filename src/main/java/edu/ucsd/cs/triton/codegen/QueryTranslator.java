@@ -9,17 +9,19 @@ import org.slf4j.LoggerFactory;
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
 import edu.ucsd.cs.triton.operator.Aggregation;
 import edu.ucsd.cs.triton.operator.Aggregator;
+import edu.ucsd.cs.triton.operator.BaseLogicPlan;
 import edu.ucsd.cs.triton.operator.BasicOperator;
 import edu.ucsd.cs.triton.operator.ExpressionField;
 import edu.ucsd.cs.triton.operator.FixedLengthWindow;
 import edu.ucsd.cs.triton.operator.InputStream;
 import edu.ucsd.cs.triton.operator.Join;
-import edu.ucsd.cs.triton.operator.LogicPlan;
+import edu.ucsd.cs.triton.operator.LogicQueryPlan;
 import edu.ucsd.cs.triton.operator.OperatorVisitor;
 import edu.ucsd.cs.triton.operator.OutputStream;
 import edu.ucsd.cs.triton.operator.Product;
 import edu.ucsd.cs.triton.operator.Projection;
 import edu.ucsd.cs.triton.operator.ProjectionField;
+import edu.ucsd.cs.triton.operator.Register;
 import edu.ucsd.cs.triton.operator.Selection;
 import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
@@ -30,12 +32,14 @@ public class QueryTranslator implements OperatorVisitor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(QueryTranslator.class);
 	
-	private final LogicPlan _logicPlan;
+	private final BaseLogicPlan _logicPlan;
+	private final String _planName;
 	private final ResourceManager _resourceManager;
 	private TridentProgram _program;
 	
-	public QueryTranslator(final LogicPlan logicPlan, TridentProgram program) {
+	public QueryTranslator(final BaseLogicPlan logicPlan, TridentProgram program) {
 		_logicPlan = logicPlan;
+		_planName = logicPlan.getPlanName();
 		_resourceManager = ResourceManager.getInstance();
 		_program = program;
 	}
@@ -44,14 +48,28 @@ public class QueryTranslator implements OperatorVisitor {
   public Object visit(Start operator, Object data) {
 		StringBuilder sb = (StringBuilder) data;
 
-		if (_logicPlan.isNamedQuery()) {
-			sb.append("Stream " + _logicPlan.getPlanName() + " = ");
+		if (_logicPlan instanceof LogicQueryPlan) {
+			LogicQueryPlan logicPlan = (LogicQueryPlan) _logicPlan;
+			if (logicPlan.isNamedQuery()) {
+				sb.append("Stream " + _planName + " = ");
+			}
+			sb.append("_topology");
 		}
-		sb.append("_topology");
 		
 		operator.childrenAccept(this, sb);
 		
 		return null;
+  }
+
+	@Override
+  public Object visit(Register operator, Object data) {
+	  // TODO Auto-generated method stub
+		String spoutName = operator.getDefinition().getName();
+		String spoutDef = TridentBuilder.newInstance(spoutName, spoutName.toLowerCase());
+		
+		_program.addStmtToBuildQuery(spoutDef);
+		
+	  return null;
   }
 
 	@Override
@@ -73,7 +91,7 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		if (!exprFieldList.isEmpty()) {
 			// generate each function 
-			EachTranslator eachTranslator = new EachTranslator(_logicPlan, exprFieldList);
+			EachTranslator eachTranslator = new EachTranslator(_planName, exprFieldList);
 			ClassStatement eachFunction = eachTranslator.translate();
 			_program.addInnerClass(eachFunction);
 			
@@ -103,7 +121,7 @@ public class QueryTranslator implements OperatorVisitor {
 		StringBuilder sb = (StringBuilder) data;
 
 		//TODO generate Filter
-		FilterTranslator filterTranslator = new FilterTranslator(_logicPlan, operator.getFilter());
+		FilterTranslator filterTranslator = new FilterTranslator(_planName, operator.getFilter());
 		
 		ClassStatement filterClass = filterTranslator.translate();
 		
@@ -123,7 +141,7 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		StringBuilder sb = (StringBuilder) data;
 		
-		String streamName = TridentBuilder.newString(_logicPlan.getPlanName());
+		String streamName = TridentBuilder.newString(_planName);
 		sb.append(TridentBuilder.newStream(streamName, operator.getName().toLowerCase()));
 		
 	  return null;

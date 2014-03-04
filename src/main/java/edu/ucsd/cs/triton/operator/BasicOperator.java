@@ -28,6 +28,7 @@ public class BasicOperator implements IOperator {
   public void addChild(IOperator n, int i) {
 	  // TODO Auto-generated method stub
 	  this._children.add(i, n);
+	  n.setParent(this);
   }
 
 	@Override

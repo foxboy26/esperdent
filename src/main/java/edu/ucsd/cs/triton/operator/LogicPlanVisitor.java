@@ -1,6 +1,8 @@
 package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -79,15 +81,15 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlanVisitor.class);
 	
 	private ResourceManager _resourceManager;
-	private ArrayList<LogicPlan> _logicPlanList;
+	private Map<String, BaseLogicPlan> _logicPlanList;
 	
 	public LogicPlanVisitor(ResourceManager resourceManager) {
 		_resourceManager = resourceManager;
-		_logicPlanList = new ArrayList<LogicPlan> ();
+		_logicPlanList = new HashMap<String, BaseLogicPlan> ();
 	}
 	
-	public ArrayList<LogicPlan> getLogicPlanList() {
-		return _logicPlanList;
+	public ArrayList<BaseLogicPlan> getLogicPlanList() {
+		return new ArrayList<BaseLogicPlan> (_logicPlanList.values());
 	}
 	
 	@Override
@@ -117,28 +119,40 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	}
 
 	@Override
-  public Object visit(ASTCreateStream node, Object data) {
+  //TODO
+	public Object visit(ASTCreateStream node, Object data) {
 	  
 		checkNumOfChildren(node, 2, "[CreateStream]");
 		
-		StreamDefinition streamDef = new StreamDefinition(node.streamName);
+		String streamName = node.streamName;
+		
+		StreamDefinition streamDef = new StreamDefinition(streamName);
 		streamDef = (StreamDefinition) node.childrenAccept(this, streamDef);
 		
 		_resourceManager.addStream(streamDef);
 		
-	  return null;
+		LogicRegisterPlan logicPlan = new LogicRegisterPlan(streamName, streamDef);
+	  _logicPlanList.put(streamName, logicPlan);
+	  
+		return null;
   }
 
 	@Override
+	// TODO
   public Object visit(ASTCreateRelation node, Object data) {
 		
 		checkNumOfChildren(node, 2, "[CreateRelation]");
 
-		RelationDefinition relationDef = new RelationDefinition(node.relationName);
+		String relationName = node.relationName;
+
+		RelationDefinition relationDef = new RelationDefinition(relationName);
 		relationDef = (RelationDefinition) node.childrenAccept(this, relationDef);
-		
+
 		_resourceManager.addRelation(relationDef);
-				
+		
+		LogicRegisterPlan logicPlan = new LogicRegisterPlan(relationName, relationDef);
+	  _logicPlanList.put(relationName, logicPlan);
+		
 	  return null;
   }
 	
@@ -227,15 +241,15 @@ public class LogicPlanVisitor implements TritonParserVisitor {
   public Object visit(ASTQuery node, Object data) {
 	  // TODO Auto-generated method stub
 		String planName = null;
-		LogicPlan logicPlan = null;
+		LogicQueryPlan logicPlan = null;
 		
 		if (data instanceof BaseDefinition) {
 			BaseDefinition definition = (BaseDefinition) data;
 			planName = definition.getName();
-			logicPlan = LogicPlan.newNamedLogicPlan(planName);
+			logicPlan = LogicQueryPlan.newNamedLogicPlan(planName);
 		} else {
 			planName = _resourceManager.allocateUnnamedQuery();
-			logicPlan = LogicPlan.newAnonymousLogicPlan(planName);
+			logicPlan = LogicQueryPlan.newAnonymousLogicPlan(planName);
 		}
 
 		int numOfChildren = node.jjtGetNumChildren();
@@ -251,7 +265,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			node.jjtGetChild(i).jjtAccept(this, logicPlan);
 		}
 		
-		_logicPlanList.add(logicPlan);
+		_logicPlanList.put(planName, logicPlan);
 		
 	  return null;
   }
@@ -259,7 +273,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTSelectClause node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 		Projection projectionOperator = logicPlan.getProjection();
 
 		int numOfChildren = node.jjtGetNumChildren();
@@ -285,7 +299,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 
 		int numOfChildren = node.jjtGetNumChildren();
 		
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 
 		Projection projectionOperator = logicPlan.getProjection();
 		Aggregation aggregation = logicPlan.getAggregation();
@@ -338,7 +352,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	 */
   public Object visit(ASTAttribute node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 		return logicPlan.unifiyAttribute(node.name);
   }
 
@@ -369,7 +383,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTStreamDef node, Object data) {
 		
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 		
 		int numOfChildren = node.jjtGetNumChildren();
 		
@@ -423,6 +437,13 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		
 		logicPlan.addInputStream(name, currentOperator);
 	  
+		// add to stream dependency list
+		if (_logicPlanList.containsKey(name)) {
+			logicPlan.addDependency(_logicPlanList.get(name));
+		} else {
+			System.err.println("error!");
+		}
+		
 		return null;
   }
 	
@@ -474,7 +495,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTWhereClause node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 
 		Selection selectionOperator = logicPlan.getSelection();
 		
@@ -521,7 +542,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTGroupByClause node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 		Aggregation aggregation = logicPlan.getAggregation();
 		int numOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numOfChildren; i++) {
@@ -542,7 +563,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTOutputClause node, Object data) {
 	  // TODO Auto-generated method stub
-		LogicPlan logicPlan = (LogicPlan) data;
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
 		
 		Node child = node.jjtGetChild(0);
 		if (child instanceof ASTFile) {

@@ -8,6 +8,10 @@ import edu.ucsd.cs.triton.codegen.language.Keyword;
 
 public final class TridentBuilder {
 	
+	public static String newInstance(String className, String varName) {
+		return className + " " + varName + " = " + Keyword.NEW + " " + className + "()";
+	}
+	
 	public static String newFunction(String func, String... args) {
 		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
 	}

@@ -13,4 +13,5 @@ public interface OperatorVisitor {
 	public Object visit(TimeWindow operator, Object data);
 	public Object visit(TimeBatchWindow operator, Object data);
 	public Object visit(OutputStream operator, Object data);
+	public Object visit(Register operator, Object data);
 }

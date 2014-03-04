@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import edu.ucsd.cs.triton.expression.ArithmeticExpression;
@@ -15,6 +14,7 @@ import edu.ucsd.cs.triton.expression.BaseExpression;
 import edu.ucsd.cs.triton.expression.FloatExpression;
 import edu.ucsd.cs.triton.expression.IntegerExpression;
 import edu.ucsd.cs.triton.expression.StringExpression;
+import edu.ucsd.cs.triton.operator.BaseLogicPlan;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public final class Util {
@@ -63,30 +63,30 @@ public final class Util {
   }
 	
 	
-	public static List<Integer> tsort(Map<Integer, List<Integer>> graph) {
-		Set<Integer> visited = new HashSet<Integer> ();
-		Deque<Integer> stack = new ArrayDeque<Integer>();
-		for (int i : graph.keySet()) {
-			if (!visited.contains(i)) {
-				visited.add(i);
-				tsortHelp(graph, visited, stack, i);
+	public static List<BaseLogicPlan> tsort(final List<BaseLogicPlan> list) {
+		Set<BaseLogicPlan> visited = new HashSet<BaseLogicPlan> ();
+		Deque<BaseLogicPlan> stack = new ArrayDeque<BaseLogicPlan>();
+		for (BaseLogicPlan cur : list) {
+			if (!visited.contains(cur)) {
+				visited.add(cur);
+				tsortHelp(list, visited, stack, cur);
 			}
 		}
 		
-		List<Integer> res = new ArrayList<Integer> ();
+		List<BaseLogicPlan> res = new ArrayList<BaseLogicPlan> ();
 		while (!stack.isEmpty()) {
 			res.add(stack.pop());
 		}
 		return res;
 	}
 	
-	private static void tsortHelp(Map<Integer, List<Integer>> graph, Set<Integer> visited, Deque<Integer> stack, int i) {
-		List<Integer> neighbor = graph.get(i);
-		for (int n : neighbor) {
-			if (!visited.contains(i)) {
-				tsortHelp(graph, visited, stack, n);
+	private static <T> void tsortHelp(final List<BaseLogicPlan> list, Set<BaseLogicPlan> visited, Deque<BaseLogicPlan> stack, BaseLogicPlan cur) {
+		List<BaseLogicPlan> neighbor = cur.getDependenceList();
+		for (BaseLogicPlan n : neighbor) {
+			if (!visited.contains(n)) {
+				tsortHelp(list, visited, stack, n);
 			}
 		}
-		stack.push(i);
+		stack.push(cur);
 	}
 }

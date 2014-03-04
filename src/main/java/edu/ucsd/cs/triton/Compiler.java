@@ -16,7 +16,7 @@ import parser.ParseException;
 import parser.TritonParser;
 import edu.ucsd.cs.triton.codegen.CodeGenerator;
 import edu.ucsd.cs.triton.codegen.language.JavaProgram;
-import edu.ucsd.cs.triton.operator.LogicPlan;
+import edu.ucsd.cs.triton.operator.LogicQueryPlan;
 import edu.ucsd.cs.triton.operator.LogicPlanVisitor;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
@@ -43,7 +43,7 @@ public class Compiler {
 			root.childrenAccept(logicPlanVisitor, resourceManager);
 			//System.out.println(resourceManager.getStreamByName("s1"));
 
-			List<LogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
+			List<LogicQueryPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 
 			String className = FilenameUtils.removeExtension(inputFileName);
 			className = FilenameUtils.getBaseName(className);

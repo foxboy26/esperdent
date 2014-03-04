@@ -20,11 +20,10 @@ import edu.ucsd.cs.triton.expression.LogicOperator;
 import edu.ucsd.cs.triton.resources.BaseDefinition;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
-public class LogicPlan {
+public class LogicQueryPlan extends BaseLogicPlan {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlan.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LogicQueryPlan.class);
 	
-	private final String _planName;
 	private final boolean _isNamedQuery;
 	private Map<String, String> _renameTable;
 	private Set<String> _relations;
@@ -37,8 +36,8 @@ public class LogicPlan {
 	
 	private JoinPlan _joinPlan;
 	
-	private LogicPlan(final String planName, final boolean isNamedQuery) {
-		_planName = planName;
+	private LogicQueryPlan(final String planName, final boolean isNamedQuery) {
+		super(planName);
 		_isNamedQuery = isNamedQuery;
 		
 		// input streams/relations
@@ -58,12 +57,12 @@ public class LogicPlan {
 		_outputStream = null;
 	}
 
-	public static LogicPlan newNamedLogicPlan(final String planName) {
-		return new LogicPlan(planName, true);
+	public static LogicQueryPlan newNamedLogicPlan(final String planName) {
+		return new LogicQueryPlan(planName, true);
 	}
 	
-	public static LogicPlan newAnonymousLogicPlan(final String planName) {
-		return new LogicPlan(planName, false);
+	public static LogicQueryPlan newAnonymousLogicPlan(final String planName) {
+		return new LogicQueryPlan(planName, false);
 	}
 	
 	public boolean addInputStream(final String name, final BasicOperator inputStream) {
@@ -340,10 +339,6 @@ public class LogicPlan {
 	  // TODO Auto-generated method stub
 	  return _aggregation;
   }
-	
-	public String getPlanName() {
-		return _planName;
-	}
 	
 	public boolean isNamedQuery() {
 		return _isNamedQuery;
