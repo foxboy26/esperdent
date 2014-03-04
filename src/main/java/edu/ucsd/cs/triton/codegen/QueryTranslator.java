@@ -42,13 +42,13 @@ public class QueryTranslator implements OperatorVisitor {
 	
 	@Override
   public Object visit(Start operator, Object data) {
-		
 		StringBuilder sb = (StringBuilder) data;
 
 		if (_logicPlan.isNamedQuery()) {
 			sb.append("Stream " + _logicPlan.getPlanName() + " = ");
 		}
-
+		sb.append("_topology");
+		
 		operator.childrenAccept(this, sb);
 		
 		return null;

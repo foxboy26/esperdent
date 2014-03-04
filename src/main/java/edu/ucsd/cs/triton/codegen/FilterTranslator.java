@@ -1,6 +1,7 @@
 package edu.ucsd.cs.triton.codegen;
 
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
+import edu.ucsd.cs.triton.codegen.language.Keyword;
 import edu.ucsd.cs.triton.expression.ArithmeticExpression;
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.AttributeExpression;
@@ -57,7 +58,7 @@ public class FilterTranslator {
 	  translateBooleanExpression(_filter, sb);
 	  String isKeepStatement = sb.toString();
 		
-		return new ClassStatement("public static class " + _filterName + " implements Filter")
+		return ClassStatement.createStaticClass(Keyword.PUBLIC, _filterName).Implements("Filter")
 			.MemberFunction("public void prepare(Map conf, TridentOperationContext context)")
 			.EndMemberFunction()
 			.MemberFunction("public void cleanup()")

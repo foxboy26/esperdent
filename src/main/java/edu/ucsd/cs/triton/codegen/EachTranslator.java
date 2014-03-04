@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
+import edu.ucsd.cs.triton.codegen.language.Keyword;
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.BaseExpression;
 import edu.ucsd.cs.triton.operator.ExpressionField;
@@ -72,7 +73,8 @@ public class EachTranslator {
 			exprStmtList.add(sb.toString());
 		}
 	  
-		return new ClassStatement("public static class " + _name + " extends BaseFunction")
+		return 
+				ClassStatement.createStaticClass(Keyword.PUBLIC, _name).Extends("BaseFunction")
 			.MemberFunction("public void execute(TridentTuple tuple, TridentCollector collector)")
 				.SimpleStmt("collector.emit(" + TridentBuilder.newValues(exprStmtList) + ")")
 			.EndMemberFunction();

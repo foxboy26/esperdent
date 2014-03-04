@@ -1,7 +1,7 @@
 package edu.ucsd.cs.triton.expression;
 
 public enum ComparisonOperator {
-	EQ("="), NEQ("<>"), GT(">"), GET(">="), LT("<"), LET("<=");
+	EQ("=="), NEQ("!="), GT(">"), GET(">="), LT("<"), LET("<=");
 	
 	private final String _op;
 	

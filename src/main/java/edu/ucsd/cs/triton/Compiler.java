@@ -5,6 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +26,6 @@ public class Compiler {
 	public static void main(String[] args) {
 		
 		String inputFileName = "src/test/jjtree/codegen.esp";
-		String outputFileName = "test";
 		try {
 			TritonParser tritonParser;
 			tritonParser = new TritonParser(new FileInputStream(new File(
@@ -43,7 +45,10 @@ public class Compiler {
 
 			List<LogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 
-			CodeGenerator codeGen = new CodeGenerator(logicPlanList, outputFileName);
+			String className = FilenameUtils.removeExtension(inputFileName);
+			className = FilenameUtils.getBaseName(className);
+			className = WordUtils.capitalize(className);
+			CodeGenerator codeGen = new CodeGenerator(logicPlanList, className);
 			
 			JavaProgram program = codeGen.generate();
 			

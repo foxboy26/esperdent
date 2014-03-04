@@ -16,7 +16,7 @@ public class JavaProgram extends BaseJavaStatement {
 	}
 
 	public ClassStatement Class() {
-		ClassStatement stmt = new ClassStatement(_programName);
+		ClassStatement stmt = new ClassStatement(Keyword.PUBLIC, _programName);
 		addChild(stmt);
 	  return stmt;
   }

@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import edu.ucsd.cs.triton.codegen.language.BlockStatement;
 import edu.ucsd.cs.triton.codegen.language.JavaProgram;
+import edu.ucsd.cs.triton.codegen.language.Keyword;
 import edu.ucsd.cs.triton.codegen.language.MemberFunction;
 import edu.ucsd.cs.triton.operator.LogicPlan;
 import edu.ucsd.cs.triton.operator.Start;
@@ -16,6 +17,7 @@ public final class CodeGenerator {
 	private final ResourceManager _resourceManager;
 	private final List<LogicPlan> _planList;
 	
+	private final String _className;
 	private TridentProgram _program;
 	
 	public CodeGenerator(List<LogicPlan> planList, final String fileName) {
@@ -23,6 +25,7 @@ public final class CodeGenerator {
 		_resourceManager = ResourceManager.getInstance();
 		_planList = planList;
 		_program = new TridentProgram(fileName);
+		_className = fileName;
 	}
 	
 	public JavaProgram generate() {
@@ -74,14 +77,10 @@ public final class CodeGenerator {
 	// TODO
 	private void generateDefaultMainEntry() {
 	  // TODO Auto-generated method stub
-	  BlockStatement mainEntry = new MemberFunction("public static void main(String[] args) throws InterruptedException, AlreadyAliveException, InvalidTopologyException")
-	  	.SimpleStmt("Config conf = new Config()")
-	  	.SimpleStmt("conf.setMaxSpoutPending(20)")
-	  	.If("args.length == 0")
-	  		.SimpleStmt("LocalDRPC drpc = new LocalDRPC()")
-	    	.SimpleStmt("LocalCluster cluster = new LocalCluster()")
-	    	.SimpleStmt("cluster.submitTopology(\"twitter_demo\", conf, buildTopology(drpc))")
-	    .EndIf();
+		String classStmt = _className + " " + _className.toLowerCase() + " = " + Keyword.NEW + " " + _className + "()";
+	  BlockStatement mainEntry = new MemberFunction("public static void main(String[] args)")
+	  	.SimpleStmt(classStmt)
+	  	.SimpleStmt(_className.toLowerCase() + ".execute(args)");
 	  
 	  _program.setDefaultMain((MemberFunction) mainEntry);
   }

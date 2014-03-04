@@ -19,6 +19,7 @@ public class MemberFunction extends BlockStatement {
 	  
 	  sb.indent(n)
 	  	.endBlock();
+	  sb.newline();
   }
 
 }
