@@ -112,7 +112,7 @@ public class JoinPlan {
 		}
 
 		if (_joinGraph.containsKey(rhs)) {
-			_joinGraph.get(lhs).add(lhs);
+			_joinGraph.get(rhs).add(lhs);
 		} else {
 			Set<String> set = new HashSet<String>();
 			set.add(lhs);

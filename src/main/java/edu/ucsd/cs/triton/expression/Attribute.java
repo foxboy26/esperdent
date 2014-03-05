@@ -11,7 +11,6 @@ public class Attribute {
 
 	public String getStream() {
 	  // TODO Auto-generated method stub
-		System.out.println(_stream);
 	  return _stream;
   }
 	

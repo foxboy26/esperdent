@@ -268,7 +268,6 @@ public class QueryTranslator implements OperatorVisitor {
 	@Override
   public Object visit(Join operator, Object data) {
 	  // TODO Auto-generated method stub
-		operator.childrenAccept(this, data);
 		StringBuilder sb = (StringBuilder) data;
 		int n = operator.getNumChildren();
     for (int i = 0; i < n; i++) {
@@ -290,7 +289,7 @@ public class QueryTranslator implements OperatorVisitor {
 		}
 		
 			sb.append("_topology\n")
-		  .append(".join!!!!!");
+		  .append(".join!!!!!\n");
 	  
 	  return null;
   }

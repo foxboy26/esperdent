@@ -274,7 +274,6 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		LOGGER.info("localSelectionMap:" + localSelectionMap);
 		for (Map.Entry<String, List<BooleanExpression>> entry : localSelectionMap.entrySet()) {
 			BasicOperator op = _inputStreams.get(entry.getKey());
-			System.out.println(LogicExpression.fromAndList(entry.getValue()));
 			Selection selection = new Selection(LogicExpression.fromAndList(entry.getValue()));
 			selection.addChild(op, 0);
 			_inputStreams.put(entry.getKey(), selection);
@@ -375,7 +374,6 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	}
 
 	private BasicOperator constructProduct(final List<List<String>> partition) {
-		System.out.println(partition);
 		BasicOperator product = constructJoin(partition.get(0));
 		for (int i = 1; i < partition.size(); i++) {
 			Product newProduct = new Product();
