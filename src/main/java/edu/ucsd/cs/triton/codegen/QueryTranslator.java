@@ -140,6 +140,7 @@ public class QueryTranslator implements OperatorVisitor {
 		StringBuilder sb = (StringBuilder) data;
 
 		//TODO generate Filter
+		LOGGER.info(operator.getFilter().toString());
 		FilterTranslator filterTranslator = new FilterTranslator(_planName, operator.getFilter());
 		
 		ClassStatement filterClass = filterTranslator.translate();
@@ -165,8 +166,8 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		StringBuilder sb = (StringBuilder) data;
 		
-		String inputStream = (operator.hasRename())? operator.getRename() : operator.getName();
-		String queryId = _planName + inputStream;
+		String inputStream = operator.getName();
+		String queryId = _planName + ((operator.hasRename())? operator.getRename() : inputStream);
 
 		LogicQueryPlan queryPlan = (LogicQueryPlan) _logicPlan;
 		if (queryPlan.isNamedQuery()) {

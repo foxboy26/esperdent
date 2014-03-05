@@ -25,7 +25,27 @@ public class LogicExpression extends BooleanExpression {
 	
 	public static BooleanExpression fromAndList(List<BooleanExpression> expList) {
 		
-		return new LogicExpression(LogicOperator.AND); 
+		int n = expList.size();
+
+		if (n == 0) {
+			System.err.println("warning! empty exp list");
+		}
+		if (n == 1) {
+			return expList.get(0);
+		}
+		
+		BooleanExpression root = LogicExpression.createAndExpression();
+		root._left = expList.get(0);
+		root._right = expList.get(1);
+		BooleanExpression cur = root;
+		for (int i = 2; i < n; i++) {
+			root = LogicExpression.createAndExpression();
+			root._left = cur;
+			cur._right = expList.get(i);
+			cur = root;
+		}
+		
+		return root;
 	}
 	
 	public LogicExpression(LogicOperator op, BooleanExpression left, BooleanExpression right) {

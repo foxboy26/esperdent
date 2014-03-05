@@ -218,11 +218,12 @@ public class LogicQueryPlan extends BaseLogicPlan {
 			andList = ((LogicExpression) filter).toAndList();
 		}
 		
-		List<BooleanExpression> newFilterList = new ArrayList<BooleanExpression>();
+		List<BooleanExpression> globalFilterList = new ArrayList<BooleanExpression>();
 		Map<String, List<BooleanExpression>> localSelectionMap = new HashMap<String, List<BooleanExpression>>();
 		
 		for (BooleanExpression boolExp : andList) {
 
+			// local filter, push down to local filter list
 			if (boolExp.isFromSameDefiniton()) {
 				// push down exp to local stream selection
 				String definition = boolExp.getDefinition();
@@ -248,7 +249,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 						_joinPlan.addKeyPair(new KeyPair(left, right));
 					} else {
 						// insert into new Selection
-						newFilterList.add(cmpExp);
+						globalFilterList.add(cmpExp);
 					}
 				} else if (boolExp instanceof LogicExpression) {
 					LogicExpression logicExp = (LogicExpression) boolExp;
@@ -257,27 +258,25 @@ public class LogicQueryPlan extends BaseLogicPlan {
 						System.exit(1);
 					} else {
 						// insert into new Selection
-						newFilterList.add(logicExp);
+						globalFilterList.add(logicExp);
 					}
 				}
 			}
 		}
-
 		// set new filter into selection operator
-		if (newFilterList.isEmpty()) {
+		if (globalFilterList.isEmpty()) {
 			_selection.setFilter(null);
 		} else {
-			_selection.setFilter(LogicExpression.fromAndList(newFilterList));
+			_selection.setFilter(LogicExpression.fromAndList(globalFilterList));
 		}
 		
 		// set local filter for each definition
+		LOGGER.info("localSelectionMap:" + localSelectionMap);
 		for (Map.Entry<String, List<BooleanExpression>> entry : localSelectionMap.entrySet()) {
-			System.out.println(entry.getKey());
 			BasicOperator op = _inputStreams.get(entry.getKey());
+			System.out.println(LogicExpression.fromAndList(entry.getValue()));
 			Selection selection = new Selection(LogicExpression.fromAndList(entry.getValue()));
-//			System.out.println(op);
 			selection.addChild(op, 0);
-			op.setParent(selection);
 			_inputStreams.put(entry.getKey(), selection);
 		}
 		
@@ -296,7 +295,6 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	public Start generatePlan() {
 		
 		LOGGER.info("Generating plan...");
-		System.out.println(_inputStreams);
 		Stack<BasicOperator> logicPlan = new Stack<BasicOperator> ();
 		
 		BasicOperator joinPlan = null;
