@@ -41,6 +41,7 @@ public final class TridentProgram {
 
 	public JavaProgram toJava() {
 		return new JavaProgram(_programName)
+			.Package()
 			.Import()
 				.add(Import.DEFAULT_IMPORT_LIST)
 				.add(_importList)

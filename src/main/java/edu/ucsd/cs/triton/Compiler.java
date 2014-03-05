@@ -3,8 +3,10 @@ package edu.ucsd.cs.triton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
@@ -52,6 +54,9 @@ public class Compiler {
 			String res = program.translate();
 			
 			System.out.println(res);
+			
+			LOGGER.info("Generating packge...");
+			generatePackage(className.toLowerCase(), program);
 
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -59,6 +64,13 @@ public class Compiler {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+    }
+	}
+	
+	private static void generatePackage(final String pkg, final JavaProgram program) throws IOException {
+		FileUtils.writeStringToFile(new File(pkg + "/" + program.getProgramName() + ".java"), program.translate());
 	}
 }

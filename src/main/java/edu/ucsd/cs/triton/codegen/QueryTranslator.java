@@ -3,6 +3,7 @@ package edu.ucsd.cs.triton.codegen;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,7 +207,7 @@ public class QueryTranslator implements OperatorVisitor {
 		// aggregation
 		sb.append(TridentBuilder.chainedAgg());
 		for (Aggregator agg : operator.getAggregatorList()) {
-			String aggregator = TridentBuilder.newFunction(agg.getName());
+			String aggregator = TridentBuilder.newFunction(WordUtils.capitalize(agg.getName()));
 			String output = TridentBuilder.newFields(agg.getOutputField());
 			//TODO fix the condition check
 			if (aggregator.equals("count")) {

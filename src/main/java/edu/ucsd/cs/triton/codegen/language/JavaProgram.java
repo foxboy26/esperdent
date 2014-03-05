@@ -8,7 +8,17 @@ public class JavaProgram extends BaseJavaStatement {
 		_programName = programName;
 		_parent = null;
 	}
-
+	
+	public JavaProgram Package() {
+		addChild(new Package(_programName.toLowerCase()));
+		return this;
+	}
+	
+	public JavaProgram Package(String pkgName) {
+		addChild(new Package(pkgName));
+		return this;
+	}
+	
 	public ImportStatement Import() {
 		ImportStatement stmt = new ImportStatement();
 		addChild(stmt);

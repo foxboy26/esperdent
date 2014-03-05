@@ -11,7 +11,6 @@ public final class SimpleStatement extends BaseJavaStatement {
 	@Override
   protected void translate(int n, LanguageBuilder sb) {
 	  // TODO Auto-generated method stub
-	  sb.indent(n).append(_stmt).end();
+	  sb.indent(n).append(_stmt).end().newline();
   }
-
 }
