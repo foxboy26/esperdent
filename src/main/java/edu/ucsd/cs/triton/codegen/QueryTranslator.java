@@ -225,7 +225,15 @@ public class QueryTranslator implements OperatorVisitor {
   public Object visit(FixedLengthWindow operator, Object data) {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
+		
+		StringBuilder sb = (StringBuilder) data;
 
+    String windowFactory = TridentBuilder.newFunction("FixedLengthSlidingWindow.Factory", Integer.toString(operator.getLength()));
+		String inputFields = TridentBuilder.newFields();
+		String outputFields = TridentBuilder.newFields();
+		String windowUpdater = TridentBuilder.newFunction("SlidingWindowUpdater");
+		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFields, windowUpdater, outputFields))
+			.append(TridentBuilder.newValuesStream());
 		return null;
   }
 
@@ -233,15 +241,32 @@ public class QueryTranslator implements OperatorVisitor {
   public Object visit(TimeWindow operator, Object data) {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
+		
+		StringBuilder sb = (StringBuilder) data;
 
+    String windowFactory = TridentBuilder.newFunction("TimeSlidingWindow.Factory", Long.toString(operator.getDuration()));
+		String inputFields = TridentBuilder.newFields();
+		String outputFields = TridentBuilder.newFields();
+		String windowUpdater = TridentBuilder.newFunction("SlidingWindowUpdater");
+		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFields, windowUpdater, outputFields))
+			.append(TridentBuilder.newValuesStream());
 		return null;
   }
 
 	@Override
+	//TODO
   public Object visit(TimeBatchWindow operator, Object data) {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
+		
+		StringBuilder sb = (StringBuilder) data;
 
+    String windowFactory = TridentBuilder.newFunction("FixedLengthSlidingWindow.Factory", Long.toString(operator.getDuration()));
+		String inputFields = TridentBuilder.newFields();
+		String outputFields = TridentBuilder.newFields();
+		String windowUpdater = TridentBuilder.newFunction("SlidingWindowUpdater");
+		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFields, windowUpdater, outputFields))
+			.append(TridentBuilder.newValuesStream());
 	  return null;
   }
 
@@ -313,7 +338,7 @@ public class QueryTranslator implements OperatorVisitor {
 	@Override
   public Object visit(BasicOperator operator, Object data) {
 	  // TODO Auto-generated method stub
-		
+		System.err.println("should not come here!");
 		operator.childrenAccept(this, data);
 
 	  return null;
