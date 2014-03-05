@@ -24,7 +24,7 @@ public class SimpleField extends ProjectionField {
 	}
 	
 	public String getAttributeName() {
-		return _attribute.getName();
+		return _attribute.getAttributeName();
 	}
 	
 	@Override

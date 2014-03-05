@@ -1,18 +1,18 @@
 package edu.ucsd.cs.triton.operator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class BaseLogicPlan {
 	protected final String _planName;
-	protected List<BaseLogicPlan> _dependenceList;
+	protected Set<BaseLogicPlan> _dependenceList;
 	
 	BaseLogicPlan(final String planName) {
 		_planName = planName;
-		_dependenceList = new ArrayList<BaseLogicPlan> ();
+		_dependenceList = new HashSet<BaseLogicPlan> ();
 	}
 	
-	public List<BaseLogicPlan> getDependenceList() {
+	public Set<BaseLogicPlan> getDependenceList() {
 		return _dependenceList;
 	}
 	

@@ -10,6 +10,10 @@ public class Register extends BasicOperator {
 		_definition = def;
 	}
 	
+	/**
+	 * 
+	 * @return the registered stream/relation definition
+	 */
 	public BaseDefinition getDefinition() {
 		return _definition;
 	}

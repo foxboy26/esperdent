@@ -27,7 +27,9 @@ import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
 import edu.ucsd.cs.triton.operator.TimeWindow;
 import edu.ucsd.cs.triton.resources.AbstractSource;
+import edu.ucsd.cs.triton.resources.BaseDefinition;
 import edu.ucsd.cs.triton.resources.DynamicSource;
+import edu.ucsd.cs.triton.resources.QuerySource;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 import edu.ucsd.cs.triton.resources.StaticSource;
 
@@ -66,15 +68,22 @@ public class QueryTranslator implements OperatorVisitor {
 	  // TODO Auto-generated method stub
 		StringBuilder sb = (StringBuilder) data;
 		
-		String instance = operator.getDefinition().getName();
+		BaseDefinition streamDef = operator.getDefinition();
+		AbstractSource source = streamDef.getSource();
+		String instance = streamDef.getName();
 		
-		AbstractSource source = operator.getDefinition().getSource();
 		if (source instanceof StaticSource) {
-			String fileName = source.toString();
-			sb.append(TridentBuilder.newInstance("StaticFileSpout", instance, TridentBuilder.newString(fileName)));
+			String fileName = Util.newStringLiteral(source.toString());
+			sb.append(TridentBuilder.newInstance("StaticFileSpout", instance, fileName));
 		} else if (source instanceof DynamicSource) {
 			String spout = source.toString();
 			sb.append(TridentBuilder.newInstance(spout, instance));
+		} else if (source instanceof QuerySource) {
+			// TODO
+			operator.childrenAccept(this, data);
+		} else {
+			LOGGER.error("unknown source [" + source + "]" + "is found!");
+			System.exit(1);
 		}
 		
 	  return null;
@@ -96,9 +105,9 @@ public class QueryTranslator implements OperatorVisitor {
 				exprFieldList.add((ExpressionField) field);
 			}
 		}
-		
+
+		// generate each function before projection
 		if (!exprFieldList.isEmpty()) {
-			// generate each function 
 			EachTranslator eachTranslator = new EachTranslator(_planName, exprFieldList);
 			ClassStatement eachFunction = eachTranslator.translate();
 			_program.addInnerClass(eachFunction);
@@ -110,12 +119,14 @@ public class QueryTranslator implements OperatorVisitor {
 			sb.append(TridentBuilder.each(inputFields, funcName, outputFields));
 		}
 		
-		// add project
+		// generate project fields
 		String[] projectionFields = new String[fieldList.size()];
 		for (int i = 0; i < fieldList.size(); i++) {
 			projectionFields[i] = fieldList.get(i).getOutputField();
 		}
+		
 		String fields = TridentBuilder.newFields(projectionFields);
+		
 		sb.append(TridentBuilder.project(fields));
 	  
 		return null;
@@ -147,18 +158,33 @@ public class QueryTranslator implements OperatorVisitor {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
 		
+		if (!(_logicPlan instanceof LogicQueryPlan)) {
+			System.err.println("error in input stream translation");
+			System.exit(1);
+		}	
+		
 		StringBuilder sb = (StringBuilder) data;
 		
-		if (_logicPlan instanceof LogicQueryPlan) {
-			LogicQueryPlan logicPlan = (LogicQueryPlan) _logicPlan;
-			if (logicPlan.isNamedQuery()) {
-				sb.append("Stream " + _planName + " = ");
-			} //else if (_resourceManager.getStreamByName(operator.getName()).) //TODO query def
-			sb.append("_topology\n");
+		String inputStream = (operator.hasRename())? operator.getRename() : operator.getName();
+		String queryId = _planName + inputStream;
+
+		LogicQueryPlan queryPlan = (LogicQueryPlan) _logicPlan;
+		if (queryPlan.isNamedQuery()) {
+			// single input stream, no join/product
+			sb.append("Stream " + _planName + " = ");
+		} if (queryPlan.getInputStreams().size() > 1) {
+			// multiple stream, intermediate stream
+			sb.append("Stream " + queryId + " = ");
 		}
 		
-		String streamName = TridentBuilder.newString(_planName);
-		sb.append(TridentBuilder.newStream(streamName, operator.getName().toLowerCase()));
+		BaseDefinition streamDef = _resourceManager.getDefinitionByName(operator.getName());
+		AbstractSource source = streamDef.getSource();
+		if (source instanceof QuerySource) {
+			sb.append(inputStream).append('\n');
+		} else { // static / dynamic source 
+			sb.append("_topology\n")
+		  .append(TridentBuilder.newStream(queryId, inputStream));
+		}
 		
 	  return null;
   }
@@ -228,7 +254,7 @@ public class QueryTranslator implements OperatorVisitor {
 		if (operator.isStdout()) {
 			outputFilter = TridentBuilder.newFunction("PrintFilter");
 		} else {
-			String fileName = TridentBuilder.newString(operator.getFileName());
+			String fileName = Util.newStringLiteral(operator.getFileName());
 			outputFilter = TridentBuilder.newFunction("FileFilter", fileName);
 		}
 		
@@ -242,16 +268,45 @@ public class QueryTranslator implements OperatorVisitor {
   public Object visit(Join operator, Object data) {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
+		StringBuilder sb = (StringBuilder) data;
+		int n = operator.getNumChildren();
+    for (int i = 0; i < n; i++) {
+    	StringBuilder localSb = new StringBuilder();
+      operator.getChild(i).accept(this, localSb);
+      Util.fixStyle(localSb);
+      _program.addStmtToBuildQuery(localSb.toString());
+    }
+    
+		String queryId = _planName + operator.getOutputDefinition();
 
+		LogicQueryPlan queryPlan = (LogicQueryPlan) _logicPlan;
+		if (queryPlan.isNamedQuery()) {
+			// single input stream, no join/product
+			sb.append("Stream " + _planName + " = ");
+		} if (queryPlan.getInputStreams().size() > 1) {
+			// multiple stream, intermediate stream
+			sb.append("Stream " + queryId + " = ");
+		}
+		
+			sb.append("_topology\n")
+		  .append(".join!!!!!");
+	  
 	  return null;
   }
 
 	@Override
   public Object visit(Product operator, Object data) {
 	  // TODO Auto-generated method stub
-		operator.childrenAccept(this, data);
-
-	  return null;
+		StringBuilder sb = (StringBuilder) data;
+		int n = operator.getNumChildren();
+    for (int i = 0; i < n; i++) {
+    	StringBuilder localSb = new StringBuilder();
+      operator.getChild(i).accept(this, localSb);
+      Util.fixStyle(localSb);
+      _program.addStmtToBuildQuery(localSb.toString());
+    }		
+	  
+		return null;
   }
 
 	@Override

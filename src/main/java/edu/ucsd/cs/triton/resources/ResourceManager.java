@@ -29,10 +29,18 @@ public class ResourceManager {
 	}
 	
 	public boolean addStream(final StreamDefinition stream) {
+		if (_definitions.containsKey(stream)) {
+			System.err.println("Duplicated stream [" + stream + "] is found.");
+			System.exit(1);
+		}
 		return _definitions.put(stream.getName(), stream) != null;
 	}
 	
 	public boolean addRelation(final RelationDefinition stream) {
+		if (_definitions.containsKey(stream)) {
+			System.err.println("Duplicated stream [" + stream + "] is found.");
+			System.exit(1);
+		}
 		return _definitions.put(stream.getName(), stream) != null;
 	}
 
@@ -56,11 +64,7 @@ public class ResourceManager {
 		return _definitions;
 	}
 	
-	public boolean containsStream(final String name) {
-		return _definitions.containsKey(name);
-	}
-	
-	public boolean containsRelation(final String name) {
+	public boolean containsDefinition(final String name) {
 		return _definitions.containsKey(name);
 	}
 	
@@ -81,7 +85,6 @@ public class ResourceManager {
 	public String getAttributeType(String stream, String attribute) {
 	  // TODO Auto-generated method stub
 		AttributeType type = _definitions.get(stream).getAttributeType(attribute);
-		
 		return type.toString();
   }
 }

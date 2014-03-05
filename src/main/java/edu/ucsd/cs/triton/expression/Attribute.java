@@ -11,6 +11,7 @@ public class Attribute {
 
 	public String getStream() {
 	  // TODO Auto-generated method stub
+		System.out.println(_stream);
 	  return _stream;
   }
 	
@@ -38,6 +39,16 @@ public class Attribute {
 	
 	@Override
 	public String toString() {
-		return _stream + "." + _name;
+		return _name;
 	}
+
+	public String getAttributeName() {
+	  // TODO Auto-generated method stub
+	  return _name.split("\\.")[1];
+  }
+
+	public String getOriginalStream() {
+	  // TODO Auto-generated method stub
+	  return _name.split("\\.")[0];
+  }
 }

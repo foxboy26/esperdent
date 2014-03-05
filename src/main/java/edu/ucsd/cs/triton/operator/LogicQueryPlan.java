@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,10 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	private OutputStream _outputStream;
 	
 	private JoinPlan _joinPlan;
+
+	private Set<String> _scope;
+
+	private Set<String> _oldScope;
 	
 	private LogicQueryPlan(final String planName, final boolean isNamedQuery) {
 		super(planName);
@@ -44,6 +48,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		_renameTable = new HashMap<String, String>();
 		_inputStreams = new HashMap<String, BasicOperator>();
 		_relations = new HashSet<String>();
+		_scope = new HashSet<String> ();
 		
 		// operator
 		_projection = new Projection();
@@ -66,32 +71,51 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	}
 	
 	public boolean addInputStream(final String name, final BasicOperator inputStream) {
+		checkDuplication(name);
+		
+		// update scope;
+		_scope.add(name);
+		
+		// update join plan stream list
+		_joinPlan.addStream(name);
+		
 		return _inputStreams.put(name, inputStream) != null;
 	}
 
-	public boolean addRelation(final String name) {
+	/*public boolean addRelation(final String name) {
 		return _relations.add(name);
-	}
+	}*/
 
 	public String addRenameDefinition(final String name, final String rename) {
+		checkDuplication(rename);
+		
 		return _renameTable.put(rename, name);
 	}
 
 	public String lookupRename(final String rename) {
 		return _renameTable.get(rename);
 	}
-
-	public boolean containsDefinition(final String name) {
-		return _inputStreams.containsKey(name);
-	}
-
+	
 	public Set<String> getInputStreams() {
 		return _inputStreams.keySet();
 	}
 
+	public boolean containsDefinition(final String name) {
+		return _scope.contains(name);
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return if rename exists, return the original id
+	 */
 	public String unifiyDefinitionId(final String id) {
 		// check rename, if exists replace it by the original name
-		String originalId = _renameTable.get(id);
+		if (!containsDefinition(id)) {
+			return null;
+		}
+		
+		String originalId = lookupRename(id);
 		if (originalId != null) {
 			return originalId;
 		} else if (containsDefinition(id)) {
@@ -108,45 +132,54 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	 */
 	public String[] unifiyAttribute(final String attribute) {
 		String[] res = attribute.split("\\.");
-
 		ResourceManager resourceManager = ResourceManager.getInstance();
 
 		// "attr" only
 		if (res.length == 1) {
 			String attributeName = attribute;
 			boolean isFound = false;
-			final Map<String, BaseDefinition> definitions = resourceManager
-			    .getDefinitions();
-			for (Entry<String, BaseDefinition> definition : definitions.entrySet()) {
-				if (definition.getValue().containsAttribute(attributeName)) {
-					res = new String[2];
-					res[0] = definition.getKey();
-					res[1] = attributeName;
-					isFound = true;
-					break;
+			
+			for (String streamId : _scope) {
+				String originalStreamId = unifiyDefinitionId(streamId);
+				BaseDefinition definition = resourceManager.getDefinitionByName(originalStreamId);
+				if (definition.containsAttribute(attributeName)) {
+					if (!isFound) {
+						isFound = true;
+						res = new String[2];
+						res[0] = streamId;
+						res[1] = originalStreamId + '.' + attributeName;
+					} else {
+						System.err.println("ambiguity in ["+ attribute + "]!");
+						System.exit(1);
+					}
 				}
 			}
 
 			if (!isFound) {
-				System.err.println("attribute [" + attributeName + "] not found!");
+				System.err.println("attribute [" + attribute + "] not found!");
+				System.exit(1);
 			}
 		} else if (res.length == 2) {
 			// "s.id"
 			String name = unifiyDefinitionId(res[0]);
+			
 			if (name == null) {
-				System.err.println("stream def [" + name + "] not found!");
+				System.err.println("stream def [" + res[0] + "] not found!");
+				System.exit(1);
 			}
-
+			
 			BaseDefinition definition = resourceManager.getDefinitionByName(name);
 			if (definition.containsAttribute(res[1])) {
-				res[0] = name;
+				res[1] = name + '.' + res[1];
 				return res;
 			} else {
 				System.err.println("attribute [" + res[1] + "] not found in [" + name
 				    + "]");
+				System.exit(1);
 			}
 		} else {
 			System.err.println("error format in attribute!");
+			System.exit(1);
 		}
 
 		return res;
@@ -176,18 +209,22 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	public BasicOperator rewriteJoin() {
 		BooleanExpression filter = _selection.getFilter();
 
+		List<BooleanExpression> andList;
+		
 		if (filter instanceof ComparisonExpression) {
-			return null;
+			andList = new ArrayList<BooleanExpression> ();
+			andList.add(filter);
+		} else {
+			andList = ((LogicExpression) filter).toAndList();
 		}
-
-		List<BooleanExpression> andList = ((LogicExpression) filter).toAndList();
+		
 		List<BooleanExpression> newFilterList = new ArrayList<BooleanExpression>();
 		Map<String, List<BooleanExpression>> localSelectionMap = new HashMap<String, List<BooleanExpression>>();
 		
 		for (BooleanExpression boolExp : andList) {
 
 			if (boolExp.isFromSameDefiniton()) {
-				// TODO: push down to stream selection
+				// push down exp to local stream selection
 				String definition = boolExp.getDefinition();
 				if (localSelectionMap.containsKey(definition)) {
 					List<BooleanExpression> localFilterList = localSelectionMap
@@ -235,8 +272,10 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		
 		// set local filter for each definition
 		for (Map.Entry<String, List<BooleanExpression>> entry : localSelectionMap.entrySet()) {
+			System.out.println(entry.getKey());
 			BasicOperator op = _inputStreams.get(entry.getKey());
 			Selection selection = new Selection(LogicExpression.fromAndList(entry.getValue()));
+//			System.out.println(op);
 			selection.addChild(op, 0);
 			op.setParent(selection);
 			_inputStreams.put(entry.getKey(), selection);
@@ -245,7 +284,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		// create join
 		// step 2: partition graph into join cluster
 		List<List<String>> partition = _joinPlan.getPartition();
-		
+		System.out.println(partition);
 		LOGGER.info("Find partition: " + partition);
 		
 		// build join operator
@@ -257,24 +296,25 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	public Start generatePlan() {
 		
 		LOGGER.info("Generating plan...");
+		System.out.println(_inputStreams);
+		Stack<BasicOperator> logicPlan = new Stack<BasicOperator> ();
 		
-		BasicOperator logicPlan = null;
-		
+		BasicOperator joinPlan = null;
 		if (_inputStreams.size() == 1) {
-			logicPlan = _inputStreams.values().iterator().next();
+			joinPlan = _inputStreams.values().iterator().next();
 		} else {
-			logicPlan = new Product();
+			joinPlan = new Product();
 			int i = 0;
 			for (BasicOperator op : _inputStreams.values()) {
-				logicPlan.addChild(op, i++);
-				op.setParent(logicPlan);
+				joinPlan.addChild(op, i++);
 			}
 		}
 		
 		if (_selection.getFilter() != null && _inputStreams.size() > 1) {
-			logicPlan = rewriteJoin();
+			joinPlan = rewriteJoin();
 		}
 		
+		logicPlan.push(joinPlan);
 		//order:  output
 		//           |
 		//       projection
@@ -287,41 +327,33 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		
 		// selection
 		if (!_selection.isEmpty()) {
-			_selection.addChild(logicPlan, 0);
-			logicPlan.setParent(_selection);
-			logicPlan = _selection;
+			logicPlan.push(_selection);
 		}
 		
 		// aggregation
 		if (!_aggregation.isEmpty()) {
-			_aggregation.addChild(logicPlan, 0);
-			logicPlan.setParent(_aggregation);
-			logicPlan = _aggregation;
+			logicPlan.push(_aggregation);
 		}	
 		
 		// projection
 		if (_projection != null) {
-			_projection.addChild(logicPlan, 0);
-			logicPlan.setParent(_projection);
-			logicPlan = _projection;
+			logicPlan.push(_projection);
 		}
 		
+		// unnamed query, set output
 		if (_outputStream == null && !_isNamedQuery) {
 			_outputStream = OutputStream.newStdoutStream(_projection.getOutputFieldList());
 		}
 		
-		// output
 		if (_outputStream != null) {
-			_outputStream.addChild(logicPlan, 0);
-			logicPlan.setParent(_projection);
-			logicPlan = _outputStream;
+			logicPlan.push(_outputStream);
 		}
 		
 		// append a start operator
 		Start start = new Start();
-		start.addChild(logicPlan, 0);
-		logicPlan.setParent(start);
-		
+		while (!logicPlan.empty()) {
+			start.addChild(logicPlan.pop(), 0);
+		}
 		return start;
 	}
 
@@ -345,6 +377,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	}
 
 	private BasicOperator constructProduct(final List<List<String>> partition) {
+		System.out.println(partition);
 		BasicOperator product = constructJoin(partition.get(0));
 		for (int i = 1; i < partition.size(); i++) {
 			Product newProduct = new Product();
@@ -381,5 +414,23 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		}
 		
 		return join;
+	}
+
+	public void setCurrentScope(Set<String> scope) {
+	  // TODO Auto-generated method stub
+	  _oldScope = _scope;
+	  _scope = scope;
+  }
+
+	public void resetScope() {
+	  // TODO Auto-generated method stub
+	  _scope = _oldScope;
+  }
+	
+	private void checkDuplication(String id) {
+		if (_scope.contains(id)) {
+			System.err.println("duplcated definition [" + id + "] is found!");
+			System.exit(1);
+		}
 	}
 }

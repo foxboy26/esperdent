@@ -8,6 +8,13 @@ import edu.ucsd.cs.triton.codegen.language.Keyword;
 
 public final class TridentBuilder {
 	
+	/**
+	 * 
+	 * @param className
+	 * @param instanceName
+	 * @param args
+	 * @return statement like className instanceName = new className(args...)
+	 */
 	public static String newInstance(String className, String instanceName, String... args) {
 		return className + " " + instanceName + " = " + Keyword.NEW + " " + className + "(" + StringUtils.join(args, ", ") + ")";
 	}
@@ -24,10 +31,6 @@ public final class TridentBuilder {
 		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
 	}
 	
-	public static String newString(String arg) {
-		return "\"" + arg + "\"";
-	}
-	
 	/**
 	 * 
 	 * @param args
@@ -41,8 +44,14 @@ public final class TridentBuilder {
 		return newTridentFunction("groupby", args);
 	}
 	
-	public static String newStream(String... args) {
-		return newTridentFunction("newStream", args); 
+	/**
+	 * 
+	 * @param streamName
+	 * @param spout
+	 * @return .newStream("streamName", spout)
+	 */
+	public static String newStream(String streamName, String spout) {
+		return newTridentFunction("newStream", Util.newStringLiteral(streamName), spout); 
 	}
 	
 	public static String newValuesStream(String... args) {

@@ -23,13 +23,29 @@ public final class Util {
 	}
 	
 	
+	//TODO fix me! This is a hack on the style. trim the last '\n'
+	public static void fixStyle(StringBuilder sb) {
+		if (sb.charAt(sb.length() - 1) == '\n') {
+			sb.deleteCharAt(sb.length()-1);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param arg
+	 * @return append double quotes to the arg. arg -> "arg"
+	 */
+	public static String newStringLiteral(String arg) {
+		return "\"" + arg + "\"";
+	}
+	
 	public static String translateAttribute(final Attribute attribute, final Attribute[] inputFields) {
 		
 		int n = inputFields.length;
 		for (int i = 0; i < n; i++) {
 			if (attribute.equals(inputFields[i])) {
 				ResourceManager resourceManager = ResourceManager.getInstance();
-				String type = resourceManager.getAttributeType(attribute.getStream(), attribute.getName());
+				String type = resourceManager.getAttributeType(attribute.getOriginalStream(), attribute.getAttributeName());
 				return ("tuple.get" + type + "(" + i + ")");
 			}
 		}
@@ -84,7 +100,7 @@ public final class Util {
 	
 	private static <T> void tsortHelp(final List<BaseLogicPlan> list, Set<String> visited, Deque<BaseLogicPlan> stack, BaseLogicPlan cur) {
 		visited.add(cur.getPlanName());
-		List<BaseLogicPlan> neighbor = cur.getDependenceList();
+		Set<BaseLogicPlan> neighbor = cur.getDependenceList();
 		for (BaseLogicPlan n : neighbor) {
 			if (!visited.contains(n.getPlanName())) {
 				tsortHelp(list, visited, stack, n);

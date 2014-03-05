@@ -45,17 +45,17 @@ public class JoinPlan {
 	}
 
 	private Map<StreamPair, List<KeyPair>> _keyPairMap;
-	private Map<String, Set<String>> _joinGraph = new HashMap<String, Set<String>>();
+	private Map<String, Set<String>> _joinGraph;
 
 	public JoinPlan() {
 		_keyPairMap = new HashMap<StreamPair, List<KeyPair>> ();
+		_joinGraph = new HashMap<String, Set<String>>();
 	}
 
 	public void addKeyPair(final KeyPair keyPair) {
 		String left = keyPair.getLeftField().getStream();
 		String right = keyPair.getRightField().getStream();
 		StreamPair streamPair = new StreamPair(left, right);
-		
 		if (_keyPairMap.containsKey(streamPair)) {
 			_keyPairMap.get(streamPair).add(keyPair);
 		} else {
@@ -72,6 +72,7 @@ public class JoinPlan {
 	}
 	
 	public List<List<String>> getPartition() {
+		System.out.println(_joinGraph);
 	  // TODO Auto-generated method stub
 		List<List<String>> partition = new ArrayList<List<String>> ();
 		
@@ -118,4 +119,9 @@ public class JoinPlan {
 			_joinGraph.put(rhs, set);
 		}
 	}
+
+	public void addStream(String name) {
+	  // TODO Auto-generated method stub
+	  _joinGraph.put(name, new HashSet<String> ());
+  }
 }

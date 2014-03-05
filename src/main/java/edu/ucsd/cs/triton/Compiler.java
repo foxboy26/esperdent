@@ -37,7 +37,7 @@ public class Compiler {
 			
 			LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor(resourceManager);
 			
-			root.childrenAccept(logicPlanVisitor, resourceManager);
+			root.jjtAccept(logicPlanVisitor, resourceManager);
 			//System.out.println(resourceManager.getStreamByName("s1"));
 
 			List<BaseLogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();

@@ -2,6 +2,7 @@ package edu.ucsd.cs.triton.operator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,6 +72,7 @@ import edu.ucsd.cs.triton.expression.StringExpression;
 import edu.ucsd.cs.triton.resources.AttributeType;
 import edu.ucsd.cs.triton.resources.BaseDefinition;
 import edu.ucsd.cs.triton.resources.DynamicSource;
+import edu.ucsd.cs.triton.resources.QuerySource;
 import edu.ucsd.cs.triton.resources.RelationDefinition;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 import edu.ucsd.cs.triton.resources.StaticSource;
@@ -100,15 +102,16 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		return null;
   }
 
+	static int count = 0;
 	@Override
   public Object visit(ASTStart node, Object data) {
-	
 		int numOfChildren = node.jjtGetNumChildren();
 		for (int i = 0; i < numOfChildren; i++) {
 			Node n = node.jjtGetChild(i);
 			if (n instanceof ASTCreateStream || 
 					n instanceof ASTCreateRelation ||
 					n instanceof ASTQuery) {
+				System.out.println("process query " + count++);
 				n.jjtAccept(this, data);
 			} else {
 				System.err.println("Not supported query.");
@@ -121,7 +124,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   //TODO
 	public Object visit(ASTCreateStream node, Object data) {
-	  
 		checkNumOfChildren(node, 2, "[CreateStream]");
 		
 		String streamName = node.streamName;
@@ -235,7 +237,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			// dynamic source from a stream query result
 			ResourceManager resoureManager = ResourceManager.getInstance();
 			String unnamedStream = resoureManager.allocateUnnamedStream();
-			definition.setSource(new DynamicSource(unnamedStream));
+			definition.setSource(new QuerySource(unnamedStream));
 			child.jjtAccept(this, data);
 		} else {
 			LOGGER.error("Error in source node!");
@@ -292,7 +294,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 				BaseDefinition definiton = _resourceManager.getDefinitionByName(streamName);
 				Set<String> attributes = definiton.getAttributes().keySet();
 				for (String attribute : attributes)
-				projectionOperator.addField(new SimpleField(streamName, attribute));
+				projectionOperator.addField(new SimpleField(streamName, streamName + '.' + attribute));
 			}
 		} else {
 			node.childrenAccept(this, data);
@@ -328,7 +330,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			// create aggregator
 			aggregator = (Aggregator) attributeNode.jjtAccept(this, data);
 			String functionName = aggregator.getName();
-			field = new AggregateField(functionName, functionName);
+			field = new AggregateField(functionName, aggregator.getOutputField());
 		} else {
 			System.err.println("error in select attribute");
 		}
@@ -374,7 +376,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		} else {
 			String aggregateFunction = (String) node.jjtGetChild(0).jjtAccept(this, data);
 			String[] attribute = (String[]) node.jjtGetChild(1).jjtAccept(this, data);
-			String inputField = attribute[0] + "." + attribute[1];
+			String inputField = attribute[1];
 			return new Aggregator(aggregateFunction, inputField);
 		}
   }
@@ -395,40 +397,55 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		int numOfChildren = node.jjtGetNumChildren();
 		
 		// get stream name
-		String name = (String) node.jjtGetChild(0).jjtAccept(this, data);
-		if (!_resourceManager.containsRelation(name)) {
-			System.err.println("stream def [" + name + "] not found!");
+		String originalName = (String) node.jjtGetChild(0).jjtAccept(this, data);
+		// check stream if definition exists
+		if (!_resourceManager.containsDefinition(originalName)) {
+			System.err.println("stream def [" + originalName + "] not found!");
 			return null;
 		}
 	  
-		// create input stream
-		InputStream inputStream = new InputStream(name);
+		// generate input stream plan
+		InputStream inputStream;
 		
-		// check rename
+		// step 1. check rename
 		Node lastNode = node.jjtGetChild(numOfChildren - 1);
 		int searchRange = numOfChildren;
 		if (lastNode instanceof ASTReName) {
-			logicPlan.addRenameDefinition(name, ((ASTReName) lastNode).rename);
+			String rename = ((ASTReName) lastNode).rename;
+			// add to rename set
+			logicPlan.addRenameDefinition(originalName, rename);
+			
+			// create input stream with rename
+			inputStream = new InputStream(originalName, rename);
+			
 			searchRange--;
+		} else {
+			// create input stream
+			inputStream = new InputStream(originalName);
 		}
 		
-		// get pre-window filter and window spec
+		// step 2. get pre-window filter and window spec
 		BaseWindow windowOperator = null;
 		Selection selectionOperator = null;
 		for (int i = 1; i < searchRange; i++) {
 			Node childNode = node.jjtGetChild(i);
 			if (childNode instanceof ASTStreamFilter) {
-				selectionOperator = (Selection) childNode.jjtAccept(this, data);
+				Set<String> scope = new HashSet<String> ();
+				scope.add(originalName);
+				logicPlan.setCurrentScope(scope);
+				selectionOperator = (Selection) childNode.jjtAccept(this, logicPlan);
+				logicPlan.resetScope();
 			} else if (childNode instanceof ASTWinLength || 
 					       childNode instanceof ASTWinTime || 
 					       childNode instanceof ASTWinTimeBatch) {
-				windowOperator = (BaseWindow) childNode.jjtAccept(this, data);
+				windowOperator = (BaseWindow) childNode.jjtAccept(this, logicPlan);
 			} else {
 				System.err.println("Err");
 				return null;
 			}
 		}
 		
+		// step3. build input stream plan
 		BasicOperator currentOperator = inputStream;
 		if (selectionOperator != null) {
 			selectionOperator.addChild(inputStream, 0);
@@ -442,11 +459,16 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			currentOperator = windowOperator;
 		}
 		
-		logicPlan.addInputStream(name, currentOperator);
-	  
-		// add to stream dependency list
-		if (_logicPlanList.containsKey(name)) {
-			logicPlan.addDependency(_logicPlanList.get(name));
+		// step 4. add input stream into from-list, update scope
+		if (inputStream.hasRename()) {
+			logicPlan.addInputStream(inputStream.getRename(), currentOperator);
+		} else {
+			logicPlan.addInputStream(inputStream.getName(), currentOperator);
+		}
+		
+		// step 5. update dependency list
+		if (_logicPlanList.containsKey(originalName)) {
+			logicPlan.addDependency(_logicPlanList.get(originalName));
 		} else {
 			System.err.println("error!");
 		}
