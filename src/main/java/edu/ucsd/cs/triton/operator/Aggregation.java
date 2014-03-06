@@ -18,6 +18,15 @@ public class Aggregation extends BasicOperator {
 	public boolean addGroupByAttribute(Attribute attribute) {
 		return _groupByList.add(attribute);
 	}
+	
+	/**
+	 * This is an hack on the trident code generation when sliding window is 
+	 * involved. We need to add a "windowId" into the group by list.
+	 * @param inputStream
+	 */
+	public void addWindowId(final String inputStream) {
+		_groupByList.add(0, new Attribute(inputStream, "windowId"));
+	}
 
 	public boolean addAggregator(final Aggregator aggregator) {
 		return _aggregatorList.add(aggregator);

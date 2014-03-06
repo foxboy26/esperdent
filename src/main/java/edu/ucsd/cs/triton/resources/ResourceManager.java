@@ -57,6 +57,10 @@ public class ResourceManager {
 	}
 	
 	public BaseDefinition getDefinitionByName(final String name) {
+		if (!_definitions.containsKey(name)) {
+			System.err.println("definition [" + name + "] is not found!");
+			System.exit(1);
+		}
 		return _definitions.get(name);
 	}
 	

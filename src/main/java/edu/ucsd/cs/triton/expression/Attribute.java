@@ -4,11 +4,24 @@ public class Attribute {
 	private final String _stream;
 	private final String _name;
 	
+	/**
+	 * 
+	 * @param stream the stream that the attribute belongs to. If rename exists,
+	 * it will be the renamed stream.
+	 * @param name the attribute name in the format of
+	 * "originalStreamName.attributeName"
+	 */
 	public Attribute(final String stream, final String name) {
 		_stream = stream;
 		_name = name;
 	}
 
+	/**
+	 * get the stream name that the attribute belongs to.
+	 * If the stream is renamed in the from clause, it will return the renamed
+	 * stream name.
+	 * @return
+	 */
 	public String getStream() {
 	  // TODO Auto-generated method stub
 	  return _stream;
@@ -43,11 +56,14 @@ public class Attribute {
 
 	public String getAttributeName() {
 	  // TODO Auto-generated method stub
-	  return _name.split("\\.")[1];
+		String[] res = _name.split("\\.");
+		return (res.length == 2)? _name.split("\\.")[1] : _name;
   }
 
 	public String getOriginalStream() {
 	  // TODO Auto-generated method stub
-	  return _name.split("\\.")[0];
+		String[] res = _name.split("\\.");
+		return (res.length == 2)? _name.split("\\.")[0] : _name;
+
   }
 }

@@ -2,6 +2,7 @@ package edu.ucsd.cs.triton.codegen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import edu.ucsd.cs.triton.operator.ExpressionField;
 import edu.ucsd.cs.triton.operator.FixedLengthWindow;
 import edu.ucsd.cs.triton.operator.InputStream;
 import edu.ucsd.cs.triton.operator.Join;
+import edu.ucsd.cs.triton.operator.KeyPair;
 import edu.ucsd.cs.triton.operator.LogicQueryPlan;
 import edu.ucsd.cs.triton.operator.OperatorVisitor;
 import edu.ucsd.cs.triton.operator.OutputStream;
@@ -24,6 +26,7 @@ import edu.ucsd.cs.triton.operator.Projection;
 import edu.ucsd.cs.triton.operator.ProjectionField;
 import edu.ucsd.cs.triton.operator.Register;
 import edu.ucsd.cs.triton.operator.Selection;
+import edu.ucsd.cs.triton.operator.SimpleField;
 import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
 import edu.ucsd.cs.triton.operator.TimeWindow;
@@ -43,11 +46,14 @@ public class QueryTranslator implements OperatorVisitor {
 	private final ResourceManager _resourceManager;
 	private TridentProgram _program;
 	
+	private boolean _containsWindowOperator;
+	
 	public QueryTranslator(final BaseLogicPlan logicPlan, TridentProgram program) {
 		_logicPlan = logicPlan;
 		_planName = logicPlan.getPlanName();
 		_resourceManager = ResourceManager.getInstance();
 		_program = program;
+		_containsWindowOperator = false;
 	}
 	
 	@Override
@@ -198,6 +204,9 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		StringBuilder sb = (StringBuilder) data;
 		
+		if (_containsWindowOperator) {
+			operator.addWindowId("window");
+		}
 		// group by
 		if (operator.containsGroupBy()) {
 			String fields = TridentBuilder.newFields(operator.getGroupByList());
@@ -226,13 +235,27 @@ public class QueryTranslator implements OperatorVisitor {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
 		
+		_containsWindowOperator = true;
+		
 		StringBuilder sb = (StringBuilder) data;
 
     String windowFactory = TridentBuilder.newFunction("FixedLengthSlidingWindow.Factory", Integer.toString(operator.getLength()));
-		String inputFields = TridentBuilder.newFields();
-		String outputFields = TridentBuilder.newFields();
+    
+    String inputStream = operator.getInputStream();
+		BaseDefinition definiton = _resourceManager.getDefinitionByName(inputStream);
+		Set<String> attributes = definiton.getAttributes().keySet();
+		List<String> inputFields = new ArrayList<String> ();
+		for (String attribute : attributes) {
+			inputFields.add(inputStream + '.' + attribute);
+		}
+		String inputFieldsArg = TridentBuilder.newFields(inputFields);
+		
+		inputFields.add(0, "windowId");
+		String outputFieldsArg = TridentBuilder.newFields(inputFields);
+		
 		String windowUpdater = TridentBuilder.newFunction("SlidingWindowUpdater");
-		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFields, windowUpdater, outputFields))
+		
+		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFieldsArg, windowUpdater, outputFieldsArg))
 			.append(TridentBuilder.newValuesStream());
 		return null;
   }
@@ -242,13 +265,26 @@ public class QueryTranslator implements OperatorVisitor {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
 		
+		_containsWindowOperator = true;
+		
 		StringBuilder sb = (StringBuilder) data;
 
     String windowFactory = TridentBuilder.newFunction("TimeSlidingWindow.Factory", Long.toString(operator.getDuration()));
-		String inputFields = TridentBuilder.newFields();
-		String outputFields = TridentBuilder.newFields();
+    
+    String inputStream = operator.getInputStream();
+		BaseDefinition definiton = _resourceManager.getDefinitionByName(inputStream);
+		Set<String> attributes = definiton.getAttributes().keySet();
+		List<String> inputFields = new ArrayList<String> ();
+		for (String attribute : attributes) {
+			inputFields.add(inputStream + '.' + attribute);
+		}
+		String inputFieldsArg = TridentBuilder.newFields(inputFields);
+		
+		inputFields.add(0, "windowId");
+		String outputFieldsArg = TridentBuilder.newFields(inputFields);
+		
 		String windowUpdater = TridentBuilder.newFunction("SlidingWindowUpdater");
-		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFields, windowUpdater, outputFields))
+		sb.append(TridentBuilder.partitionPersist(windowFactory, inputFieldsArg, windowUpdater, outputFieldsArg))
 			.append(TridentBuilder.newValuesStream());
 		return null;
   }
@@ -259,6 +295,8 @@ public class QueryTranslator implements OperatorVisitor {
 	  // TODO Auto-generated method stub
 		operator.childrenAccept(this, data);
 		
+		_containsWindowOperator = true;
+
 		StringBuilder sb = (StringBuilder) data;
 
     String windowFactory = TridentBuilder.newFunction("FixedLengthSlidingWindow.Factory", Long.toString(operator.getDuration()));
@@ -292,7 +330,10 @@ public class QueryTranslator implements OperatorVisitor {
   }
 	
 	@Override
-  public Object visit(Join operator, Object data) {
+  /**
+   * We did not handle the case that join two same streams.
+   */
+	public Object visit(Join operator, Object data) {
 	  // TODO Auto-generated method stub
 		StringBuilder sb = (StringBuilder) data;
 		int n = operator.getNumChildren();
@@ -314,8 +355,55 @@ public class QueryTranslator implements OperatorVisitor {
 			sb.append("Stream " + queryId + " = ");
 		}
 		
-			sb.append("_topology\n")
-		  .append(".join!!!!!\n");
+		// gather join information
+		String leftStream = operator.getLeftInputStream();
+		String rightStream = operator.getRightInputStream();
+		
+		// gather join key
+		List<String> leftJoinFields = new ArrayList<String> ();
+		List<String> rightJoinFields = new ArrayList<String> ();
+
+		List<KeyPair> keyPairList = operator.getJoinField();
+		for (KeyPair keyPair : keyPairList) {
+			leftJoinFields.add(keyPair.getFieldByStream(leftStream).getName());
+			rightJoinFields.add(keyPair.getFieldByStream(rightStream).getName());
+		}
+
+		// gather the output field
+		// step 1. we need keep the attribute of right side since it is a left-deep join tree.
+		List<String> outputFields = new ArrayList<String> (rightJoinFields);
+
+		LogicQueryPlan logicPlan = (LogicQueryPlan) _logicPlan;
+
+		// step 2. find remaining fields in left stream and add to outputFields
+		String[] attributes = logicPlan.getStreamAttributes(leftStream);
+		String originalName = logicPlan.unifiyDefinitionId(leftStream);
+		for (String attribute : attributes) {
+			String field = originalName + '.' + attribute;
+			if (!leftJoinFields.contains(field)) {
+				outputFields.add(field);
+			}
+		}
+		
+		// step 2. find remaining fields in left stream and add to outputFields
+		attributes = logicPlan.getStreamAttributes(rightStream);
+		originalName = logicPlan.unifiyDefinitionId(rightStream);
+		for (String attribute : attributes) {
+			String field = originalName + '.' + attribute;
+			if (!rightJoinFields.contains(field)) {
+				outputFields.add(field);
+			}
+		}
+		
+		// build Trident join statement 
+		String join = TridentBuilder.join(leftStream, 
+				                              TridentBuilder.newFields(leftJoinFields), 
+					                            rightStream, 
+					                            TridentBuilder.newFields(rightJoinFields), 
+					                            TridentBuilder.newFields(outputFields));
+		
+		sb.append("_topology\n")
+		  .append(join);
 	  
 	  return null;
   }

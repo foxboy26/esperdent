@@ -1,11 +1,7 @@
 package edu.ucsd.cs.trition.twitter;
 
-import java.util.Map;
-
 import storm.trident.operation.BaseFunction;
-import storm.trident.operation.Filter;
 import storm.trident.operation.TridentCollector;
-import storm.trident.operation.TridentOperationContext;
 import storm.trident.operation.builtin.Count;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.tuple.Fields;
@@ -21,7 +17,6 @@ import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
  * select count(*) as tps, max(retweetCount) as maxRetweets from Tweets.win:time_batch(1 sec)
  */
 public class TwitterDemo extends SimpleQuery {
-
 	
   public static class MyFunction extends BaseFunction {
     @Override

@@ -86,6 +86,11 @@ public final class TridentBuilder {
 		return newTridentFunction("stateQuery", args);
 	}
 	
+
+	public static String join(String... args) {
+		return newTridentFunction("join", args);
+  }
+	
 	public static String newValues(String... args) {
 		return newFunction("Values", args);
 	}

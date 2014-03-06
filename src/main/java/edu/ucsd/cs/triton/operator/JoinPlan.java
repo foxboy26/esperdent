@@ -18,8 +18,8 @@ public class JoinPlan {
 				_left = right;
 				_right = left;
 			} else {
-				_left = right;
-				_right = left;
+				_left = left;
+				_right = right;
 			}
 		}
 
@@ -41,6 +41,11 @@ public class JoinPlan {
 		@Override
 		public int hashCode() {
 			return _left.hashCode() + _right.hashCode();
+		}
+		
+		@Override
+		public String toString() {
+			return "{" + _left + ", " + _right + "}";
 		}
 	}
 
@@ -67,8 +72,9 @@ public class JoinPlan {
 		buildGraph(keyPair);
 	}
 	
-	public List<KeyPair> getJoinFields(final String left, final String right) {
-		return _keyPairMap.get(new StreamPair(left, right));
+	public List<KeyPair> getJoinFields(final String leftStream, final String rightStream) {
+
+		return _keyPairMap.get(new StreamPair(leftStream, rightStream));
 	}
 	
 	public List<List<String>> getPartition() {

@@ -26,4 +26,20 @@ public class KeyPair {
 	public void setRightField(Attribute _rightField) {
 		this._rightField = _rightField;
 	}
+	
+	public Attribute getFieldByStream(final String stream) {
+		if (_leftField.getStream().equals(stream)) {
+			return _leftField;
+		} else if (_rightField.getStream().equals(stream)) {
+			return _rightField;
+		} else {
+			System.err.println("error, no field find in join key pair.");
+			return null;
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "{" + _leftField + ", " + _rightField + "}";
+	}
 }

@@ -100,6 +100,24 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		return _inputStreams.keySet();
 	}
 
+	/**
+	 * 
+	 * @param streamName
+	 * @return the attribute list as an array of the given streamName
+	 */
+	public String[] getStreamAttributes(final String streamName) {
+		String originalName = unifiyDefinitionId(streamName);
+		ResourceManager resourceManager = ResourceManager.getInstance();
+		BaseDefinition definiton = resourceManager.getDefinitionByName(originalName);
+		Set<String> attributes = definiton.getAttributes().keySet();
+		
+		return attributes.toArray(new String[attributes.size()]);
+	}
+	/**
+	 * check if the stream is defined in the current scope
+	 * @param name
+	 * @return
+	 */
 	public boolean containsDefinition(final String name) {
 		return _scope.contains(name);
 	}
@@ -388,6 +406,11 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		return product;
 	}
 	
+	/**
+	 * construct left-deep join tree plan
+	 * @param joinList
+	 * @return
+	 */
 	private BasicOperator constructJoin(final List<String> joinList) {
 		BasicOperator join = _inputStreams.get(joinList.get(0));
 		for (int i = 1; i < joinList.size(); i++) {
@@ -402,27 +425,36 @@ public class LogicQueryPlan extends BaseLogicPlan {
 			List<KeyPair> joinFields = _joinPlan.getJoinFields(joinList.get(i-1), joinList.get(i));
 			newJoin.setJoinFields(joinFields);
 			newJoin.addChild(join, 0);
-			join.setParent(newJoin);
 			BasicOperator right = _inputStreams.get(rightStream);
 			newJoin.addChild(right, 1);
-			right.setParent(newJoin);
 			join = newJoin;
 		}
 		
 		return join;
 	}
 
+	/**
+	 * change the current scope to @param scope
+	 * @param scope
+	 */
 	public void setCurrentScope(Set<String> scope) {
 	  // TODO Auto-generated method stub
 	  _oldScope = _scope;
 	  _scope = scope;
   }
 
+	/**
+	 * reset scope to the previous scope.
+	 */
 	public void resetScope() {
 	  // TODO Auto-generated method stub
 	  _scope = _oldScope;
   }
 	
+	/**
+	 * check if definiton exists in the current scope (set of streams)
+	 * @param id
+	 */
 	private void checkDuplication(String id) {
 		if (_scope.contains(id)) {
 			System.err.println("duplcated definition [" + id + "] is found!");

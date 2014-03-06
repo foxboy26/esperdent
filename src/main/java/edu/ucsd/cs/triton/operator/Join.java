@@ -12,7 +12,7 @@ public class Join extends BasicOperator {
 	public Join(final String left, final String right) {
 		_leftDefinition = left;
 		_rightDefinition = right;
-		_outputDefinition = left + "##" + right;
+		_outputDefinition = left + "_Join_" + right;
 		_type = OperatorType.JOIN;
 	}
 	
@@ -21,10 +21,22 @@ public class Join extends BasicOperator {
 	  _joinFields = joinFields;
   }
 	
-	public List<KeyPair> getJoinFiedl() {
+	public String getLeftInputStream() {
+		return _leftDefinition;
+	}
+	
+	public String getRightInputStream() {
+		return _rightDefinition;
+	}
+	
+	public List<KeyPair> getJoinField() {
 		return _joinFields;
 	}
 
+	/**
+	 * 
+	 * @return the stream name of the joined streams.
+	 */
 	public String getOutputDefinition() {
 	  // TODO Auto-generated method stub
 	  return _outputDefinition;

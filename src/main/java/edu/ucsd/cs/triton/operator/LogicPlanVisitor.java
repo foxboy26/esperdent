@@ -291,10 +291,11 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 		if (numOfChildren == 0) {
 			Set<String> inputStreams = logicPlan.getInputStreams();
 			for (String streamName : inputStreams) {
-				BaseDefinition definiton = _resourceManager.getDefinitionByName(streamName);
-				Set<String> attributes = definiton.getAttributes().keySet();
-				for (String attribute : attributes)
-				projectionOperator.addField(new SimpleField(streamName, streamName + '.' + attribute));
+				String[] attributes = logicPlan.getStreamAttributes(streamName);
+				String originalName = logicPlan.unifiyDefinitionId(streamName);
+				for (String attribute : attributes) {
+					projectionOperator.addField(new SimpleField(streamName, originalName + '.' + attribute));
+				}
 			}
 		} else {
 			node.childrenAccept(this, data);
@@ -439,6 +440,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 					       childNode instanceof ASTWinTime || 
 					       childNode instanceof ASTWinTimeBatch) {
 				windowOperator = (BaseWindow) childNode.jjtAccept(this, logicPlan);
+				windowOperator.setInputStream(originalName);
 			} else {
 				System.err.println("Err");
 				return null;

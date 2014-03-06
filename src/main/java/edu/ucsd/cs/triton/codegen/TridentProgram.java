@@ -27,6 +27,12 @@ public final class TridentProgram {
 		_importList.add(importString);
 	}
 	
+	public void addImport(String[] importList) {
+		for (String s : importList) {
+			_importList.add(s);
+		}
+	}
+	
 	public void addInnerClass(ClassStatement cs) {
 		_innerClassList.add(cs);
 	}
@@ -43,10 +49,11 @@ public final class TridentProgram {
 		return new JavaProgram(_programName)
 			.Package()
 			.Import()
-				.add(Import.DEFAULT_IMPORT_LIST)
-				.add(_importList)
+				.add(Import.DEFAULT)
+				.add(Import.EACH)
+				.add(Import.FILTER)
 			.EndImport()
-			.Class()
+			.Class().Extends("SimpleQuery")
 				.addSimpleStmt(_spoutDefList)
 				.addInnerClass(_innerClassList)
 				.addMemberFunction(_buildQuery)
