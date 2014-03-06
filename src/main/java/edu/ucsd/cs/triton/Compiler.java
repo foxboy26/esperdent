@@ -22,11 +22,11 @@ import edu.ucsd.cs.triton.operator.LogicPlanVisitor;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public class Compiler {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Compiler.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(Compiler.class);
 
 	public static void main(String[] args) {
 		
-		String inputFileName = "src/test/jjtree/codegen.esp";
+		String inputFileName = "src/test/jjtree/simple.esp";
 		try {
 			TritonParser tritonParser;
 			tritonParser = new TritonParser(new FileInputStream(new File(
@@ -55,7 +55,7 @@ public class Compiler {
 			
 			System.out.println(res);
 			
-			LOGGER.info("Generating packge...");
+			//LOGGER.info("Generating packge...");
 			generatePackage(className.toLowerCase(), program);
 
 		} catch (FileNotFoundException e1) {

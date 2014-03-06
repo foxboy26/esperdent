@@ -128,15 +128,14 @@
 				<artifactId>javacc-maven-plugin</artifactId>
 				<version>2.6</version>
 				<executions>
-					<execution>
-						<id>jjtree-javacc</id>
-						<goals>
-							<goal>jjtree-javacc</goal>
-						</goals>
-						<configuration>
-							<!-- options for JJTree and JavaCC go here -->
-						</configuration>
-					</execution>
+					<!-- <execution> -->
+					<!-- <id>jjtree-javacc</id> -->
+					<!-- <goals> -->
+					<!-- <goal>jjtree-javacc</goal> -->
+					<!-- </goals> -->
+					<!-- <configuration> -->
+					<!-- </configuration> -->
+					<!-- </execution> -->
 				</executions>
 			</plugin>
 		</plugins>

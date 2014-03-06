@@ -41,7 +41,7 @@ public final class TridentBuilder {
 	}
 	
 	public static String groupby(String... args) {
-		return newTridentFunction("groupby", args);
+		return newTridentFunction("groupBy", args);
 	}
 	
 	/**

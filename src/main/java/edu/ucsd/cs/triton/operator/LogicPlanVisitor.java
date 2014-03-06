@@ -80,7 +80,7 @@ import edu.ucsd.cs.triton.resources.StreamDefinition;
 
 public class LogicPlanVisitor implements TritonParserVisitor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlanVisitor.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(LogicPlanVisitor.class);
 	
 	private ResourceManager _resourceManager;
 	private Map<String, BaseLogicPlan> _logicPlanList;
@@ -240,7 +240,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			definition.setSource(new QuerySource(unnamedStream));
 			child.jjtAccept(this, data);
 		} else {
-			LOGGER.error("Error in source node!");
+			//LOGGER.error("Error in source node!");
 		}
 		
 	  return null;
@@ -601,7 +601,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			String fileName = (String) child.jjtAccept(this, data);
 			logicPlan.setOutputStream(new OutputStream(fileName, logicPlan.getProjection().getOutputFieldList()));
 		} else {
-			LOGGER.error("unsupported output stream.");
+			//LOGGER.error("unsupported output stream.");
 		}
 	  
 		return null;

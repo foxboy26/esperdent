@@ -3,8 +3,6 @@ package edu.ucsd.cs.triton.window;
 import java.util.List;
 import java.util.UUID;
 
-import org.testng.mustache.Value;
-
 import backtype.storm.tuple.Values;
 
 import storm.trident.operation.TridentCollector;

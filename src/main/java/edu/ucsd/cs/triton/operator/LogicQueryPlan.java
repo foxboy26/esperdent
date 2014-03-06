@@ -22,7 +22,7 @@ import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public class LogicQueryPlan extends BaseLogicPlan {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LogicQueryPlan.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(LogicQueryPlan.class);
 	
 	private final boolean _isNamedQuery;
 	private Map<String, String> _renameTable;
@@ -289,7 +289,6 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		}
 		
 		// set local filter for each definition
-		LOGGER.info("localSelectionMap:" + localSelectionMap);
 		for (Map.Entry<String, List<BooleanExpression>> entry : localSelectionMap.entrySet()) {
 			BasicOperator op = _inputStreams.get(entry.getKey());
 			Selection selection = new Selection(LogicExpression.fromAndList(entry.getValue()));
@@ -301,7 +300,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		// step 2: partition graph into join cluster
 		List<List<String>> partition = _joinPlan.getPartition();
 		System.out.println(partition);
-		LOGGER.info("Find partition: " + partition);
+		//LOGGER.info("Find partition: " + partition);
 		
 		// build join operator
 		BasicOperator plan = constructProduct(partition);
@@ -311,7 +310,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	
 	public Start generatePlan() {
 		
-		LOGGER.info("Generating plan...");
+		//LOGGER.info("Generating plan...");
 		Stack<BasicOperator> logicPlan = new Stack<BasicOperator> ();
 		
 		BasicOperator joinPlan = null;

@@ -26,7 +26,6 @@ import edu.ucsd.cs.triton.operator.Projection;
 import edu.ucsd.cs.triton.operator.ProjectionField;
 import edu.ucsd.cs.triton.operator.Register;
 import edu.ucsd.cs.triton.operator.Selection;
-import edu.ucsd.cs.triton.operator.SimpleField;
 import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.operator.TimeBatchWindow;
 import edu.ucsd.cs.triton.operator.TimeWindow;
@@ -39,7 +38,7 @@ import edu.ucsd.cs.triton.resources.StaticSource;
 
 public class QueryTranslator implements OperatorVisitor {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(QueryTranslator.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(QueryTranslator.class);
 	
 	private final BaseLogicPlan _logicPlan;
 	private final String _planName;
@@ -89,7 +88,7 @@ public class QueryTranslator implements OperatorVisitor {
 			// TODO
 			operator.childrenAccept(this, data);
 		} else {
-			LOGGER.error("unknown source [" + source + "]" + "is found!");
+			//LOGGER.error("unknown source [" + source + "]" + "is found!");
 			System.exit(1);
 		}
 		
@@ -147,7 +146,7 @@ public class QueryTranslator implements OperatorVisitor {
 		StringBuilder sb = (StringBuilder) data;
 
 		//TODO generate Filter
-		LOGGER.info(operator.getFilter().toString());
+		//LOGGER.info(operator.getFilter().toString());
 		FilterTranslator filterTranslator = new FilterTranslator(_planName, operator.getFilter());
 		
 		ClassStatement filterClass = filterTranslator.translate();
@@ -396,9 +395,9 @@ public class QueryTranslator implements OperatorVisitor {
 		}
 		
 		// build Trident join statement 
-		String join = TridentBuilder.join(leftStream, 
+		String join = TridentBuilder.join(_planName+leftStream, 
 				                              TridentBuilder.newFields(leftJoinFields), 
-					                            rightStream, 
+				                              _planName+rightStream, 
 					                            TridentBuilder.newFields(rightJoinFields), 
 					                            TridentBuilder.newFields(outputFields));
 		
