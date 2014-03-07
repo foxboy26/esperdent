@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.twitter;
+package edu.ucsd.cs.triton.twitter;
 
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;

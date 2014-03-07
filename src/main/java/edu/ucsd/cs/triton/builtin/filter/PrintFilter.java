@@ -13,6 +13,7 @@ import storm.trident.tuple.TridentTuple;
 public class PrintFilter implements Filter  {
 	@Override
 	public void prepare(Map conf, TridentOperationContext context) {
+		System.out.println("hahahaha");
 	}
 	@Override
 	public void cleanup() {

@@ -1,19 +1,18 @@
-package edu.ucsd.cs.trition.operator.language;
+package edu.ucsd.cs.triton.operator.language;
 
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.operation.builtin.Count;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
-import backtype.storm.LocalDRPC;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import edu.ucsd.cs.trition.twitter.TwitterBatchSpout;
 import edu.ucsd.cs.triton.builtin.aggregator.Max;
 import edu.ucsd.cs.triton.builtin.filter.PrintFilter;
+import edu.ucsd.cs.triton.twitter.TwitterBatchSpout;
 import edu.ucsd.cs.triton.window.FixedLengthSlidingWindow;
 import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
 

@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.window;
+package edu.ucsd.cs.triton.window;
 
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
@@ -22,7 +22,7 @@ import edu.ucsd.cs.triton.builtin.filter.PrintFilter;
 import edu.ucsd.cs.triton.window.FixedLengthSlidingWindow;
 import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
 
-public class TestFixedLengthWindow {
+public class TestEachFunction {
 	
   public static class Split extends BaseFunction {
     @Override
@@ -34,25 +34,30 @@ public class TestFixedLengthWindow {
     }
   }
 
-  public static class MyFunction extends BaseFunction {
-    @Override
-    public void execute(TridentTuple tuple, TridentCollector collector) {
-    	collector.emit(new Values(tuple.getInteger(0) * 2, tuple.getString(1) + "!!", tuple.getInteger(2) + 2));
-    }
-  }
-  
-  
   public static StormTopology buildTopology(LocalDRPC drpc) {
-    FixedBatchSpout spout = new FixedBatchSpout(new Fields("a", "b", "c", "d"), 3, new Values(1, "a", 1, "b"), new Values(2, "c", 2, "d"), new Values(3, "e", 3, "f"));
+    FixedBatchSpout spout = new FixedBatchSpout(new Fields("sentence"), 1, new Values("the cow jumped over the moon"),
+        new Values("the man went to the store and bought some candy"), new Values("four score and seven years ago"),
+        new Values("how many apples can you eat"), new Values("to be or not to be the person"));
     spout.setCycle(true);
     
     TridentTopology topology = new TridentTopology();
     //TridentState wordCounts = topology
     topology.newStream("spout1", spout).parallelismHint(16)
-    	.each(new Fields("a", "b", "c", "d"), new MyFunction(), new Fields("b1", "c1", "d1"))
-    	.each(new Fields("b1", "c1", "d1"), new PrintFilter());
+    		//.each(new Fields("sentence"), new PreFilter())
+    		//.each(new Fields("sentence"), new PrintFilter());
     		// fixed length sliding window
-    		
+    		.partitionPersist(new FixedLengthSlidingWindow.Factory(3), new Fields("sentence"), new SlidingWindowUpdater(), new Fields("windowId", "sentence"))
+		    .newValuesStream()
+		    //.each(new Fields("sentence"), new PostFilter())
+//		    .groupBy(new Fields("windowId"))
+		    .each(new Fields("sentence"), new Split(), new Fields("word"))
+		    .groupBy(new Fields("word", "windowId"))
+		    //.each(new Fields("word", "windowId"), new PrintFilter());
+    		.persistentAggregate(new MemoryMapState.Factory(), new Fields("word"), new Count(), new Fields("count")).parallelismHint(16);
+    
+    //topology.newDRPCStream("words", drpc).each(new Fields("args"), new Split(), new Fields("word")).groupBy(new Fields(
+    //    "word")).stateQuery(wordCounts, new Fields("word"), new MapGet(), new Fields("count")).each(new Fields("count"),
+    //    new FilterNull()).aggregate(new Fields("count"), new Sum(), new Fields("sum"));
     return topology.build();
   }
 	

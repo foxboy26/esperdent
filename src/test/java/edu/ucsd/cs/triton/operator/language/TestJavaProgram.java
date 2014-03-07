@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.operator.language;
+package edu.ucsd.cs.triton.operator.language;
 
 import edu.ucsd.cs.triton.codegen.language.JavaProgram;
 

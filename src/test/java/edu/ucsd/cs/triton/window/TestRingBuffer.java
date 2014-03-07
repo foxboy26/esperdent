@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.window;
+package edu.ucsd.cs.triton.window;
 
 import edu.ucsd.cs.triton.window.RingBuffer;
 

@@ -328,7 +328,7 @@ public class QueryTranslator implements OperatorVisitor {
 			outputFilter = TridentBuilder.newFunction("PrintFilter");
 		} else {
 			String fileName = Util.newStringLiteral(operator.getFileName());
-			outputFilter = TridentBuilder.newFunction("FileFilter", fileName);
+			outputFilter = TridentBuilder.newFunction("FileWriteFilter", fileName);
 		}
 		
 		String fields = TridentBuilder.newFields(operator.getOutputFieldList());

@@ -1,4 +1,4 @@
-package edu.ucsd.cs.trition.twitter;
+package edu.ucsd.cs.triton.twitter;
 
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
