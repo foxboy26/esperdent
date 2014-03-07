@@ -65,8 +65,8 @@ public class StaticFileSpout implements IBatchSpout {
       String line;
       try {
 	      line = _br.readLine();
-
 	      if (line != null) {
+		      System.out.println(line);
 	      	String[] res = line.split(",");
 	      	List<Object> values = new ArrayList<Object> ();
 	      	for (int i = 0; i < res.length; i++) {

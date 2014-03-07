@@ -2,10 +2,10 @@ package edu.ucsd.cs.triton.codegen;
 
 public final class Import {
 	public static final String[] DEFAULT = new String[] {
-		"edu.ucsd.cs.triton.builtin.*",
-    "edu.ucsd.cs.triton.spout.*",
+		"edu.ucsd.cs.triton.builtin.filter.*",
+    "edu.ucsd.cs.triton.builtin.spout.*",
+    "edu.ucsd.cs.triton.builtin.aggregator.*",
 		"edu.ucsd.cs.triton.codegen.SimpleQuery",
-    "edu.ucsd.cs.triton.util.PrintFilter",
     "edu.ucsd.cs.triton.window.FixedLengthSlidingWindow",
     "edu.ucsd.cs.triton.window.SlidingWindowUpdater",
     "storm.trident.tuple.TridentTuple",

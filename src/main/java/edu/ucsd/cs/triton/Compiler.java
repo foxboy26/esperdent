@@ -26,7 +26,7 @@ public class Compiler {
 
 	public static void main(String[] args) {
 		
-		String inputFileName = "src/test/jjtree/codegen.esp";
+		String inputFileName = "src/test/jjtree/simple.esp";
 		try {
 			TritonParser tritonParser;
 			tritonParser = new TritonParser(new FileInputStream(new File(

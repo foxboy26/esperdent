@@ -45,7 +45,7 @@ public class Aggregation extends BasicOperator {
 	}
 	
 	public boolean isEmpty() {
-		return _aggregatorList.isEmpty() || _groupByList.isEmpty();
+		return _aggregatorList.isEmpty() && _groupByList.isEmpty();
 	}
 	
   /** Accept the visitor. **/

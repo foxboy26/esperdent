@@ -27,20 +27,22 @@ public class FileWriteFilter implements Filter  {
 		System.out.println("open file");
 		try {
 	    _writer = new PrintWriter(_fileName);
-    } catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
     }
 	}
 	@Override
 	public void cleanup() {
-	    _writer.flush();
+		System.out.println("closed!!!!");
 			_writer.close();
 	}
 
 	@Override
 	public boolean isKeep(TridentTuple tuple) {
+		System.out.println(tuple);
 		_writer.println(tuple.getValues());
+    _writer.flush();
 		return true;
 	}
 }
