@@ -1,4 +1,4 @@
-package edu.ucsd.cs.triton.spout;
+package edu.ucsd.cs.triton.builtin.spout;
 
 import static backtype.storm.utils.Utils.tuple;
 

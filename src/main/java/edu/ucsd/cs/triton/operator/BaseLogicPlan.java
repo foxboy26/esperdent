@@ -3,6 +3,9 @@ package edu.ucsd.cs.triton.operator;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.ucsd.cs.triton.resources.BaseDefinition;
+import edu.ucsd.cs.triton.resources.ResourceManager;
+
 public abstract class BaseLogicPlan {
 	protected final String _planName;
 	protected Set<BaseLogicPlan> _dependenceList;
@@ -22,6 +25,19 @@ public abstract class BaseLogicPlan {
 	
 	public String getPlanName() {
 		return _planName;
+	}
+	
+	/**
+	 * 
+	 * @param streamName
+	 * @return the attribute list of the given streamName.
+	 */
+	public String[] getStreamAttributes(final String streamName) {
+		ResourceManager resourceManager = ResourceManager.getInstance();
+		BaseDefinition definiton = resourceManager.getDefinitionByName(streamName);
+		Set<String> attributes = definiton.getAttributes().keySet();
+		
+		return attributes.toArray(new String[attributes.size()]);
 	}
 	
 	@Override

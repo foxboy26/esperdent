@@ -18,7 +18,7 @@ import backtype.storm.generated.StormTopology;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import edu.ucsd.cs.triton.util.PrintFilter;
+import edu.ucsd.cs.triton.builtin.filter.PrintFilter;
 import edu.ucsd.cs.triton.window.FixedLengthSlidingWindow;
 import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
 

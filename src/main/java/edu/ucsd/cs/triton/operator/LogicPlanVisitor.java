@@ -111,7 +111,6 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 			if (n instanceof ASTCreateStream || 
 					n instanceof ASTCreateRelation ||
 					n instanceof ASTQuery) {
-				System.out.println("process query " + count++);
 				n.jjtAccept(this, data);
 			} else {
 				System.err.println("Not supported query.");

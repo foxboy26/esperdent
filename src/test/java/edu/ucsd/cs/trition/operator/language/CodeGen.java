@@ -12,8 +12,8 @@ import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import edu.ucsd.cs.trition.twitter.TwitterBatchSpout;
-import edu.ucsd.cs.triton.builtin.Max;
-import edu.ucsd.cs.triton.util.PrintFilter;
+import edu.ucsd.cs.triton.builtin.aggregator.Max;
+import edu.ucsd.cs.triton.builtin.filter.PrintFilter;
 import edu.ucsd.cs.triton.window.FixedLengthSlidingWindow;
 import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
 

@@ -76,14 +76,23 @@ public class QueryTranslator implements OperatorVisitor {
 		
 		BaseDefinition streamDef = operator.getDefinition();
 		AbstractSource source = streamDef.getSource();
-		String instance = streamDef.getName();
+		String streamName = streamDef.getName();
 		
 		if (source instanceof StaticSource) {
 			String fileName = Util.newStringLiteral(source.toString());
-			sb.append(TridentBuilder.newInstance("StaticFileSpout", instance, fileName));
+			String[] attribute = _logicPlan.getStreamAttributes(streamName);
+			String[] fields = new String[attribute.length];
+			for (int i = 0; i < fields.length; i++) {
+				fields[i] = streamName + '.' + attribute[i];
+			}
+			String statement = TridentBuilder.newInstance("StaticFileSpout", 
+																						        streamName, 
+																						        fileName, 
+																						        TridentBuilder.newFields(fields));
+			sb.append(statement);
 		} else if (source instanceof DynamicSource) {
 			String spout = source.toString();
-			sb.append(TridentBuilder.newInstance(spout, instance));
+			sb.append(TridentBuilder.newInstance(spout, streamName));
 		} else if (source instanceof QuerySource) {
 			// TODO
 			operator.childrenAccept(this, data);

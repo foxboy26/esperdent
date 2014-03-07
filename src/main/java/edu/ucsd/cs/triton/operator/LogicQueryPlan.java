@@ -113,6 +113,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		
 		return attributes.toArray(new String[attributes.size()]);
 	}
+	
 	/**
 	 * check if the stream is defined in the current scope
 	 * @param name

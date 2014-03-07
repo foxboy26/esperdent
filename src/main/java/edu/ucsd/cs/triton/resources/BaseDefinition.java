@@ -1,6 +1,7 @@
 package edu.ucsd.cs.triton.resources;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class BaseDefinition {
@@ -10,7 +11,7 @@ public abstract class BaseDefinition {
 	
 	public BaseDefinition(final String name) {
 		_name = name;
-		_attributes = new HashMap<String, AttributeType> ();
+		_attributes = new LinkedHashMap<String, AttributeType> ();
 	}
 	
 	public BaseDefinition(final String name, final AbstractSource source) {

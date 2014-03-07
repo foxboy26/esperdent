@@ -6,10 +6,10 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import edu.ucsd.cs.triton.builtin.Max;
+import edu.ucsd.cs.triton.builtin.aggregator.Max;
+import edu.ucsd.cs.triton.builtin.filter.PrintFilter;
+import edu.ucsd.cs.triton.builtin.spout.TwitterSpout;
 import edu.ucsd.cs.triton.codegen.SimpleQuery;
-import edu.ucsd.cs.triton.spout.TwitterSpout;
-import edu.ucsd.cs.triton.util.PrintFilter;
 import edu.ucsd.cs.triton.window.FixedLengthSlidingWindow;
 import edu.ucsd.cs.triton.window.SlidingWindowUpdater;
 

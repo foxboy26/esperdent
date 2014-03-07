@@ -1,4 +1,4 @@
-package edu.ucsd.cs.triton.spout;
+package edu.ucsd.cs.triton.builtin.spout;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
