@@ -453,7 +453,7 @@ public class QueryTranslator implements OperatorVisitor {
 		boolean desc = sortedField.getDesc();
 		String firstN = TridentBuilder.newFunction("FirstN", 
 				                                       Integer.toString(limit), 
-				                                       sortedField.getName(),
+				                                       Util.newStringLiteral(sortedField.getName()),
 				                                       Boolean.toString(desc));
 		
 		sb.append(TridentBuilder.assembly(firstN));

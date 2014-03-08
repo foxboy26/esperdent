@@ -91,7 +91,7 @@ public final class TridentBuilder {
   }
 
 	public static String assembly(String...args) {
-		return newTridentFunction("assembly", args);
+		return newTridentFunction("applyAssembly", args);
 	}
 	
 	public static String newValues(String... args) {

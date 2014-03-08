@@ -30,7 +30,7 @@ public class TimeSlidingWindow extends BaseSlidingWindow {
 
 		private int _duration;
 		
-		Factory(int duration) {
+		public Factory(int duration) {
 			this._duration = duration;
 		}
 		
