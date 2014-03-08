@@ -88,6 +88,8 @@ TOKEN [IGNORE_CASE]:
 |
     < ASC: "asc" >
 |
+    < LIMIT: "limit" >
+|
     < AND: "and" >
 |
     < OR: "or" >
@@ -355,7 +357,12 @@ void GroupByClause() : {}
 
 void OrderByClause() : {}
 {
-    <ORDER> <BY> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)? (LOOKAHEAD(2) <COMMA> Attribute() (LOOKAHEAD(1) <ASC> | <DESC>)?)*
+    <ORDER> <BY> OrderByAttribute() (LOOKAHEAD(2) <COMMA> OrderByAttribute())* (LOOKAHEAD(1) <LIMIT> Integer())?
+}
+
+void OrderByAttribute() : { Token t; }
+{
+    Attribute() (LOOKAHEAD(1) <ASC> { jjtThis.desc = false; } | <DESC> { jjtThis.desc = true; })?
 }
 
 void OutputClause() : {}

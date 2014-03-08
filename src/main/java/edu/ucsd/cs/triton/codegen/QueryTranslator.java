@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.WordUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.ucsd.cs.triton.codegen.language.ClassStatement;
 import edu.ucsd.cs.triton.operator.Aggregation;
@@ -20,6 +18,8 @@ import edu.ucsd.cs.triton.operator.Join;
 import edu.ucsd.cs.triton.operator.KeyPair;
 import edu.ucsd.cs.triton.operator.LogicQueryPlan;
 import edu.ucsd.cs.triton.operator.OperatorVisitor;
+import edu.ucsd.cs.triton.operator.OrderBy;
+import edu.ucsd.cs.triton.operator.OrderByAttribute;
 import edu.ucsd.cs.triton.operator.OutputStream;
 import edu.ucsd.cs.triton.operator.Product;
 import edu.ucsd.cs.triton.operator.Projection;
@@ -438,5 +438,26 @@ public class QueryTranslator implements OperatorVisitor {
 		operator.childrenAccept(this, data);
 
 	  return null;
+  }
+
+	@Override
+  public Object visit(OrderBy operator, Object data) {
+		
+		operator.childrenAccept(this, data);
+		
+		StringBuilder sb = (StringBuilder) data;
+	  
+		List<OrderByAttribute> attributeList = operator.getOrderByAttributeList();
+		OrderByAttribute sortedField = attributeList.get(0);
+		int limit = operator.getLimit();
+		boolean desc = sortedField.getDesc();
+		String firstN = TridentBuilder.newFunction("FirstN", 
+				                                       Integer.toString(limit), 
+				                                       sortedField.getName(),
+				                                       Boolean.toString(desc));
+		
+		sb.append(TridentBuilder.assembly(firstN));
+		
+		return null;
   }
 }

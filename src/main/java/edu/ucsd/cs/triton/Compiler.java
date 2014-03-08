@@ -26,8 +26,9 @@ public class Compiler {
 
 	public static void main(String[] args) {
 		
-		String inputFileName = "src/test/jjtree/simple.esp";
+		String inputFileName = "src/test/jjtree/trending_topic.tql";
 		try {
+			LOGGER.info("Parsing the query script...");
 			TritonParser tritonParser;
 			tritonParser = new TritonParser(new FileInputStream(new File(
 			    inputFileName)));
@@ -41,9 +42,11 @@ public class Compiler {
 			
 			root.jjtAccept(logicPlanVisitor, resourceManager);
 			//System.out.println(resourceManager.getStreamByName("s1"));
-
+			
+			LOGGER.info("Generating logic plan...");
 			List<BaseLogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 
+			LOGGER.info("Generating trident code...");
 			String className = FilenameUtils.removeExtension(inputFileName);
 			className = FilenameUtils.getBaseName(className);
 			className = WordUtils.capitalize(className);
@@ -51,6 +54,7 @@ public class Compiler {
 			
 			JavaProgram program = codeGen.generate();
 			
+			LOGGER.info("Translating trident code into java code...");
 			String res = program.translate();
 			
 			System.out.println(res);

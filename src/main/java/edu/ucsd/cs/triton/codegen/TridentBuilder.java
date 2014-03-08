@@ -19,7 +19,7 @@ public final class TridentBuilder {
 		return className + " " + instanceName + " = " + Keyword.NEW + " " + className + "(" + StringUtils.join(args, ", ") + ")";
 	}
 	
-	public static String newFunction(String func, String... args) {
+	public static String newFunction(String func, String...args) {
 		return Keyword.NEW + " " + func + "(" + StringUtils.join(args, ", ") + ")"; 
 	}
 	
@@ -85,11 +85,14 @@ public final class TridentBuilder {
 	public static String stateQuery(String... args) {
 		return newTridentFunction("stateQuery", args);
 	}
-	
 
 	public static String join(String... args) {
 		return newTridentFunction("join", args);
   }
+
+	public static String assembly(String...args) {
+		return newTridentFunction("assembly", args);
+	}
 	
 	public static String newValues(String... args) {
 		return newFunction("Values", args);

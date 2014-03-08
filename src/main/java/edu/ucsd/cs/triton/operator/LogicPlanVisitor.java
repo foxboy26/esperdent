@@ -30,6 +30,7 @@ import parser.ASTInsertClause;
 import parser.ASTInteger;
 import parser.ASTMultiplicativeExpression;
 import parser.ASTName;
+import parser.ASTOrderByAttribute;
 import parser.ASTOrderByClause;
 import parser.ASTOutputClause;
 import parser.ASTQuery;
@@ -495,7 +496,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTWinTime node, Object data) {
 	  // TODO Auto-generated method stub
-		long timePeriod = (Long) node.jjtGetChild(0).jjtAccept(this, data);
+		long timePeriod = (Integer) node.jjtGetChild(0).jjtAccept(this, data);
 		
 	  return new TimeWindow(timePeriod);
   }
@@ -503,7 +504,7 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTWinTimeBatch node, Object data) {
 	  // TODO Auto-generated method stub
-		long timePeriod = (Long) node.jjtGetChild(0).jjtAccept(this, data);
+		long timePeriod = (Integer) node.jjtGetChild(0).jjtAccept(this, data);
 		
 	  return new TimeBatchWindow(timePeriod);
   }
@@ -586,8 +587,31 @@ public class LogicPlanVisitor implements TritonParserVisitor {
 	@Override
   public Object visit(ASTOrderByClause node, Object data) {
 	  // TODO Auto-generated method stub
-	  System.err.println("not implemented!");
+		LogicQueryPlan logicPlan = (LogicQueryPlan) data;
+		OrderBy order = logicPlan.getOrder();
+		int numOfChildren = node.jjtGetNumChildren();
+		for (int i = 0; i < numOfChildren - 1; i++) {
+			OrderByAttribute attribute = (OrderByAttribute) node.jjtGetChild(i).jjtAccept(this, data);
+			order.addOrderByAttribute(attribute);
+		}
+		
+		// check if the last node is a limit node
+		if (numOfChildren >= 2) {
+			Node last = node.jjtGetChild(numOfChildren - 2);
+			if (last instanceof ASTOrderByAttribute) {
+				OrderByAttribute attribute = (OrderByAttribute) last.jjtAccept(this, data);
+				order.addOrderByAttribute(attribute);
+			} else if (last instanceof ASTInteger) {
+				order.setLimit((Integer) last.jjtAccept(this, data));
+			}
+		}
 		return null;
+  }
+	
+	@Override
+  public Object visit(ASTOrderByAttribute node, Object data) {
+		String[] res = (String[]) node.jjtGetChild(0).jjtAccept(this, data);
+	  return new OrderByAttribute(res[0], res[1], node.desc);
   }
 
 	@Override

@@ -14,5 +14,6 @@ public enum OperatorType {
 	AGGREGATION, 
 	OUTPUT_STREAM,
 	REGISTER,
-	START;
+	START, 
+	ORDER;
 }

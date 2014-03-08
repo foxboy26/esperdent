@@ -8,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.ucsd.cs.triton.expression.Attribute;
 import edu.ucsd.cs.triton.expression.AttributeExpression;
 import edu.ucsd.cs.triton.expression.BooleanExpression;
@@ -32,6 +29,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	private Projection _projection;
 	private Selection _selection;
 	private Aggregation _aggregation;
+	private OrderBy _orderBy;
 	private OutputStream _outputStream;
 	
 	private JoinPlan _joinPlan;
@@ -54,6 +52,7 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		_projection = new Projection();
 		_selection = new Selection();
 		_aggregation = new Aggregation();
+		_orderBy = new OrderBy();
 		
 		// join rewrite
 		_joinPlan = new JoinPlan();
@@ -350,6 +349,11 @@ public class LogicQueryPlan extends BaseLogicPlan {
 			logicPlan.push(_aggregation);
 		}	
 		
+		// order by
+		if (!_orderBy.isEmpty()) {
+			logicPlan.push(_orderBy);
+		}
+		
 		// projection
 		if (_projection != null) {
 			logicPlan.push(_projection);
@@ -363,12 +367,16 @@ public class LogicQueryPlan extends BaseLogicPlan {
 		if (_outputStream != null) {
 			logicPlan.push(_outputStream);
 		}
-		
+
 		// append a start operator
-		Start start = new Start();
+		Start start = new Start();		
+		BasicOperator op = logicPlan.pop();
+		start.addChild(op, 0);
 		while (!logicPlan.empty()) {
-			start.addChild(logicPlan.pop(), 0);
+			op.addChild(logicPlan.pop(), 0);
+			op = (BasicOperator) op.getChild(0);
 		}
+		
 		return start;
 	}
 
@@ -385,6 +393,10 @@ public class LogicQueryPlan extends BaseLogicPlan {
 	public Aggregation getAggregation() {
 	  // TODO Auto-generated method stub
 	  return _aggregation;
+  }
+
+	public OrderBy getOrder() {
+	  return _orderBy;
   }
 	
 	public boolean isNamedQuery() {

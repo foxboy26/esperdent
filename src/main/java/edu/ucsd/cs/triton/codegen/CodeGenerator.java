@@ -44,6 +44,7 @@ public final class CodeGenerator {
 		for (BaseLogicPlan logicPlan : orderedPlanList) {
 			StringBuilder sb = new StringBuilder();
 			Start plan = logicPlan.generatePlan();
+			plan.dump("");
 			QueryTranslator translator = new QueryTranslator(logicPlan, _program);
 			translator.visit(plan, sb);
 			_program.addStmtToBuildQuery(sb.toString());
