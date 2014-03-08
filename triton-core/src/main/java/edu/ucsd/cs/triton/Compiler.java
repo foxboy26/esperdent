@@ -60,7 +60,7 @@ public class Compiler {
 			System.out.println(res);
 			
 			LOGGER.info("Generating packge...");
-			String path = "../triton-demo/src/main/java/";
+			String path = "../triton-codegen/src/main/java/";
 			generatePackage(path, className.toLowerCase(), program);
 
 		} catch (FileNotFoundException e1) {

@@ -7,3 +7,5 @@ target/
 *.jj
 jjtree_backup/
 twitter4j.properties
+codegen/
+triton-demo/WebContent/css
