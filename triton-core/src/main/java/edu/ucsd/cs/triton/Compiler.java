@@ -34,7 +34,7 @@ public class Compiler {
 			    inputFileName)));
 
 			ASTStart root = tritonParser.Start();
-			// root.dump(">");
+			root.dump(">");
 			
 			ResourceManager resourceManager = ResourceManager.getInstance();
 			

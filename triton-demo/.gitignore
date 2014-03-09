@@ -1,4 +1,6 @@
 build
 WebContent/META-INF/
+WebContent/WEB-INF/
 WebContent/img/
 WebContent/js/
+WebContent/fonts

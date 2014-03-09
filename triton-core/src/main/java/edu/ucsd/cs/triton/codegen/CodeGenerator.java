@@ -11,7 +11,6 @@ import edu.ucsd.cs.triton.operator.Start;
 import edu.ucsd.cs.triton.resources.ResourceManager;
 
 public final class CodeGenerator {
-	private final ResourceManager _resourceManager;
 	private final List<BaseLogicPlan> _planList;
 	
 	private final String _className;
@@ -19,7 +18,6 @@ public final class CodeGenerator {
 	
 	public CodeGenerator(List<BaseLogicPlan> planList, final String fileName) {
 	  // TODO Auto-generated constructor stub
-		_resourceManager = ResourceManager.getInstance();
 		_planList = planList;
 		_program = new TridentProgram(fileName);
 		_className = fileName;

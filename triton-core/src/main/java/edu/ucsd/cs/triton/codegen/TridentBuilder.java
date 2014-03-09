@@ -2,7 +2,7 @@ package edu.ucsd.cs.triton.codegen;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.ucsd.cs.triton.codegen.language.Keyword;
 
