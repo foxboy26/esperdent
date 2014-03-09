@@ -23,7 +23,7 @@
   <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -43,26 +43,27 @@
       </div>
     </div>
 
-    <div class="container">
-<!--             <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div> -->
+    <div class="container-fluid">
 		<div class="row">
-			<div class="col-md-8">
-			    
-                <div id="editor">SELECT * FROM movie WHERE title = "inception";</div>
+			<div class="col-md-6">
+                <div id="tql-editor" class="editor">SELECT * FROM movie WHERE title = "inception";</div>
 			</div>
-			<div class="col-md-4"></div>
+			<div class="col-md-6">
+			    <div id="java-editor" class="editor">class Test {
+    public static void main(String[] args){
+        System.out.println("Hello World!");
+    }
+}</div>
+			</div>
 		</div>
 		<div class="row" style="padding:0">
-			<div class="col-md-6"></div>
-			<div class="col-md-2">
+			<div class="col-md-5"></div>
+			<div class="col-md-1">
 				<button type="submit" id="submit" class="btn btn-success footer-item rel-tooltip">
 				<i class="icon-cog-alt"></i>
 				Run</button>
 			</div>
-			<div class="col-md-4"></div>
+			<div class="col-md-6"></div>
 		</div>
         <div class="row">
         <p class="lead">Console</p>
@@ -80,9 +81,18 @@
         <!-- Ace code editor -->
     <script src="js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/tm");
+        var editor = ace.edit("tql-editor");
+        //editor.setTheme("ace/theme/github");
         editor.getSession().setMode("ace/mode/sql");
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
+        
+        var javaEditor = ace.edit("java-editor");
+        //javaEditor.setTheme("ace/theme/github");
+        javaEditor.getSession().setMode("ace/mode/java");
+        javaEditor.getSession().setUseWrapMode(true);
+        javaEditor.setReadOnly(true);
+        javaEditor.setShowPrintMargin(false);
     </script>
     <script src="js/demo.js" type="text/javascript" charset="utf-8"></script>
     <script>
@@ -96,6 +106,11 @@
 	        p.innerHTML = message;
 	        console.append(p);
 	    });
+	    
+	    Console.clear = (function() {
+	    	var console = $('#console');
+	    	console.html('');
+	    });
     
     
         $('#submit').on('click', function(event) {
@@ -106,8 +121,9 @@
         	var query = {
         		'query' : editor.getValue()
         	};
-        	
-        	Compiler.socket.send(JSON.stringify(query));
+        	Console.clear();
+        	//Compiler.socket.send(JSON.stringify(query));
+            Compiler.socket.send(editor.getValue());
         }
         
         Compiler.initialize();

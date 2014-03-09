@@ -9,4 +9,3 @@ select word, count(word) as wordCount from wordStream.win:time(1 minute) as s gr
 
 # compute top 10 word
 select word from wordCountStream order by wordCount desc limit 10;
-
