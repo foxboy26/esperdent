@@ -84,7 +84,20 @@
         editor.setTheme("ace/theme/tm");
         editor.getSession().setMode("ace/mode/sql");
     </script>
+    <script src="js/demo.js" type="text/javascript" charset="utf-8"></script>
     <script>
+    
+	    var Console = {};
+	    Console.log = (function(message) {
+	            
+	        var console = $('#console');
+	        var p = document.createElement('p');
+	        p.style.wordWrap = 'break-word';
+	        p.innerHTML = message;
+	        console.append(p);
+	    });
+    
+    
         $('#submit').on('click', function(event) {
             compile();
         });
@@ -94,10 +107,10 @@
         		'query' : editor.getValue()
         	};
         	
-        	$.post( "compile.jsp", query, function(data) {
-        		$('#console').html(data);
-        	});
+        	Compiler.socket.send(JSON.stringify(query));
         }
+        
+        Compiler.initialize();
     </script>
   </body>
 </html>

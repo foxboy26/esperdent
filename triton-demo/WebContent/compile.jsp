@@ -20,32 +20,32 @@
 <%@ page import= "edu.ucsd.cs.triton.resources.ResourceManager" %>
 <%
 String query = request.getParameter("query");
-StringReader sr = new java.io.StringReader(query);
-Reader r = new BufferedReader(sr);
-TritonParser tritonParser;
-tritonParser = new TritonParser(r);
-ASTStart root = tritonParser.Start();
+//StringReader sr = new java.io.StringReader(query);
+//Reader r = new BufferedReader(sr);
+//TritonParser tritonParser;
+//tritonParser = new TritonParser(r);
+//ASTStart root = tritonParser.Start();
 
-ResourceManager resourceManager = ResourceManager.getInstance();
+//ResourceManager resourceManager = ResourceManager.getInstance();
 
-LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor(resourceManager);
+//LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor(resourceManager);
 
-root.jjtAccept(logicPlanVisitor, resourceManager);
+//root.jjtAccept(logicPlanVisitor, resourceManager);
 //System.out.println(resourceManager.getStreamByName("s1"));
 
 out.println("Generating logic plan...");
-List<BaseLogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
+//List<BaseLogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 
 out.println("Generating trident code...");
-String className = "Sample";
-CodeGenerator codeGen = new CodeGenerator(logicPlanList, className);
+//String className = "Sample";
+//CodeGenerator codeGen = new CodeGenerator(logicPlanList, className);
 
-JavaProgram program = codeGen.generate();
+//JavaProgram program = codeGen.generate();
 
 out.println("Translating trident code into java code...");
-String res = program.translate();
+//String res = program.translate();
 
 out.println("Generating packge...");
 out.println("success!!!!");
-out.println(res);
+out.println("Res");
 %>
