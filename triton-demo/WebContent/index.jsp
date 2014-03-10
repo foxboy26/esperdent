@@ -36,7 +36,13 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">Demo</a></li>
+            <li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demo <b class="caret"></b></a>
+	          <ul class="dropdown-menu">
+	            <li><a href="demo.jsp">Word Count</a></li>
+	            <li><a href="trending_topic.jsp">Trending Topic</a></li>
+	          </ul>
+	        </li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -60,8 +66,8 @@
 			<div class="col-md-5"></div>
 			<div class="col-md-1">
 				<button type="submit" id="submit" class="btn btn-success footer-item rel-tooltip">
-				<i class="icon-cog-alt"></i>
-				Run</button>
+				    <i class="icon-cog-alt">Compile!</i>
+				</button>
 			</div>
 			<div class="col-md-6"></div>
 		</div>
