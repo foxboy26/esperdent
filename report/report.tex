@@ -1,0 +1,902 @@
+%% bare_conf.tex
+%% V1.3
+%% 2007/01/11
+%% by Michael Shell
+%% See:
+%% http://www.michaelshell.org/
+%% for current contact information.
+%%
+%% This is a skeleton file demonstrating the use of IEEEtran.cls
+%% (requires IEEEtran.cls version 1.7 or later) with an IEEE conference paper.
+%%
+%% Support sites:
+%% http://www.michaelshell.org/tex/ieeetran/
+%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
+%% and
+%% http://www.ieee.org/
+
+%%*************************************************************************
+%% Legal Notice:
+%% This code is offered as-is without any warranty either expressed or
+%% implied; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE!
+%% User assumes all risk.
+%% In no event shall IEEE or any contributor to this code be liable for
+%% any damages or losses, including, but not limited to, incidental,
+%% consequential, or any other damages, resulting from the use or misuse
+%% of any information contained here.
+%%
+%% All comments are the opinions of their respective authors and are not
+%% necessarily endorsed by the IEEE.z
+%%
+%% This work is distributed under the LaTeX Project Public License (LPPL)
+%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
+%% distributed and modified. A copy of the LPPL, version 1.3, is included
+%% in the base LaTeX documentation of all distributions of LaTeX released
+%% 2003/12/01 or later.
+%% Retain all contribution notices and credits.
+%% ** Modified files should be clearly indicated as such, including  **
+%% ** renaming them and changing author support contact information. **
+%%
+%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
+%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex
+%%*************************************************************************
+
+% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
+% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
+% *** with production work. IEEE's font choices can trigger bugs that do  ***
+% *** not appear when using other class files.                            ***
+% The testflow support page is at:
+% http://www.michaelshell.org/tex/testflow/
+
+
+
+% Note that the a4paper option is mainly intended so that authors in
+% countries using A4 can easily print to A4 and see how their papers will
+% look in print - the typesetting of the document will not typically be
+% affected with changes in paper size (but the bottom and side margins will).
+% Use the testflow package mentioned above to verify correct handling of
+% both paper sizes by the user's LaTeX system.
+%
+% Also note that the "draftcls" or "draftclsnofoot", not "draft", option
+% should be used if it is desired that the figures are to be displayed in
+% draft mode.
+%
+\documentclass[conference, twocolumn, twoside, 11pt]{IEEEtran}
+% Add the compsoc option for Computer Society conferences.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/oberdiek/
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+
+
+
+
+
+% *** CITATION PACKAGES ***
+%
+\usepackage{cite}
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 4.0 (2003-05-27) and later if using hyperref.sty. cite.sty does
+% not currently provide for hyperlinked citations.
+% The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
+% The documentation is contained in the cite.sty file itself.
+
+
+
+
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  \usepackage[pdftex, demo]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
+% epslatex.pdf at: http://www.ctan.org/tex-archive/info/
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+\makeatletter
+  \AtBeginDocument{%
+    \def\Ginclude@graphics#1{%
+      \begingroup\fboxsep=-\fboxrule
+      \fbox{\rule{\@ifundefined{Gin@@ewidth}{150pt}{\Gin@@ewidth}}{0pt}%
+        \rule{0pt}{\@ifundefined{Gin@@eheight}{100pt}{\Gin@@eheight}}}\endgroup}}
+\makeatother
+
+
+
+% *** MATH PACKAGES ***
+%
+\usepackage[cmex10]{amsmath}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics. If using
+% it, be sure to load this package with the cmex10 option to ensure that
+% only type 1 fonts will utilized at all point sizes. Without this option,
+% it is possible that some math symbols, particularly those within
+% footnotes, will be rendered in bitmap form which will result in a
+% document that can not be IEEE Xplore compliant!
+%
+% Also, note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
+
+\usepackage{amsthm}
+
+
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithms/
+% There is also a support site at:
+% http://algorithms.berlios.de/index.html
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
+
+
+
+
+% *** ALIGNMENT PACKAGES ***
+%
+\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/tools/
+
+
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+% Also highly recommended is Mark Wooding's extremely powerful MDW tools,
+% especially mdwmath.sty and mdwtab.sty which are used to format equations
+% and tables, respectively. The MDWtools set is already installed on most
+% LaTeX systems. The lastest version and documentation is available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+
+%\usepackage{eqparbox}
+% Also of notable interest is Scott Pakin's eqparbox package for creating
+% (automatically sized) equal width boxes - aka "natural width parboxes".
+% Available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/eqparbox/
+
+
+
+
+
+% *** SUBFIGURE PACKAGES ***
+\usepackage[tight,footnotesize]{subfigure}
+% subfigure.sty was written by Steven Douglas Cochran. This package makes it
+% easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
+% work, it is a good idea to load it with the tight package option to reduce
+% the amount of white space around the subfigures. subfigure.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/obsolete/macros/latex/contrib/subfigure/
+% subfigure.sty has been superceeded by subfig.sty.
+
+
+
+% \usepackage[caption=false]{caption}
+% \usepackage[font=footnotesize]{subfig}
+% subfig.sty, also written by Steven Douglas Cochran, is the modern
+% replacement for subfigure.sty. However, subfig.sty requires and
+% automatically loads Axel Sommerfeldt's caption.sty which will override
+% IEEEtran.cls handling of captions and this will result in nonIEEE style
+% figure/table captions. To prevent this problem, be sure and preload
+% caption.sty with its "caption=false" package option. This is will preserve
+% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later
+% (recommended due to many improvements over 1.2) of subfig.sty supports
+% the caption=false option directly:
+%\usepackage[caption=false,font=footnotesize]{subfig}
+%
+% The latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
+% The latest version and documentation of caption.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/caption/
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure. The latest version and documentation can be found at:
+% http://www.ctan.org/tex-archive/macros/latex/base/
+
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/sttools/
+% Documentation is contained in the stfloats.sty comments as well as in the
+% presfull.pdf file. Do not use the stfloats baselinefloat ability as IEEE
+% does not allow \baselineskip to stretch. Authors submitting work to the
+% IEEE should note that IEEE rarely uses double column equations and
+% that authors should try to avoid such use. Do not be tempted to use the
+% cuted.sty or midfloat.sty packages (also by Sigitas Tolusis) as IEEE does
+% not format its papers in such ways.
+
+
+
+
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+%\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/misc/
+% Read the url.sty source comments for usage information. Basically,
+% \url{my_url_here}.
+
+
+
+
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Triton: A Continuous Query Translation Engine Over Trident}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{
+\IEEEauthorblockN{Zhiheng Li}
+\IEEEauthorblockA{Department of Computer Science and Engineering\\
+University of California, San Diego, CA 92122\\
+Email: lzhiheng@eng.ucsd.edu}
+}
+
+%\author{\IEEEauthorblockN{Michael Shell}
+%\IEEEauthorblockA{School of Electrical and\\Computer Engineering\\
+%Georgia Institute of Technology\\
+%Atlanta, Georgia 30332--0250\\
+%Email: http://www.michaelshell.org/contact.html}
+%\and
+%\IEEEauthorblockN{Homer Simpson}
+%\IEEEauthorblockA{Twentieth Century Fox\\
+%Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\and
+%\IEEEauthorblockN{James Kirk\\ and Montgomery Scott}
+%\IEEEauthorblockA{Starfleet Academy\\
+%San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212\\
+%Fax: (888) 555--1212}}
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+%
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3},
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+    In this paper, we present Triton, a system which takes a script written in a continuous query language \emph{TQL}, and produces compilable and readable native JAVA code that runs directly on the Storm, a distributed real-time computation platform. The Triton system is designed to be flexible so that multiple target programming language generators can be implemented since Storm is also a polyglot environment. The Triton system acts the same role on Storm in the real-time processing field as the famous \emph{Pig} system to \emph{Hadoop} in the batch processing area. In addition, several implementations of the sliding window in Storm are discussed and compared.
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the conference you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals/conferences frown on
+% math in the abstract anyway.
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+\section{Introduction}
+\subsection{Background}
+A fairly large amount of researches have been done in the area of continuous query processing and complex event analysis since early 2000. The \emph{STREAM} prototype Data Stream Management System (DSMS)
+designed by the Stanford InfoLab~\ref{ABB+03} is marked as one of the pioneer projects in this area. The \emph{CQL} language, a continuous query language designed along with \emph{STREAM} DSMS defines an abstract semantics for the \emph{sliding window}, which is a key component in streaming analysis, and thus became an important reference when researchers design new query languages for streaming based systems. Base on these work, several Complex Event Processing (CEP) engines and Event Processing Lanaguage (EPL) have been proposed to ease the development of real-time streaming applications. Esper~\ref{Paul08} is one of the successful examples that enables a SQL-standard, low-latency and real-time streaming CEP engine. However, one problem that these systems suffer is the scalability and reliability since most of them perform in-memory computation. The only way to scale systems for massive data sets is adding more physical memories. On the other hand, the single-machine architecture becomes another bottleneck when streaming rate increases. With the increasing needs in application areas such as finanical analysis, network monitoring, online bidding and algorithmic trading, a distributed real-time computation system designed with horizontal scalabilty and fault-tolerant model that produce high throughput and low latency results is often desired. Apache Storm~\ref{Storm}, a distributed real-time computation system designed by Nathan Marz, has been adopted by several big companies like Twitter, Groupon, and RocketFuel since its first release around early 2009. It provides a fault-tolerant, scalable and at-most-once semantic model according to its official website. Apache Storm introduced Trident, a high level abstraction over Storm, in its 0.8.0 version released on 08/02/2012.~\ref{Trident} The advent of Trident made the distributed real-time computation even simpler since it comes with a Domain Specific Language (DSL) abstraction that allows programmers focus on the data operations only during the development. However, there is no \emph{sliding window} primitives existed in Trident, and a higher level abstraction that provides a SQL-standard language for streaming analysis is still missing.
+
+\subsection{Motivation}
+The motivation of our work is partially inspired from the \emph{Pig} project~\ref{ORS+08} done by the Yahoo! research, who proposed a novel language called \emph{Pig Latin} for performing map-reduce job. The \emph{Pig Latin} program will be translated into low-level physical plans that runs directly on \emph{Hadoop}, an open-source implementation of map-reduce framework.~\ref{} As claimed in the documentation that Storm can be viewed as a real-time version of map-reduce framework, our goal is to design and implement a system which acts as the similar role over Storm as \emph{Pig} did over \emph{Hadoop}. The system is named as \emph{Triton}, which is a translation engine that compiles a script written in \emph{Triton Query Language} (TQL) into native JAVA code (in form of a Trident program) that runs directly over Storm. \emph{TQL} is a SQL-standard continuous query language with syntax similar to \emph{CQL} and Esper.
+In summary, we made three major contributions in this project. 1) \emph{TQL} was developed as the query language for the \emph{Triton} system. 2) An experimental implementation of the \emph{Triton} translation engine that compiles the \emph{TQL} query into native Trident program written in JAVA. 3) Several implementations of the \emph{sliding window} primitive in Trident was investigated.
+
+The rest of this paper is organized as follows. In the next section, we will talk about the key concepts in Storm and Trident to give readers an overview of the platform that our system depends on. In section~\ref{tql}, we will cover the design of \emph{TQL} and provide several examples. In section~\ref{sys-design}, we will introduce the system architecture, design decisions and the rationale behind them.
+In section~\ref{impl}, we will describe the current implementation of the Triton system. Section~\ref{example} will present one real world application that is implemented through the Triton system. We will discuss the project experiences in section~\ref{proj-exp}.
+Finally, we will list the future work and related work in section~\ref{future-work} and~\ref{rel-work}, then make the conclusion.
+
+\section{Storm and Trident Overview}\label{storm-trident}
+In this section, we will quickly go through two core concepts, \emph{stream} and \emph{topology}, in Storm, and give a brief introduction to Trident. More detailed descriptions and tutorials about the system can be found in their official documentation.~\ref{}
+\subsection{Stream}
+Stream, the core abstraction in Storm, is defined as an unbounded sequence of tuples, where each \emph{tuple} is an ordered list of objects with pre-defined data types. A Stream can be transformed into a new stream by two Storm primitives \emph{spout} and \emph{bolt}.
+
+\subsubsection{Spout}
+A spout is defined as the source of a stream. A spout can turn the data from a queue or database into a stream. Storm provides an  interface for users to implement application specific spouts.
+
+\subsubsection{Bolt}
+A bolt is a functional unit that takes arbitrary number of streams as input, and emit tuples as a new stream based on the logic defined by the application. Technically a bolt can do any kind of computation such as filtering, aggregation, projection and so on. Storm also provides an interface for application specific implementation. A complicate computation often involves multiple bolts.
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=2.5in]{topo-exmp}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{An example of a Storm topology.}
+\label{topo-exmp}
+\end{figure}
+
+\subsection{Topology}\label{storm}
+A topology in Storm is a directed acyclic graph (DAG) where each node is either a spout or a bolt. More precisely, spouts can only have out degrees, acting as a source of the topology, while bolts can be put anywhere in the topology. Each concrete computation task is modeled as a topology and run either on a storm cluster or locally.
+Figure~\ref{topo-exmp} shows a simple topology that contains two spouts and three bolts. Notice that spout A emits stream and send it to three bolts C, D and E, and bolt D received stream from two spouts A and B. Figure~\ref{topo-crt-exmp} demonstrate a concrete example
+
+\textbf{[TODO: two figures and one concrete example]}
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=2.5in]{topo-crt-exmp}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{A Storm topology that takes a word stream and appends two exclamations to it.}
+\label{topo-crt-exmp}
+\end{figure}
+
+\subsection{Trident abstraction}
+Trident is built on top of Storm, aimed to provide a high-level abstraction for doing real-time computing. Common operations on stream including functions, filters, aggregations, and projections are wrapped as Trident APIs. The details of how these operations are implemented in terms of Storm topologies are hidden from users. In addition, Trident's API is designed as a fluent interface to produce more readable code. The Trident engine will automatically translate a Trident topology into a Storm topology. Example~\ref{trident-impl-exmp} is an Trident implementation of figure~\ref{topo-crt-exmp}.
+
+\begin{example}\label{trident-impl-exmp}
+\begin{verbatim}
+
+topology.newStream()
+        .each()
+        .each()
+\end{verbatim}
+\end{example}
+
+\section{Triton Query Language}\label{tql}
+A \emph{TQL} \emph{script} consists of a sequences of \emph{statments}, with each of them terminated by a semicolon. Each statement is either a \emph{stream registration} or a \emph{query definition}. Each stream must be registered into the system before being referenced in a query. Section~\ref{stream-reg} and ~\ref{query-def} cover the detail.\
+
+\subsection{Stream registration}\label{stream-reg}
+A stream registration begins with a \texttt{REGISTER STREAM} statement, followed by the stream name and the attribute definition list. Each attribute definition in the list contains the attribute name and the type. There are four kinds of type our system supports currently, integer, float, string and timestamps. The user also need to specify a source definiton indicates where the stream should read data from. The source definition can be a user-defined spout class such as \texttt{spout("BatchSpout")} or a disk file such as \texttt{file("input.data")}. Example~\ref{reg-exmp} shows a stream registration reading from file data.
+
+\begin{example}\label{reg-exmp}
+\begin{verbatim}
+
+REGISTER STREAM s(id   integer
+                  word string, 
+                  time timestamps)
+FROM file("word.dat");
+\end{verbatim}
+\end{example}
+\subsection{Query definition}\label{query-def}
+The query definition in \emph{TQL} is pretty similar to the standard SQL, with additional syntax extension for sliding windows and data output. Our system supports three kinds of sliding windows, row-based, time-based, and time batch sliding window. Each window definition can has a pre-filter on it, which means each tuple that does not meet the filter conditions will not go into the sliding window. Example~\ref{win-exmp} defines a one minute sliding window contains stock information about Goolge only.
+
+\begin{example}\label{win-exmp}
+\begin{verbatim}
+
+stock[code='GOOG'].win:time(1 minute)
+\end{verbatim}
+\end{example}
+
+For each query, we can specify an \texttt{OUTPUT} clause that indicates where the results of the query should go to. The destination is a user-defined function, and can be database, file, network, and so on. If there is no output specified, the result will be directed to \texttt{stdout} by default.
+
+A query can also be registered as a derived stream by specifying the query as a source in the stream registration. Example~\ref{named-exmp} shows an example of a derived word count stream, where the result of the word count query is registered as a new stream named \texttt{wordCountStream} into the system. We can also view the derived stream as a \emph{named query} since the query has a name (the stream name), and can be referenced by other queries.  
+
+\begin{example}\label{named-exmp}
+\begin{verbatim}
+
+REGISTER STREAM
+wordCountStream(word string, 
+                wordCount int)
+FROM
+  SELECT word, count(word) as wordCount
+  FROM wordStream.win:time(1 minute)
+  GROUP BY word;
+\end{verbatim}
+\end{example}
+
+As far as this paper is written, our system supports common aggregation functions such as \texttt{COUNT}, \texttt{SUM}, \texttt{AVG}, \texttt{MIN} and \texttt{MAX}. We also allow simple arithmetic expressions appears in \texttt{SELECT} and \texttt{WHERE} clauses. Stream and attribute renaming can be enabled by the syntax \texttt{<name> AS <new\_name>}. \texttt{ORDER BY} and \texttt{LIMIT} is also included. There is no support for set operations such as \texttt{UNION} and nested query yet.
+
+\section{System Design}\label{sys-design}
+\subsection{Design decisions}
+\subsubsection{System architecture}
+From a high level of view, the system should be designed in a modularized way, with each module has a clean interface exposed to communicate with each other. Modules should be relatively independent from each other so that it can be easily replaced by a different implementations as long as the interfaces remain the same. This leads to a flexible and extensible system architecture, where new module can be added and old module can be replace without too much code change. Another advantage is that several implementation of a same module could be compared so that the optimal one can be used in the system. This design also leads to a generic code generation phase, where we aimed to provide a generic interface that allows code generator in different programming languages such as Python or Ruby can be written. This design decision cater to the flavor of Storm since itself is also language independent platform. The core of Storm is written in Cloujre, but the exposed API can be written with different programming languages.
+
+\subsubsection{Compilable and readable code generation}
+Regarding to the code generation, the system should produce compilable JAVA code that contain equivalent semantics to the high level \emph{TQL} scripts, and can be run directly on the Storm topology. This implies several implementation challenges such as variable name allocation, import package management, and code organization. In addition, the generated code should be readable. This requirement can be view from two aspects. First it indicates that the code is pretty printed with proper indents between each logic blocks. In this case, we designed an internal representation of a JAVA program, which is a tree data structure, and a language printer which can print the program in a formatted way. Readable code also implies the logic of the code should be easy to understand. To achieve this, our system will translate the query script into Trident program, and delegate the translation of Storm topology to the platform itself. As mentioned above, the fluent interface ensures the program is clean and readable. However, there are several drawbacks of this design. First, the efficiency of the generated Storm topology may be affected due to the two-stage translation, though Trident engine will perform several optimizations during the process of topology generation. Second, this design leads to a high level implementation of the sliding window, which again may have a negative impact on the performance. Intuitively, it will be faster if this primitive is embedded in the Storm core system.
+
+These design goals will serve as important guidelines when we design the system architecture and should be followed to a large extent. 
+\subsection{System overview}
+The high level system architecture is show in Figure~/ref{arch-diag}. The input of our system is a \emph{TQL} script where the stream registration and query are specified. The output is a compilable JAVA program that can run on the Storm to execute the desired queries. The entire compilation involves five major stages: parser, logic query plan generator, optimizer, translator and JAVA code generator. In addition, there is a resource manager that servers as a meta-data manager during the compilation. The global information about the input query is stored and updated in the resource manager. For example, the stream registration will store the stream definition into resource manager. All the renames and stream dependencies information are kept in resource manager too.
+
+The parser takes a \emph{TQL} script as an input, and parsed it into a abstract syntax tree (AST). In the meantime, the parser collected all the necessary information such as attribute names and types and store them into corresponding nodes for further translation. The logic query plan generator takes the AST as input and produce a logic query plan by traversing the AST. The logic plan is then scanned by the optimizer to explore the possibility of optimization. Currently two kinds of optimization is implemented, join detection and selection push-down. The optimized query plan will be passed into the translator, where the translation is performed on each logic operator in the query plan to produce a Trident program. In the last stage, the trident program will be passed into the JAVA program generator, where the necessary packages, classes and files will be generated and saved into a user-specified folder.
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=2.5in, height=3in]{arch-diag}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{System architecture diagram.}
+\label{arch-diag}
+\end{figure}
+
+\section{Implementation Details}\label{impl}
+\subsection{Parser}
+The first stage of our system is to parse the input script and generate the abstract syntax tree (AST) for further translation.
+This step is simple by using JJTree, a powerful extension of JavaCC to perform lexical, syntactical analysis, and construct abstract syntax tree during the parsing process. There are two issues that need to be taken care of when writing the parser, left-recursion elimination and look-ahead.
+
+\subsection{Meta-data management}
+table infomation, rename loopup, attribute unified
+\subsection{Logic Query Plan}
+The logic query plan in TQL is similar to the one in SQL. Basically a logic query plan can be generated by traversing the AST of the query. It is represented as a tree data structure, where each node is an operator. Each operator corresponding to a certain part in the query. For example, the selection part is mapped to the \emph{Projection} operator. Figure~\ref{plan-exmp} shows the logic query plan for example~\ref{named-exmp}
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=2.5in, height=3in]{plan-exmp}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+\caption{A generated logic query plan.}
+\label{plan-exmp}
+\end{figure}
+
+\subsection{Optimization}
+Two optimization techniques were adopt when possible to produce better logic query plan, join detection and selection push-down.
+\subsubsection{Join Detection}
+
+\subsubsection{Selection push-down}
+
+
+\subsection{Translation and Code Generation}
+overview of trident api
+\subsubsection{Window Translation}
+\subsubsection{Translation of other operators}
+\begin{table}[!t]
+% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+\caption{A Mapping Between Logic Operator and Trident API}
+\label{api-mapping}
+\centering
+% Some packages, such as MDW tools, offer better commands for making tables
+% than the plain LaTeX2e tabular which is used here.
+\begin{tabular}{|c|c|}
+\hline
+Logic Operator & Trident API \\
+\hline
+Selection      & each() with Filter class \\
+\hline
+Projection     & each() with BaseFunction class \\
+               & project() \\
+\hline
+InputStream    & newStream() \\
+\hline
+OutputStream   & each() \\
+\hline
+               & groupby       \\
+Aggregation    & aggregation() \\
+               & persistentAggregation() \\
+\hline
+               & partitionPersistent \\ 
+Window         & newValueStream      \\ 
+               & groupby             \\
+\hline
+Join           & join                 \\
+\hline
+OrderBy        & applyAssembly(firstN) \\
+\hline
+\end{tabular}
+\end{table}
+\subsubsection{Code Generation}
+Language builder
+Trident Builder
+Import management
+Runtime Package generation
+
+To detect the dependencies between each queries, a topological sort must be applied on the logic query plan list to produce an correct order for sequence of plans. Then each logic query plan can be translated individually 
+The translation is done by a post-order traversal on the logic query plan tree, where the translation of each operator is summerized in table~\ref{api-mapping}.
+
+
+\section{Example}\label{example}
+\subsection{Word Count}
+\footnotesize\begin{verbatim}
+  # This is a sample query script that produce
+  # the trending topic of a word stream.
+
+  # register a word stream
+  REGISTER STREAM wordStream(word string)
+  FROM file("data/word.dat");
+
+  # compute word count
+  SELECT word, COUNT(word) AS wordCount
+  FROM wordStream
+  GROUP BY word
+  OUTPUT TO file("data/word_count.out");
+\end{verbatim}
+\normalsize
+\subsection{Trending Topic}
+Trending topic is defined as a word, phase or topic that is tagged at a greater rate than any other words. In other words, the trending topic is a measurement of what is hot now, and it
+can tell the users what is happening in the world currently. In the following example, we assume that the data we use is pulled from the public Twitter API.
+\footnotesize\begin{verbatim}
+  # This is a sample query script that produce
+  # the trending topic of a word stream.
+
+  # register a word stream
+  REGISTER STREAM wordStream(word string)
+  FROM file("data/word.dat");
+
+  # compute word count for past 1 min.
+  REGISTER STREAM
+  wordCountStream(word string, wordCount int)
+  FROM
+      SELECT word, count(word) as wordCount
+      FROM wordStream.win:time(1 minute)
+      GROUP BY word;
+
+  # compute top 10 word
+  SELECT word FROM wordCountStream
+  ORDER BY wordCount DESC LIMIT 10;
+\end{verbatim}
+\normalsize
+
+\section{Project Experience}\label{proj-exp}
+Typically, a master project lasts from one to three quarters, requiring a long-term commitment for students. I have learned some valuable experiences during the development of project. First of all, starting early will be a good indication of a successful project. It is not uncommon that a master project requires additional technical backgrounds or platforms that students were unfamiliar with before. Getting started with these backgrounds makes students well prepared for the actual projects. Second, a long-term project requires a clear delivery goal being kept in mind all the time, so that students will not get lost in the middle of the project. Regarding to the development and coding, since design decisions can always be modified during the development, keep the interface clean and flexible can largely reduce the amount of work on code refactoring. In addition, package management and build automation tools such as Maven and Ant can ease the pain of maintaining large amount of external dependencies and compilation issues, and are necessary for project development and maintenance.
+
+\section{Future Work}\label{future-work}
+\subsection{Query Plan optimization}
+In the current implementation of the \emph{TQL} query plan generation phase, only two kinds of query optimization techniques were adopted, join detection and selection push down.
+The produced query plan could be further improved if multiple join operators were detected. Our system will generate a left-deep join tree by default if multiple join presents.
+One way to improve the query plan is to introduce a cost-based plan generation using the techniques in the area of traditional relational database management system.~\ref{}. On
+the other hand, the existing optimizations were implemented directly in the query plan generation phase so that it is hard to add new optimizations. Our next step is to build a
+rule-based optimization layer on top of the query plan to seperate the query plan optimization from query plan generation.
+
+\subsection{Built-in sliding window support}
+One of the bottleneck that will affect the performance of the Triton system in a significant way is that there is no primitive sliding window operation in the current release of Trident.
+The way we simulate the sliding window utilized some existing APIs, and it may not be the optimal solution. However, it is possible to implement the sliding window feature directly in
+the core storm system, and expose it to trident for our translation.
+
+\subsection{User Defined Function}
+It is desired that our system could become more flexible and extensible if User Defined Function (UDF) is supported. For example, if user-defined Java code is allowed in the script,
+customized filter functions can be plugged in the WHERE clause, function for data transformation can be done in the SELECT clauses, and a lot more.
+To achieve this goal, we need to defined the proper UDF interface, extend our parser to accept the Java syntax, and then perform the translation.
+
+\subsection{Performance benchmark on cluster}
+Due to the time and resource limit, only local tests have been done in this project for now. However, it is not sufficient for a distrubuted realtime system to have local test only.
+To fully evalutate the performance of our system, a series of benchmark performance experiments should be done in a cluster environment with large set of real data. In this way,
+we could monitor the actual delay, the failure-tolerant behavior, the average latency and throughput and so on.
+
+
+\section{Related Work}\label{rel-work}
+\subsection{STREAM}
+STREAM, the Standford Data Stream Management System, is one of the pioneer project leaded by the Stanford InfoLab database group that proposed a general purpose data stream-management system.
+It defined a formal abstract semantics for the continuous queries and designed the \emph{CQL} language to implement these concepts. The \emph{CQL} extends the classic \emph{SQL} syntax to
+support sliding window and stream-relation conversion. There are three types of sliding window implemented in the STREAM system, row-based, time-based and partition-based. The system is run in
+memory. When the data rates exceeds its ability to provide accurate result, a \emph{load-shedding} algorithm was applied to provide approximate results.
+\subsection{Esper}
+Esper is a powerful Complex Event Processing (CEP) engine, which provides a large set of functionalities for CEP jobs. Esper offers a Domain Specific Language (DSL) for processing stream events.
+Also, Esper provides a declarative language, the Event Processing Language (EPL), for processing high frequency time-based event data. \emph{SQL} streaming analytic is another commonly used term for this
+technology. One disadvantage of the system is about scalability. The Esper system runs entirely in memory, so the only way to scale the system is to add more physical memories to it. In addition,
+the system suffers the single-point failure issue since the system is deployed on a single machine.
+
+\subsection{Trident-Esper}
+Trident-Esper is one attempt that people made trying to integrate the trident and esper so that the advantages of both systems could be retained. The approach they use is to turn the entire
+computation of the Esper Engine into a bolt in the trident. They created a new bolt which wrapped up the Esper operations inside it. They provided the interface for the esper to have the
+ability of reading input stream directly from the spout, and emit result into another node in the trident topology. Though this integration requires only a few lines of code change and seems
+elegent, one major issue is that the all the computation is done in in-memory and not fully parallel.
+
+\subsection{Pig-Latin}
+\emph{Pig Latin} is a novel data processing language developed by the Yahoo! Research. It combines the feature of high-level declarative querying in \emph{SQL} and the low-level procedural programming
+paradigm map reduce. The program written in Pig Latin can be compiled into a set of map-reduce job that executed on the Hadoop system to perform data analysis jobs. It has been widely adopted by
+many companies since its first release and become one of the necessary compontent during the deployment of a big data application. The idea and the design of the Triton project is also partially derived
+from the Pig Latin. To some extent, we could claim that Triton is the \emph{Pig Latin} for Trident.
+
+\section{Conclusion}
+We present a stream query translation engine base on the Trient platform. We designed a query language called \emph{TQL} along with the Triton system.
+
+% conference papers do not normally have an appendix
+
+% use section* for acknowledgment
+\section*{Acknowledgments}
+I would like to thank Professor Amarnath Gupta for his great intuition and advice on this project,
+and Nathan Marz, the father of Storm and Trident, for his innovative work on creating such an amazing platform for distributed real-time computation.
+I will not be able to accomplish this project without the support of their work.
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\begin{thebibliography}{1}
+
+    \bibitem{ABW06}
+        Arasu, A., Babu, S., and Widom, J. (2006). The CQL continuous query language: semantic foundations and query execution. \emph{The VLDB Journal—The International Journal on Very Large Data Bases}, 15(2), 121-142.
+    \bibitem{ABB+03}
+        Arasu, A., Babcork, B., Babu, S., Datar, M., and et al. (2003, June). STREAM: the stanford stream data manager (demonstration description). \emph{In Proceedings of the 2003 ACM SIGMOD international conference on Management of data} (pp. 665-665). ACM.
+    \bibitem{MWA+03}
+        Motwani, R., Widom, J., Arasu, A., and et al. (2003, January). \emph{Query processing, resource management, and approximation in a data stream management system}. CIDR.
+    \bibitem{SW04}
+        Srivastava, U., and Widom, J. (2004, June). Flexible time management in data stream systems. {In Proceedings of the twenty-third ACM SIGMOD-SIGACT-SIGART symposium on Principles of database systems} (pp. 263-274). ACM.
+    \bibitem{ACC+03}
+        Abadi, D. J., Carney, D., {\.C}etintemel, U., et al. (2003). Aurora: a new model and architecture for data stream management. The VLDB Journal—The International Journal on Very Large Data Bases, 12(2), 120-139.
+    \bibitem{ACG+04}
+        Arasu, A., Cherniack M., Galvez E., et al. Linear Road: A Stream Data Management Benchmark. \emph{Proceedings of the 30th International Conference on Very Large Data Bases (VLDB)}, August, 2004.
+    \bibitem{KS09}
+        Kr{\"a}mer, J., and Seeger, B. (2009). Semantics and implementation of continuous sliding window queries over data streams. \emph{ACM Transactions on Database Systems (TODS)}, 34(1), 4.
+    \bibitem{ORS+08}
+        Olston, C., Reed, B., Srivastava, U., Kumar, R., and Tomkins, A. (2008, June). Pig latin: a not-so-foreign language for data processing. \emph{In Proceedings of the 2008 ACM SIGMOD international conference on Management of data} (pp. 1099-1110). ACM.
+    \bibitem{Paul07}
+        Paul Dekkers, "Complex Event Processing," M.S. thesis, Dept. Computer Science, Radboud Univ., Nijmegen, October 2007.
+    \bibitem{Paul08}
+        Paul Jensen, "Complex Event Processing with Esper" [Online]. Available: http://jnb.ociweb.com/jnb/jnbOct2008.html
+    \bibitem{SAL11}
+        Sch{\"a}tzle, A., Przyjaciel-Zablocki, M., and Lausen, G. (2011, June). PigSPARQL: Mapping sparql to pig latin. {In Proceedings of the International Workshop on Semantic Web Information Management} (p. 4). ACM.
+    \bibitem{Storm}
+        Storm project [Online]. \\Available: http://storm.incubator.apache.org/
+    \bibitem{Trident}
+        Trident Tutorial [Online]. \\Available: https://github.com/nathanmarz/storm/wiki/Trident-tutorial
+
+\end{thebibliography}
+
+% that's all folks
+\end{document}
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex,
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals/conferences use top floats
+% exclusively. Note that, LaTeX2e, unlike IEEE journals/conferences, places
+% footnotes above bottom floats. This can be corrected via the \fnbelowfloat
+% command of the stfloats package.
+
