@@ -62,7 +62,7 @@
 % should be used if it is desired that the figures are to be displayed in
 % draft mode.
 %
-\documentclass[conference, twocolumn, twoside, 11pt]{IEEEtran}
+\documentclass[conference, twocolumn, 11pt]{IEEEtran}
 % Add the compsoc option for Computer Society conferences.
 %
 % If IEEEtran.cls has not been installed into the LaTeX system files,
@@ -126,7 +126,7 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-  \usepackage[pdftex, demo]{graphicx}
+  \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -163,13 +163,13 @@
 % You can find documentation about the pdfTeX application at:
 % http://www.tug.org/applications/pdftex
 
-\makeatletter
-  \AtBeginDocument{%
-    \def\Ginclude@graphics#1{%
-      \begingroup\fboxsep=-\fboxrule
-      \fbox{\rule{\@ifundefined{Gin@@ewidth}{150pt}{\Gin@@ewidth}}{0pt}%
-        \rule{0pt}{\@ifundefined{Gin@@eheight}{100pt}{\Gin@@eheight}}}\endgroup}}
-\makeatother
+%\makeatletter
+%  \AtBeginDocument{%
+%    \def\Ginclude@graphics#1{%
+%      \begingroup\fboxsep=-\fboxrule
+%      \fbox{\rule{\@ifundefined{Gin@@ewidth}{150pt}{\Gin@@ewidth}}{0pt}%
+%        \rule{0pt}{\@ifundefined{Gin@@eheight}{100pt}{\Gin@@eheight}}}\endgroup}}
+%\makeatother
 
 
 
@@ -340,8 +340,9 @@
 % \url{my_url_here}.
 
 
-
-
+% *** ADDITIONAL PACKAGES ***
+%
+\usepackage{qtree}
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
 % *** Do not use packages that alter fonts (such as pslatex).         ***
@@ -361,7 +362,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{Triton: A Continuous Query Translation Engine Over Trident}
+\title{Triton: A Continuous Query Translation Engine for Trident/Storm}
 
 
 % author names and affiliations
@@ -454,18 +455,20 @@ Email: lzhiheng@eng.ucsd.edu}
 \section{Introduction}
 \subsection{Background}
 A fairly large amount of researches have been done in the area of continuous query processing and complex event analysis since early 2000. The \emph{STREAM} prototype Data Stream Management System (DSMS)
-designed by the Stanford InfoLab~\ref{ABB+03} is marked as one of the pioneer projects in this area. The \emph{CQL} language, a continuous query language designed along with \emph{STREAM} DSMS defines an abstract semantics for the \emph{sliding window}, which is a key component in streaming analysis, and thus became an important reference when researchers design new query languages for streaming based systems. Base on these work, several Complex Event Processing (CEP) engines and Event Processing Lanaguage (EPL) have been proposed to ease the development of real-time streaming applications. Esper~\ref{Paul08} is one of the successful examples that enables a SQL-standard, low-latency and real-time streaming CEP engine. However, one problem that these systems suffer is the scalability and reliability since most of them perform in-memory computation. The only way to scale systems for massive data sets is adding more physical memories. On the other hand, the single-machine architecture becomes another bottleneck when streaming rate increases. With the increasing needs in application areas such as finanical analysis, network monitoring, online bidding and algorithmic trading, a distributed real-time computation system designed with horizontal scalabilty and fault-tolerant model that produce high throughput and low latency results is often desired. Apache Storm~\ref{Storm}, a distributed real-time computation system designed by Nathan Marz, has been adopted by several big companies like Twitter, Groupon, and RocketFuel since its first release around early 2009. It provides a fault-tolerant, scalable and at-most-once semantic model according to its official website. Apache Storm introduced Trident, a high level abstraction over Storm, in its 0.8.0 version released on 08/02/2012.~\ref{Trident} The advent of Trident made the distributed real-time computation even simpler since it comes with a Domain Specific Language (DSL) abstraction that allows programmers focus on the data operations only during the development. However, there is no \emph{sliding window} primitives existed in Trident, and a higher level abstraction that provides a SQL-standard language for streaming analysis is still missing.
+designed by the Stanford InfoLab~\cite{ABB+03} is marked as one of the pioneer projects in this area. The \emph{CQL} language, a continuous query language designed along with \emph{STREAM} DSMS defines an abstract semantics for the \emph{sliding window}, which is a key component in streaming analysis, and thus became an important reference when researchers design new query languages for streaming based systems. Base on these work, several Complex Event Processing (CEP) engines and Event Processing Lanaguage (EPL) have been proposed to ease the development of real-time streaming applications. Esper~\cite{Paul08} is one of the successful examples that enables a SQL-standard, low-latency and real-time streaming CEP engine. However, one problem that these systems suffer is the scalability and reliability since most of them perform in-memory computation. The only way to scale systems for massive data sets is adding more physical memories. On the other hand, the single-machine architecture becomes another bottleneck when streaming rate increases. With the increasing needs in application areas such as finanical analysis, network monitoring, online bidding and algorithmic trading, a distributed real-time computation system designed with horizontal scalabilty and fault-tolerant model that produce high throughput and low latency results is often desired. Apache Storm~\cite{Storm}, a distributed real-time computation system designed by Nathan Marz, has been adopted by several big companies like Twitter, Groupon, and RocketFuel since its first release around early 2009. It provides a fault-tolerant, scalable and at-most-once semantic model according to its official website. Apache Storm introduced Trident, a high level abstraction over Storm, in its 0.8.0 version released on 08/02/2012.~\cite{Trident} The advent of Trident made the distributed real-time computation even simpler since it comes with a Domain Specific Language (DSL) abstraction that allows programmers focus on the data operations only during the development. However, there is no \emph{sliding window} primitives existed in Trident, and a higher level abstraction that provides a SQL-standard language for streaming analysis is still missing.
 
 \subsection{Motivation}
-The motivation of our work is partially inspired from the \emph{Pig} project~\ref{ORS+08} done by the Yahoo! research, who proposed a novel language called \emph{Pig Latin} for performing map-reduce job. The \emph{Pig Latin} program will be translated into low-level physical plans that runs directly on \emph{Hadoop}, an open-source implementation of map-reduce framework.~\ref{} As claimed in the documentation that Storm can be viewed as a real-time version of map-reduce framework, our goal is to design and implement a system which acts as the similar role over Storm as \emph{Pig} did over \emph{Hadoop}. The system is named as \emph{Triton}, which is a translation engine that compiles a script written in \emph{Triton Query Language} (TQL) into native JAVA code (in form of a Trident program) that runs directly over Storm. \emph{TQL} is a SQL-standard continuous query language with syntax similar to \emph{CQL} and Esper.
+The motivation of our work is partially inspired from the \emph{Pig} project~\cite{ORS+08} done by the Yahoo! research, who proposed a novel language called \emph{Pig Latin} for performing map-reduce job. The \emph{Pig Latin} program will be translated into low-level physical plans that runs directly on \emph{Hadoop}, an open-source implementation of map-reduce framework.~\cite{hadoop} As claimed in the documentation that Storm can be viewed as a real-time version of map-reduce framework, our goal is to design and implement a system which acts as the similar role over Storm as \emph{Pig} did over \emph{Hadoop}. The system is named as \emph{Triton}, which is a translation engine that compiles a script written in \emph{Triton Query Language} (TQL) into native JAVA code (in form of a Trident program) that runs directly over Storm. \emph{TQL} is a SQL-standard continuous query language with syntax similar to \emph{CQL} and Esper.
 In summary, we made three major contributions in this project. 1) \emph{TQL} was developed as the query language for the \emph{Triton} system. 2) An experimental implementation of the \emph{Triton} translation engine that compiles the \emph{TQL} query into native Trident program written in JAVA. 3) Several implementations of the \emph{sliding window} primitive in Trident was investigated.
 
 The rest of this paper is organized as follows. In the next section, we will talk about the key concepts in Storm and Trident to give readers an overview of the platform that our system depends on. In section~\ref{tql}, we will cover the design of \emph{TQL} and provide several examples. In section~\ref{sys-design}, we will introduce the system architecture, design decisions and the rationale behind them.
 In section~\ref{impl}, we will describe the current implementation of the Triton system. Section~\ref{example} will present one real world application that is implemented through the Triton system. We will discuss the project experiences in section~\ref{proj-exp}.
 Finally, we will list the future work and related work in section~\ref{future-work} and~\ref{rel-work}, then make the conclusion.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Storm and Trident Overview}\label{storm-trident}
-In this section, we will quickly go through two core concepts, \emph{stream} and \emph{topology}, in Storm, and give a brief introduction to Trident. More detailed descriptions and tutorials about the system can be found in their official documentation.~\ref{}
+In this section, we will quickly go through two core concepts, \emph{stream} and \emph{topology}, in Storm, and give a brief introduction to Trident. More detailed descriptions and tutorials about the system can be found in their official documentation.~\cite{Storm}
 \subsection{Stream}
 Stream, the core abstraction in Storm, is defined as an unbounded sequence of tuples, where each \emph{tuple} is an ordered list of objects with pre-defined data types. A Stream can be transformed into a new stream by two Storm primitives \emph{spout} and \emph{bolt}.
 
@@ -476,7 +479,7 @@ A spout is defined as the source of a stream. A spout can turn the data from a q
 A bolt is a functional unit that takes arbitrary number of streams as input, and emit tuples as a new stream based on the logic defined by the application. Technically a bolt can do any kind of computation such as filtering, aggregation, projection and so on. Storm also provides an interface for application specific implementation. A complicate computation often involves multiple bolts.
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=2.5in]{topo-exmp}
+\includegraphics[width=2.5in]{figures/topo_example1}
 % where an .eps filename suffix will be assumed under latex,
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
@@ -486,13 +489,11 @@ A bolt is a functional unit that takes arbitrary number of streams as input, and
 
 \subsection{Topology}\label{storm}
 A topology in Storm is a directed acyclic graph (DAG) where each node is either a spout or a bolt. More precisely, spouts can only have out degrees, acting as a source of the topology, while bolts can be put anywhere in the topology. Each concrete computation task is modeled as a topology and run either on a storm cluster or locally.
-Figure~\ref{topo-exmp} shows a simple topology that contains two spouts and three bolts. Notice that spout A emits stream and send it to three bolts C, D and E, and bolt D received stream from two spouts A and B. Figure~\ref{topo-crt-exmp} demonstrate a concrete example
-
-\textbf{[TODO: two figures and one concrete example]}
+Figure~\ref{topo-exmp} shows a simple topology that contains two spouts and three bolts. Notice that spout A emits stream and send it to three bolts C, D and E, and bolt D received stream from two spouts A and B. Figure~\ref{topo-crt-exmp} demonstrate a concrete example.
 
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=2.5in]{topo-crt-exmp}
+\includegraphics[width=4in]{figures/topo_example2}
 % where an .eps filename suffix will be assumed under latex,
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
@@ -501,17 +502,10 @@ Figure~\ref{topo-exmp} shows a simple topology that contains two spouts and thre
 \end{figure}
 
 \subsection{Trident abstraction}
-Trident is built on top of Storm, aimed to provide a high-level abstraction for doing real-time computing. Common operations on stream including functions, filters, aggregations, and projections are wrapped as Trident APIs. The details of how these operations are implemented in terms of Storm topologies are hidden from users. In addition, Trident's API is designed as a fluent interface to produce more readable code. The Trident engine will automatically translate a Trident topology into a Storm topology. Example~\ref{trident-impl-exmp} is an Trident implementation of figure~\ref{topo-crt-exmp}.
+Trident is built on top of Storm, aimed to provide a high-level abstraction for doing real-time computing. Common operations on stream including functions, filters, aggregations, and projections are wrapped as Trident APIs. The details of how these operations are implemented in terms of Storm topologies are hidden from users. In addition, Trident's API is designed as a fluent interface to produce more readable code. The Trident engine will automatically translate a Trident topology into a Storm topology. A more detailed description of Trident fluent API will be covered in Section~\ref{trans-codegen}.
 
-\begin{example}\label{trident-impl-exmp}
-\begin{verbatim}
 
-topology.newStream()
-        .each()
-        .each()
-\end{verbatim}
-\end{example}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Triton Query Language}\label{tql}
 A \emph{TQL} \emph{script} consists of a sequences of \emph{statments}, with each of them terminated by a semicolon. Each statement is either a \emph{stream registration} or a \emph{query definition}. Each stream must be registered into the system before being referenced in a query. Section~\ref{stream-reg} and ~\ref{query-def} cover the detail.\
 
@@ -572,7 +566,7 @@ The parser takes a \emph{TQL} script as an input, and parsed it into a abstract 
 
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=2.5in, height=3in]{arch-diag}
+\includegraphics[width=4in, height=5in]{figures/sys_arch.pdf}
 % where an .eps filename suffix will be assumed under latex,
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
@@ -582,36 +576,101 @@ The parser takes a \emph{TQL} script as an input, and parsed it into a abstract 
 
 \section{Implementation Details}\label{impl}
 \subsection{Parser}
-The first stage of our system is to parse the input script and generate the abstract syntax tree (AST) for further translation.
-This step is simple by using JJTree, a powerful extension of JavaCC to perform lexical, syntactical analysis, and construct abstract syntax tree during the parsing process. There are two issues that need to be taken care of when writing the parser, left-recursion elimination and look-ahead.
+The first stage of the compilation is to parse the input \emph{TQL} script and generate the abstract syntax tree (AST) for further translation. This step is simple by using a handful tool called JJTree, a powerful extension of JavaCC to perform lexical, syntactical analysis, and construct abstract syntax tree during the parsing process. We only need to specify the BNF grammar in a \texttt{jjt} file and pass it to JJTree, and JJTree will generate a parser written in JAVA. Two things need to be taken care of when writing the \texttt{jjt} file, one is the left-recursion elimination to avoid the parser error and the other is the usage of \texttt{LOOKAHEAD} function to eliminate the possible ambiguity in the grammar.
 
 \subsection{Meta-data management}
-table infomation, rename loopup, attribute unified
-\subsection{Logic Query Plan}
-The logic query plan in TQL is similar to the one in SQL. Basically a logic query plan can be generated by traversing the AST of the query. It is represented as a tree data structure, where each node is an operator. Each operator corresponding to a certain part in the query. For example, the selection part is mapped to the \emph{Projection} operator. Figure~\ref{plan-exmp} shows the logic query plan for example~\ref{named-exmp}
+During the compilation process, one key component is the management of \emph{meta-data} of a given script. In a \emph{TQL} script, the meta-data includes the stream definitions (stream name, attribute/type and source), stream/attribute renaming information, query type(named or anonymous), and query dependencies information. All these information will be collected and stored in proper data structures during the logic query plan generation phase. 
 
-\begin{figure}[hbt]
-\centering
-\includegraphics[width=2.5in, height=3in]{plan-exmp}
-% where an .eps filename suffix will be assumed under latex,
-% and a .pdf suffix will be assumed for pdflatex; or what has been declared
-% via \DeclareGraphicsExtensions.
-\caption{A generated logic query plan.}
-\label{plan-exmp}
-\end{figure}
+\texttt{ResourceManager} and \texttt{LogicQueryPlan} are two major data structures involved in the meta-data management component. \texttt{ResourceManager} is a singleton class that maintains a table of stream definitions, which is internally represented as a hash table keyed by stream name. \texttt{ResourceManager} will be only instantiated once in the run-time. The will be collected when processing the \texttt{REGISTER} node. 
+
+\texttt{LogicQueryPlan} contains the meta-data of each query, including stream/attribute renaming information, query type(named or anonymous), and query dependencies information. The system creates one \texttt{LogicQueryPlan} object for each query in the script. 
+The renaming is captured when analyze the \texttt{AS} node, and stored in a hash table where key is the new stream name and value is the old stream name. The query type information is actually an flag variable stored in the \texttt{LogicQueryPlan} object. The dependencies for each query are stored as a linked list, which will be used to construct a dependency graph in the code generation phase.
+   
+\subsection{Logic Query Plan Generation}
+The logic query plan in TQL is similar to the one in standard SQL. To incorporate the sliding window operation, we extend the relational algebra by introducing a window operator $\omega$. In addition, if the window definition contains a pre-filter, a selection operator $\sigma$ should be placed before $\omega$. For instance, the relational algebra for the window specification in Example~\ref{win-exmp} can be written as $\omega_{TIME(1 min)}(\sigma_{symbol=\text{'GOOG'}})$.
+
+The translation from input query to a logic query plan is simple in our cases since there is no nest query supported in the system. Example~\ref{simple-plan} demonstrate a simple logic query plans generated by our system.
+\begin{example}\label{simple-plan}
+A simple logic query plan.
+\begin{center}
+\Tree[.\textit{output} 
+		[.$\pi_{word, wordCount}$
+			[.$\gamma_{\text{COUNT}(word) \rightarrow wordCount}$
+				[.$\omega_{\text{TIME}(1 min)}$ \textit{wordCountStream} ]
+			]
+		]
+	]
+\end{center}
+\end{example}
+
+The implementation of the logic query plan generation is done by traversing the AST produced by the parser. During the traversal, depending on what kind of nodes, new operators will be created or existing operators will be updated. For example, a $\sigma$ operator will be created when a \texttt{WHERE} node is visited, and will be updated when each of its condition nodes is visited.
+When the traversal is completed, all the necessary operators should have been created, and will be organized in a specific way. A product operator will be placed before input streams if there is more than one streams. The generated logic query plan is also stored in the \texttt{LogicQueryPlan} as a tree data structure. A logic query plan involves two streams is shown as below.
+
+\begin{example}\label{product-plan}
+A logic query plan involves two streams.
+\begin{center}
+\Tree[.\textit{output} 
+		[.$\pi_{S2.name, max\_num}$
+			[.$\gamma_{\text{MAX}(S1.sum) \rightarrow max\_num}$ 
+				[.$\sigma_{S1.num \leq 60  \wedge  S1.num = S2.num}$
+					[.$\times$
+						[.$\omega_{\text{ROW}(3) \rightarrow S1}$
+							[.$\sigma_{S1.name = "Tom"}$  \textit{Stream1} ]
+						]
+						[.$\omega_{\text{ROW}(10) \rightarrow S2}$ \textit{Stream2} ]
+					]
+				]
+			]
+		]
+	]
+\end{center}
+\end{example}
 
 \subsection{Optimization}
-Two optimization techniques were adopt when possible to produce better logic query plan, join detection and selection push-down.
-\subsubsection{Join Detection}
+Two optimization techniques were adopt when possible to produce better logic query plan, join detection and selection push-down. 
+Both of the optimizations were implemented by analyzing the logic expression of the \texttt{WHERE} clause. A pre-processing decomposes the logic expression into an equivalent expression which contains list of logic units joined by $\wedge$ whenever possible. In case if there is no such decomposition, neither of the optimizations can be done. This decomposition is useful because each small unit is independent of each other and can be processed separately because of the $\wedge$ logic.  Example~\ref{opt-plan} shows a optimized version of Example~\ref{product-plan}. The logic expression $S1.num \leq 60  \wedge  S1.num = S2.num$ is decomposed into $S1.num \leq 60$ and $S1.num = S2.num$, where $S1.num \leq 60$ is pushed down to the \emph{Stream1}, and the product between \emph{Stream1} and \emph{Stream2} is converted to a join operation based on $S1.num = S2.num$.
+
+\begin{example}\label{opt-plan}
+An optimized logic query plan.\\
+\begin{center}
+\Tree[.\textit{output} 
+		[.$\pi_{S2.name, max\_num}$
+			[.$\gamma_{\text{MAX}(S1.sum) \rightarrow max\_num}$ 
+				[.$\bowtie_{S1.num = S2.num}$
+					[.$\sigma_{S1.num \leq 60}$
+						[.$\omega_{\text{ROW}(3) \rightarrow S1}$
+							[.$\sigma_{name = "Tom"}$  \textit{Stream1} ]
+						]
+					]
+					[.$\omega_{\text{ROW}(10) \rightarrow S2}$ \textit{Stream2} ]
+				]
+			]
+		]
+	]
+\end{center}
+\end{example}
 
 \subsubsection{Selection push-down}
+Selection push-down is relatively easy based on the decomposition. The condition that a logic unit can be pushed down is that if it only contains attributes from the same stream, which can be verified through a traversal on the logic unit.
 
+\subsubsection{Join detection}
+For join detection, a linear scan was done on each logic unit to check if it is a equal expression and the attributes in two sides belong to different streams. If this is the case, a \texttt{JoinPlan} object will be created, and the joined stream pair will be added into it. After the scan, a join graph will be generated where each node is a stream and each edge between two node means a join exists between them. The join attribute is stored as a linked list in the edge. Then a graph partition algorithm will be applied to find the join groups, which is simply a depth-first-search. At this time, join operator could be placed on each join group. If there are more than two streams in a join group, a left-deep join tree will be generated by default. Currently we have not investigated the cost-based plan generation yet.
 
-\subsection{Translation and Code Generation}
+\subsection{Translation and Code Generation}\label{trans-codegen}
 overview of trident api
+
+\begin{example}\label{trident-impl-exmp}
+\begin{verbatim}
+
+topology.newStream()
+        .each()
+        .each()
+\end{verbatim}
+\end{example}
+
 \subsubsection{Window Translation}
 \subsubsection{Translation of other operators}
-\begin{table}[!t]
+\begin{table}[hbt]
 % increase table row spacing, adjust to taste
 %\renewcommand{\arraystretch}{1.3}
 % if using array.sty, it might be a good idea to tweak the value of
@@ -648,6 +707,7 @@ OrderBy        & applyAssembly(firstN) \\
 \hline
 \end{tabular}
 \end{table}
+
 \subsubsection{Code Generation}
 Language builder
 Trident Builder
@@ -793,9 +853,9 @@ I will not be able to accomplish this project without the support of their work.
     \bibitem{MWA+03}
         Motwani, R., Widom, J., Arasu, A., and et al. (2003, January). \emph{Query processing, resource management, and approximation in a data stream management system}. CIDR.
     \bibitem{SW04}
-        Srivastava, U., and Widom, J. (2004, June). Flexible time management in data stream systems. {In Proceedings of the twenty-third ACM SIGMOD-SIGACT-SIGART symposium on Principles of database systems} (pp. 263-274). ACM.
+        Srivastava, U., and Widom, J. (2004, June). Flexible time management in data stream systems. \emph{In Proceedings of the twenty-third ACM SIGMOD-SIGACT-SIGART symposium on Principles of database systems} (pp. 263-274). ACM.
     \bibitem{ACC+03}
-        Abadi, D. J., Carney, D., {\.C}etintemel, U., et al. (2003). Aurora: a new model and architecture for data stream management. The VLDB Journal—The International Journal on Very Large Data Bases, 12(2), 120-139.
+        Abadi, D. J., Carney, D., {\.C}etintemel, U., et al. (2003). Aurora: a new model and architecture for data stream management. \emph{The VLDB Journal—The International Journal on Very Large Data Bases}, 12(2), 120-139.
     \bibitem{ACG+04}
         Arasu, A., Cherniack M., Galvez E., et al. Linear Road: A Stream Data Management Benchmark. \emph{Proceedings of the 30th International Conference on Very Large Data Bases (VLDB)}, August, 2004.
     \bibitem{KS09}
@@ -807,7 +867,7 @@ I will not be able to accomplish this project without the support of their work.
     \bibitem{Paul08}
         Paul Jensen, "Complex Event Processing with Esper" [Online]. Available: http://jnb.ociweb.com/jnb/jnbOct2008.html
     \bibitem{SAL11}
-        Sch{\"a}tzle, A., Przyjaciel-Zablocki, M., and Lausen, G. (2011, June). PigSPARQL: Mapping sparql to pig latin. {In Proceedings of the International Workshop on Semantic Web Information Management} (p. 4). ACM.
+        Sch{\"a}tzle, A., Przyjaciel-Zablocki, M., and Lausen, G. (2011, June). PigSPARQL: Mapping sparql to pig latin. \emph{In Proceedings of the International Workshop on Semantic Web Information Management} (p. 4). ACM.
     \bibitem{Storm}
         Storm project [Online]. \\Available: http://storm.incubator.apache.org/
     \bibitem{Trident}
@@ -815,6 +875,67 @@ I will not be able to accomplish this project without the support of their work.
 
 \end{thebibliography}
 
+\onecolumn
+\section*{Appendix}
+A list of core BNF syntax for \emph{TQL}
+\footnotesize\begin{verbatim}
+	<query> ::= <select_clause> <from_clause> [<where_clause>] 
+	            [<group_by_clause>] [<order_by_clause>] [<limit_clause>]
+	
+	<select_clause> ::= select <select_list>
+	
+	<from_clause> ::= from <stream_def> (, <stream_def>)*
+	
+	<where_clause> ::= where <filter_criteria>
+	
+	<group_by_clause> ::= group by <expression> (, <expression>)*
+	
+	<order_by_clause> ::= order by <attribute> (asc | desc) (, <attribute> (asc | desc))*
+	
+	<select_list> ::= *
+	               |  <select_attribute> (, <select_attribute>)*
+	
+	<select_attribute> ::= <attribute> [as <identifier>]
+	                    | <expression> [as <identifier>]
+	                    | <aggregate_function> (<attribute>) [as <identifier>]
+	
+	<stream_def> ::= <stream_name> [(<filter_criteria>)] [. <view_spec>] [as <identifier>]
+	
+	<filter_criteria> ::= <filter_criteria> and <filter_criteria>
+	                   |  <filter_criteria> or <filter_criteria>
+	                   |  not <filter_criteria>
+	                   |  ( filter_criteria )
+	                   |  <expression> <cmp_op> (<expression> | <constant>)
+	
+	<expression> ::= <arithmetic_expression>
+	
+	<attribute> ::= <identifier>
+	             |  <attribute> . <identifier>  
+	
+	<view_spec> ::= win:length(number)
+	             |  win:time(time_period)
+	             |  win:time_batch(time_period)
+	
+	<time_period> := <num> <time_unit>
+	
+	<time_unit> := hr | min | sec
+	
+	<cmp_op> ::= > 
+	          | < 
+	          | >= 
+	          | <= 
+	          | = 
+	          | <>
+	
+	<aggregate_function> ::= count | avg | sum | median | stddev
+	
+	<identifier> ::= [a-zA-Z][0-9a-zA-Z_]*
+	
+	<constant> ::= <number_literal>
+	            | <string_literal>
+	
+	<number_literal> ::= <integer> | <floating>
+\end{verbatim}
 % that's all folks
 \end{document}
 
