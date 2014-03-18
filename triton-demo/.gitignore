@@ -2,5 +2,6 @@ build
 WebContent/META-INF/
 WebContent/WEB-INF/
 WebContent/img/
-WebContent/js/
+WebContent/js/ace-builds/
+WebContent/js/bootstrap*
 WebContent/fonts
