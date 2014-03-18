@@ -125,7 +125,7 @@ select word from wordCountStream order by wordCount desc limit 10;</div>
         Console.log = (function(message) {
                 
             var console = $('#console');
-            var p = document.createElement('p');
+            var p = document.createElement('pre');
             p.style.wordWrap = 'break-word';
             p.innerHTML = message;
             console.append(p);
@@ -137,6 +137,12 @@ select word from wordCountStream order by wordCount desc limit 10;</div>
             console.html('');
         });
     
+        $('#compile').on('click', function(event) {
+            Console.clear();
+            compile();
+        });        
+        
+        
         $('#run').on('click', function(event) {
         	Console.clear();
             start();
@@ -157,11 +163,20 @@ select word from wordCountStream order by wordCount desc limit 10;</div>
         
         function stop() {
             var message = {
-                    "clientId": 'stream',
-                    "action" : "stop",
-                    "content": "topo"
-                };
+                "clientId": 'stream',
+                "action" : "stop",
+                "content": "topo"
+            };
         	Stream.socket.send(JSON.stringify(message));
+        }
+
+        function compile() {
+            var message = {
+                "clientId": 'stream',
+                "action" : "compile",
+                "content": javaEditor.getValue()
+            };
+            Stream.socket.send(JSON.stringify(message));
         }
         
         Stream.initialize();

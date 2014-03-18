@@ -27,6 +27,11 @@ public class Compiler {
 	public static void main(String[] args) {
 		
 		String inputFileName = "src/test/jjtree/trending_topic.tql";
+
+		if (args.length > 0) {
+			inputFileName = args[0];
+		}
+
 		try {
 			LOGGER.info("Parsing the query script...");
 			TritonParser tritonParser;
@@ -60,8 +65,9 @@ public class Compiler {
 			System.out.println(res);
 			
 			LOGGER.info("Generating packge...");
-			String path = "../triton-codegen/src/main/java/";
+			String path = "triton-codegen/src/main/java/";
 			generatePackage(path, className.toLowerCase(), program);
+			LOGGER.info("Compile success!");
 
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

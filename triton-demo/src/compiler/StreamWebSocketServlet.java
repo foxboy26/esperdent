@@ -2,11 +2,11 @@ package compiler;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Hashtable;
@@ -23,6 +23,9 @@ import com.google.gson.Gson;
 
 
 public class StreamWebSocketServlet extends WebSocketServlet {
+	
+	private final String TRITON_DIR = "/Users/zhihengli/UCSD/project/triton/";
+	
 	
 	private final String STDOUT = "stdout: ";
 	
@@ -64,11 +67,18 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 		  if (message.action != null && message.action.equals("start")) {
 		  	ProcessBuilder pb = new ProcessBuilder(
 		  			"/Users/zhihengli/libs/apache-maven-3.1.1/bin/mvn", 
-		  			"-f", "pom.xml", 
-		  			"compile", "exec:java", "-Dstorm.topology=simple.Simple");
-				pb.directory(new File("/Users/zhihengli/UCSD/project/triton/codegen/"));
-				pb.redirectErrorStream(true);
+		  			"-f", 
+		  			"pom.xml", 
+		  			"compile", 
+		  			"exec:java",
+		  			"-Dstorm.topology=simple.Simple");
+				
+		  	pb.directory(new File("/Users/zhihengli/UCSD/project/triton/codegen/"));
+				
+		  	pb.redirectErrorStream(true);
+				
 				final Process p;
+				
 				try {
 					p = pb.start();
 					String processId = message.content;
@@ -104,12 +114,71 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 				
 		  } else if (message.action != null && message.action.equals("stop")) {
 		  	stopProcess(message.content);
+		  } else if (message.action != null && message.action.equals("compile")){
+		  	compile("trending_topic", message.content);
 		  } else {
 		  	System.err.println("unknown action: [" + message.action + "]");
 		  	sendErrorMessage("unknown action: [" + message.action + "]");
 		  }
     }
 
+		
+		private void compile(final String scriptId, final String script) {
+			
+			// generate script file
+			PrintWriter out;
+      try {
+	      out = new PrintWriter(TRITON_DIR + "/" + scriptId + ".tql");
+				out.println(script);
+				out.close();
+      } catch (FileNotFoundException e1) {
+	      // TODO Auto-generated catch block
+	      e1.printStackTrace();
+      }
+			
+			ProcessBuilder pb = new ProcessBuilder(
+					"./compile.sh",
+					scriptId + ".tql");
+
+			System.out.println(script);
+
+			pb.directory(new File(TRITON_DIR));
+
+			pb.redirectErrorStream(true);
+
+			try {
+				final Process p;
+
+				p = pb.start();
+				String processId = "compile" + scriptId;
+				new Thread(processId) {
+					public void run() {
+						InputStream stdout = p.getInputStream();
+						BufferedReader reader = new BufferedReader(new InputStreamReader(
+						    stdout));
+						String line;
+						try {
+							while ((line = reader.readLine()) != null) {
+								sendInfoMessage(line);
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							// e.printStackTrace();
+							System.out.println("stream closed!");
+						}
+					}
+				}.start();
+				System.out.println("started");
+				p.waitFor();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		private void stopProcess(final String processId) {
 	  	Process p = processMap.get(processId);
 	  	if (p != null) {
