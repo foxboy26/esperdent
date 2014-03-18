@@ -22,12 +22,15 @@ Compiler.connect = (function(host) {
 
     Compiler.socket.onmessage = function (message) {
     	message = JSON.parse(message.data);
-    	if (message.action === 'result') {
+    	
+    	if (message.action === 'info') {
+        	Console.log(message.content);    		
+    	} else if (message.action === 'result') {
             var javaEditor = ace.edit("java-editor");
             //javaEditor.setTheme("ace/theme/github");
             javaEditor.getSession().setValue(message.content);
-    	} else {
-            Console.log(message.content);
+    	} else if (message.action === 'raw') {
+    		console.log("TODOTODOTOD");
     	}
     };
 });

@@ -26,7 +26,6 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 	
 	private final String TRITON_DIR = "/Users/zhihengli/UCSD/project/triton/";
 	
-	
 	private final String STDOUT = "stdout: ";
 	
 	private final String RAW = "raw: ";
@@ -139,8 +138,6 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 			ProcessBuilder pb = new ProcessBuilder(
 					"./compile.sh",
 					scriptId + ".tql");
-
-			System.out.println(script);
 
 			pb.directory(new File(TRITON_DIR));
 

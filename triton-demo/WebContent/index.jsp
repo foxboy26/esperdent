@@ -52,30 +52,29 @@
     <div class="container-fluid">
 		<div class="row">
 			<div class="col-md-6">
-                <div id="tql-editor" class="editor">SELECT * FROM movie WHERE title = "inception";</div>
+                <div id="tql-editor" class="editor" style="height:200px">SELECT * FROM movie WHERE title = "inception";</div>
+		        <div class="row" style="padding:0">
+		            <div class="col-md-5"></div>
+		            <div class="col-md-1">
+		                <button type="submit" id="submit" class="btn btn-success footer-item rel-tooltip">
+		                    <i class="icon-cog-alt">Compile!</i>
+		                </button>
+		            </div>
+		            <div class="col-md-6"></div>
+		        </div>
+		        <div class="row" style="padding:0; height:400px">
+		            <div id="console" class="console" style="height: 380px">
+		            </div>
+		        </div>
 			</div>
 			<div class="col-md-6">
-			    <div id="java-editor" class="editor">class Test {
+			    <div id="java-editor" class="editor" style="height:600px">class Test {
     public static void main(String[] args){
         System.out.println("Hello World!");
     }
 }</div>
 			</div>
 		</div>
-		<div class="row" style="padding:0">
-			<div class="col-md-5"></div>
-			<div class="col-md-1">
-				<button type="submit" id="submit" class="btn btn-success footer-item rel-tooltip">
-				    <i class="icon-cog-alt">Compile!</i>
-				</button>
-			</div>
-			<div class="col-md-6"></div>
-		</div>
-        <div class="row">
-        <p class="lead">Console</p>
-            <div id="console" >
-            </div>
-        </div>
     </div><!-- /.container -->
 
     <!-- Bootstrap core JavaScript
@@ -97,7 +96,7 @@
         //javaEditor.setTheme("ace/theme/github");
         javaEditor.getSession().setMode("ace/mode/java");
         javaEditor.getSession().setUseWrapMode(true);
-        javaEditor.setReadOnly(true);
+        //javaEditor.setReadOnly(true);
         javaEditor.setShowPrintMargin(false);
     </script>
     <script src="js/demo.js" type="text/javascript" charset="utf-8"></script>
@@ -107,10 +106,11 @@
 	    Console.log = (function(message) {
 	            
 	        var console = $('#console');
-	        var p = document.createElement('p');
+	        var p = document.createElement('pre');
 	        p.style.wordWrap = 'break-word';
 	        p.innerHTML = message;
 	        console.append(p);
+            $('#console').scrollTop($('#console')[0].scrollHeight)
 	    });
 	    
 	    Console.clear = (function() {
@@ -124,12 +124,14 @@
         });
         
         function compile() {
-        	var query = {
-        		'query' : editor.getValue()
-        	};
+            var message = {
+                    "clientId": 'stream',
+                    "action" : "compile",
+                    "content": editor.getValue()
+                };
         	Console.clear();
-        	//Compiler.socket.send(JSON.stringify(query));
-            Compiler.socket.send(editor.getValue());
+        	Compiler.socket.send(JSON.stringify(message));
+            //Compiler.socket.send(message);
         }
         
         Compiler.initialize();

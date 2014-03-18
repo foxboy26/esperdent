@@ -38,6 +38,7 @@ public class Compiler {
 			tritonParser = new TritonParser(new FileInputStream(new File(
 			    inputFileName)));
 
+			LOGGER.info("Dump parsed AST...");
 			ASTStart root = tritonParser.Start();
 			root.dump(">");
 			
@@ -45,10 +46,10 @@ public class Compiler {
 			
 			LogicPlanVisitor logicPlanVisitor = new LogicPlanVisitor(resourceManager);
 			
+			LOGGER.info("Generating logic plan...");
 			root.jjtAccept(logicPlanVisitor, resourceManager);
 			//System.out.println(resourceManager.getStreamByName("s1"));
 			
-			LOGGER.info("Generating logic plan...");
 			List<BaseLogicPlan> logicPlanList = logicPlanVisitor.getLogicPlanList();
 
 			LOGGER.info("Generating trident code...");
@@ -62,7 +63,7 @@ public class Compiler {
 			LOGGER.info("Translating trident code into java code...");
 			String res = program.translate();
 			
-			System.out.println(res);
+			System.out.println("result: " + res);
 			
 			LOGGER.info("Generating packge...");
 			String path = "triton-codegen/src/main/java/";
