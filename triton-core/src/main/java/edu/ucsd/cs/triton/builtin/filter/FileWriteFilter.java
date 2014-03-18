@@ -24,7 +24,7 @@ public class FileWriteFilter implements Filter  {
 	
 	@Override
 	public void prepare(Map conf, TridentOperationContext context) {
-		System.out.println("open file");
+		//System.out.println("open file");
 		try {
 	    _writer = new PrintWriter(_fileName);
 		} catch (FileNotFoundException e) {
@@ -34,13 +34,13 @@ public class FileWriteFilter implements Filter  {
 	}
 	@Override
 	public void cleanup() {
-		System.out.println("closed!!!!");
+		//System.out.println("closed!!!!");
 			_writer.close();
 	}
 
 	@Override
 	public boolean isKeep(TridentTuple tuple) {
-		System.out.println(tuple);
+		//System.out.println(tuple);
 		_writer.println(tuple.getValues());
     _writer.flush();
 		return true;

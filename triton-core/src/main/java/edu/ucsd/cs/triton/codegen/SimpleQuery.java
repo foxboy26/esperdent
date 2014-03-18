@@ -22,6 +22,7 @@ public class SimpleQuery implements IQuery {
   public void init() {
   	_jobName = "local_test";
   	// TODO conf init
+  	_conf.setDebug(false);
   }
 
   @Override

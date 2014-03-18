@@ -36,7 +36,13 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="index.jsp">Home</a></li>
-            <li class="active"><a href="demo.jsp">Demo</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demo <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="demo.jsp">Word Count</a></li>
+                <li><a href="trending_topic.jsp">Trending Topic</a></li>
+              </ul>
+            </li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -49,22 +55,45 @@
 				<div id="query">
 				    <div>
 						<div style="float: right">
+						    <button type="submit" id="compile"
+                                class="btn btn-success footer-item rel-tooltip">
+                                <i class="icon-cog-alt">Compile!</i>
+                            </button>
 							<button type="submit" id="run"
 								class="btn btn-success footer-item rel-tooltip">
 								<i class="icon-cog-alt">Run</i>
 							</button>
-						</div>
-						<div style="float: right">
 							<button type="submit" id="stop"
-								class="btn btn-success footer-item rel-tooltip">
-								<i class="icon-cog-alt">Stop</i>
-							</button>
+                                class="btn btn-success footer-item rel-tooltip">
+                                <i class="icon-cog-alt">Stop</i>
+                            </button>
 						</div>
 					</div>
-					<div class="code" id="query-script">select * from a;</div>
+					<div class="code" id="query-script" style="height: 180px"># This is a sample query script that produce the trending topic of a word stream.
+
+# register a word stream
+register stream wordStream(word string) from file("data/word.dat"); 
+
+# compute word count for past 1 min.
+register stream wordCountStream(word String, wordCount int) from
+select word, count(word) as wordCount from wordStream.win:time(1 minute) as s group by word;
+
+# compute top 10 word
+select word from wordCountStream order by wordCount desc limit 10;</div>
 				</div>
 	            
-	            <div id="word-count">sdfsdf</div>
+	            <div id="word-count">
+	               <table class="table table-hover" id="trending-topic" style="height:300px">
+                        <tr><th>Word</th><th>Count</th></tr>
+                        <!--<tr><td>a</td><td id="a">0</td></tr>
+                        <tr><td>b</td><td id="b">0</td></tr>
+                        <tr><td>c</td><td id="c">0</td></tr>
+                        <tr><td>d</td><td id="d">0</td></tr>
+                        <tr><td>e</td><td id="e">0</td></tr>
+                        <tr><td>f</td><td id="f">0</td></tr>  -->
+				    </table>
+	            
+	            </div>
 	            
 	            <div class="console" id="console" >
 	            </div>
@@ -107,7 +136,6 @@
             var console = $('#console');
             console.html('');
         });
-    
     
         $('#run').on('click', function(event) {
         	Console.clear();

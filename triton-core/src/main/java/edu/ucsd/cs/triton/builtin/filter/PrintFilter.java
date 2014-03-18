@@ -13,15 +13,15 @@ import storm.trident.tuple.TridentTuple;
 public class PrintFilter implements Filter  {
 	@Override
 	public void prepare(Map conf, TridentOperationContext context) {
-		System.out.println("hahahaha");
 	}
+	
 	@Override
 	public void cleanup() {
 	}
 
 	@Override
 	public boolean isKeep(TridentTuple tuple) {
-		System.out.println(tuple);
+		System.out.println("stdout: " + tuple);
 		return true;
 	}
 }

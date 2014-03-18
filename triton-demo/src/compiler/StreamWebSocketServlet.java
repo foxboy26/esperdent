@@ -19,13 +19,14 @@ import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 
-import parser.ASTStart;
-import parser.TritonParser;
-
 import com.google.gson.Gson;
 
 
 public class StreamWebSocketServlet extends WebSocketServlet {
+	
+	private final String STDOUT = "stdout: ";
+	
+	private final String RAW = "raw: ";
 	
 	private final Gson gson = new Gson(); 
 	
@@ -61,7 +62,10 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 			
 		  Message message = gson.fromJson(arg0.toString(), Message.class);
 		  if (message.action != null && message.action.equals("start")) {
-		  	ProcessBuilder pb = new ProcessBuilder("/Users/zhihengli/libs/apache-maven-3.1.1/bin/mvn", "-f", "pom.xml", "compile", "exec:java", "-Dstorm.topology=simple.Simple");
+		  	ProcessBuilder pb = new ProcessBuilder(
+		  			"/Users/zhihengli/libs/apache-maven-3.1.1/bin/mvn", 
+		  			"-f", "pom.xml", 
+		  			"compile", "exec:java", "-Dstorm.topology=simple.Simple");
 				pb.directory(new File("/Users/zhihengli/UCSD/project/triton/codegen/"));
 				pb.redirectErrorStream(true);
 				final Process p;
@@ -76,7 +80,13 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 							String line;
 							try {
 								while ((line = reader.readLine()) != null) {
-									sendMessage(line);
+									sendInfoMessage(line);
+									if (line.startsWith(STDOUT)) {
+										sendMessage("result", line.substring(STDOUT.length()));
+									}
+									if (line.startsWith(RAW)) {
+										sendMessage("result", line.substring(STDOUT.length()));
+									}
 								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -105,15 +115,17 @@ public class StreamWebSocketServlet extends WebSocketServlet {
 	  	if (p != null) {
 	  		p.destroy();
 		  	processMap.remove(processId);
+		  	System.out.println("process [" + processId + "] has been stopped");
 	  		sendInfoMessage("process [" + processId + "] has been stopped");
 	  	} else {
 		  	sendErrorMessage("unknown process: [" + processId + "]");
 	  	}
 		}
 		
-    private void sendMessage(String message) {
-      CharBuffer buffer = CharBuffer.wrap(message);
+    private void sendMessage(final String action, final String message) {
       try {
+      	Message msgObject = new Message("server", action, message);
+        CharBuffer buffer = CharBuffer.wrap(gson.toJson(msgObject));
         this.getWsOutbound().writeTextMessage(buffer);
       } catch (IOException e) {
         // TODO Auto-generated catch block
@@ -122,13 +134,11 @@ public class StreamWebSocketServlet extends WebSocketServlet {
     }
 
     private void sendInfoMessage(String message) {
-      Message errorMsg = new Message("server", "info", message);
-      sendMessage(gson.toJson(errorMsg));
+      sendMessage("info", message);
     }
     
     private void sendErrorMessage(String message) {
-      Message errorMsg = new Message("server", "error", message);
-      sendMessage(gson.toJson(errorMsg));
+      sendMessage("error", message);
     }
     
     private void broadcast(String message) {
