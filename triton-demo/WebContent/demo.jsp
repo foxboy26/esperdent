@@ -39,8 +39,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demo <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="demo.jsp">Word Count</a></li>
-                <li><a href="trending_topic.jsp">Trending Topic</a></li>
+                <li><a href="demo.jsp">Trending Topic</a></li>
               </ul>
             </li>
             <li><a href="#contact">Contact</a></li>
@@ -83,7 +82,7 @@ select word from wordCountStream order by wordCount desc limit 10;</div>
 				</div>
 	            
 	            <div id="word-count">
-	               <table class="table table-hover" id="trending-topic" style="height:300px">
+	               <table class="table table-hover" id="trending-topic" style="height:300px; font-size=15px">
                         <tr><th>Word</th><th>Count</th></tr>
                         <!--<tr><td>a</td><td id="a">0</td></tr>
                         <tr><td>b</td><td id="b">0</td></tr>

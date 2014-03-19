@@ -39,8 +39,7 @@
             <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demo <b class="caret"></b></a>
 	          <ul class="dropdown-menu">
-	            <li><a href="demo.jsp">Word Count</a></li>
-	            <li><a href="trending_topic.jsp">Trending Topic</a></li>
+                <li><a href="demo.jsp">Trending Topic</a></li>
 	          </ul>
 	        </li>
             <li><a href="#contact">Contact</a></li>
